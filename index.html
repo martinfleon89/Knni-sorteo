@@ -490,7 +490,7 @@
     </div>
 
     <script>
-        // Enlace de tu API en npoint.io con el nuevo contenedor configurado en vivo
+        // Enlace de tu API en npoint.io configurado con el nuevo contenedor
         const URL_NPOINT = 'https://api.npoint.io/ac74458d8431e9634c79';
 
         const i18n = {
@@ -563,23 +563,12 @@
         let currentLang = 'es';
         const t = (key) => i18n[currentLang][key] || key;
 
-        let historyData = [{"Date": "2026-09-01", "Driver": "B1G BOSS", "VIP": "CommanderOb191436"}, {"Date": "2026-09-02", "Driver": "Borvey", "VIP": "Mia2424"}, {"Date": "2026-09-03", "Driver": "TartanTerror", "VIP": "Bales117"}, {"Date": "2026-09-04", "Driver": "MKMKMKMKMK", "VIP": "Countryguy"}, {"Date": "2026-09-05", "Driver": "Mia2424", "VIP": "낭만용사Maquina"}, {"Date": "2026-09-06", "Driver": "DadykaOz", "VIP": "KnNi Mert"}, {"Date": "2026-09-07", "Driver": "Destinuke", "VIP": "TwannaJ"}, {"Date": "2026-09-08", "Driver": "Góòse", "VIP": "B1G BOSS"}, {"Date": "2026-09-09", "Driver": "MKMKMKMKMK", "VIP": "Bales117"}, {"Date": "2026-09-10", "Driver": "shoo merito", "VIP": "Tomandante ajolotl"}, {"Date": "2026-09-11", "Driver": "Th3 FckinG Go4t", "VIP": "Jungle20"}, {"Date": "2026-09-12", "Driver": "spal4", "VIP": "spirit xx"}, {"Date": "2026-09-13", "Driver": "TartanTerror", "VIP": "Betty1010"}, {"Date": "2026-09-14", "Driver": "HackChop", "VIP": "낭만용사Maquina"}, {"Date": "2026-09-15", "Driver": "TartanTerror", "VIP": "DaViS"}, {"Date": "2026-09-16", "Driver": "RTAlejandro", "VIP": "DF66"}, {"Date": "2026-09-17", "Driver": "WilliamDOTJames", "VIP": "totto God Dog"}, {"Date": "2026-09-18", "Driver": "San Guillermo", "VIP": "boom boy"}, {"Date": "2026-09-19", "Driver": "JestFatality", "VIP": "Jamesson45891"}, {"Date": "2026-09-20", "Driver": "Borvey", "VIP": "JOAT79"}, {"Date": "2026-09-21", "Driver": "Maddog 1856", "VIP": "JP1351"}, {"Date": "2026-09-22", "Driver": "Musky78", "VIP": "KillB"}, {"Date": "2026-09-23", "Driver": "Bales117", "VIP": "LightIna"}, {"Date": "2026-09-24", "Driver": "JOAT79", "VIP": "shoo merito"}, {"Date": "2026-09-25", "Driver": "RuLez", "VIP": "ottotank"}, {"Date": "2026-09-26", "Driver": "lauda lahsun", "VIP": "RW12345"}, {"Date": "2026-09-27", "Driver": "B1G BOSS", "VIP": "Gensis"}, {"Date": "2026-09-28", "Driver": "Ricknick", "VIP": "tornillo90"}, {"Date": "2026-09-29", "Driver": "RLP castle", "VIP": "RW12345"}, {"Date": "2026-09-30", "Driver": "SaRgeReApEr", "VIP": "KnNi Mert"}, {"Date": "2026-10-01", "Driver": "Mia2424", "VIP": "spirit xx"}, {"Date": "2026-10-02", "Driver": "DaveyCrocket44", "VIP": "TheEnforcer77"}, {"Date": "2026-10-03", "Driver": "Defiant One", "VIP": "itsmeJJ"}, {"Date": "2026-10-04", "Driver": "Arturo H1234", "VIP": "Darth Grizzly"}, {"Date": "2026-10-05", "Driver": "Jungle20", "VIP": "WilliamDOTJames"}, {"Date": "2026-10-06", "Driver": "KnNi Mert", "VIP": "Cristophoros"}, {"Date": "2026-10-07", "Driver": "MKMKMKMKMK", "VIP": "Fighting Lawn Gnomes"}, {"Date": "2026-10-08", "Driver": "Cokeafgano", "VIP": "DaViS"}, {"Date": "2026-10-09", "Driver": "Tomandante ajolotl", "VIP": "Betty1010"}, {"Date": "2026-10-10", "Driver": "DaViS", "VIP": "B1G BOSS"}, {"Date": "2026-10-11", "Driver": "Albee3609", "VIP": "San Guillermo"}, {"Date": "2026-10-12", "Driver": "낭만용사Maquina", "VIP": "Kopa 빨간색"}, {"Date": "2026-10-13", "Driver": "Deroga da Grinch ", "VIP": "Countryguy "}, {"Date": "2026-10-14", "Driver": "Jack meHoff ", "VIP": "Hexina"}, {"Date": "2026-10-15", "Driver": "CommanderOb191436", "VIP": "TwannaJ"}, {"Date": "2026-10-16", "Driver": "shoo merito", "VIP": "Góòse"}, {"Date": "2026-10-17", "Driver": "HackChop ", "VIP": "KillB"}, {"Date": "2026-10-18", "Driver": "Allpau", "VIP": "BobGio밥지오"}, {"Date": "2026-10-19", "Driver": "CaptainZverman", "VIP": "JOAT79"}, {"Date": "2026-10-20", "Driver": "Army Moonlight ", "VIP": "MCPICKY "}, {"Date": "2026-10-21", "Driver": "CP6964", "VIP": "Arturo H1234"}, {"Date": "2026-10-22", "Driver": "Borvey", "VIP": "boom boy"}, {"Date": "2026-10-23", "Driver": "RW12345", "VIP": "HUEVO FIGHTER"}, {"Date": "2026-10-24", "Driver": "TartanTerror", "VIP": "낭만용사Maquina"}, {"Date": "2026-10-25", "Driver": "LightIna", "VIP": "tornillo90"}, {"Date": "2026-10-25", "Driver": "Fighting Lawn Gnomes", "VIP": "Bales117"}];
-        let allianceNames = [
-            "Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AxiE", "B1G BOSS", "Bahrok", "Bales117", 
-            "bcabes", "Betty1010", "BobB53", "BobGio밥지오", "boom boy", "Borvey", "Brokeback Hooty", "Captain Zverman", "Cokeafgano", "Th3 Lil Effin Go4t", 
-            "Countryguy", "CP6964", "Cristophoros", "CSH SKYBLUE555", "Danos SR", "DarkZeru", "Darth Grizzly", "DaveyCrocket44", "DaViS", "DBrad11", 
-            "Defiant One", "Deroga da Grinch", "Destinuke", "DF66", "Drsimibelico", "Father McNulty", "Fighting Lawn Gnomes", "Gensis", "Geovane rech", "Getting by", 
-            "Góòse", "gosSipGirl", "GUNNER39", "HackChop", "Hexina", "HeyMarana", "HUEVO FIGHTER", "itsmeJJ", "Jack meHoff", "Jamesson45891", 
-            "JestFatality", "JOAT79", "JP1351", "juflash", "Jungle20", "KillB", "KillînPïxîeDuśt", "KnNi Mert", "Kopa 빨간색", "lauda lahsun", 
-            "LightIna", "lShadowKilll", "LuckStrayker", "Maddog 1856", "MCPicky", "MelRose", "Mia2424", "MKMKMKMKMK", "Mordally", "MPK Buff", 
-            "Musky78", "ottotank", "Pepperspray69", "PoO Bear", "Ricknick", "RiMMER", "RLP castle", "RTAlejandro", "RuLëz", "RUNTZ", 
-            "RW12345", "San Guillermo", "SaRgeReApEr", "shoo merito", "spal4", "spirit xx", "TartanTerror", "tavo20", "TheEnforcer77", "TheRealBetty", 
-            "Tomandante ajolotl", "tornillo90", "JP AH", "Turbonovtec", "TwannaJ", "VSSoldier", "WillDW", "WilliamDOTJames", "XLeo26", "낭만용사Maquina"
-        ];
+        let historyData = [{"Date": "2026-09-01", "Driver": "B1G BOSS", "VIP": "CommanderOb191436"}];
+        let allianceNames = ["Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AxiE", "B1G BOSS", "Bahrok", "Bales117"];
         let currentMvps = { week: "B1G BOSS", champion: "낭만용사Maquina", desert1: "---", desert2: "---", canon1: "---", canon2: "---" };
         let discordLink = "https://discord.gg/knni-alianza";
         let customQrData = "";
-        let targetTrainTime = new Date(Date.now() + 6 * 3600 * 1000).toISOString();
+        let targetTrainTime = "2026-11-01T00:00:00.000Z";
 
         function syncToCloud() {
             const payload = {
@@ -592,11 +581,22 @@
             };
 
             fetch(URL_NPOINT, {
-                method: 'PUT',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
+            .then(res => {
+                if (!res.ok) {
+                    return fetch(URL_NPOINT, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+                return res;
+            })
             .then(res => res.json())
+            .then(data => console.log("Sincronizado con éxito a la nube"))
             .catch(err => console.error("Error al sincronizar con la nube:", err));
         }
 
