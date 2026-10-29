@@ -490,6 +490,9 @@
     </div>
 
     <script>
+        // Enlace de tu API en npoint.io para guardar en vivo
+        const URL_NPOINT = 'https://api.npoint.io/92f6d2d951824c314caa';
+
         const i18n = {
             es: {
                 title: "KnNi MESA REDONDA", subtitle: "Tablero de Alianza y Sorteos",
@@ -560,13 +563,8 @@
         let currentLang = 'es';
         const t = (key) => i18n[currentLang][key] || key;
 
-        // Historial base
+        // Datos por defecto locales (se sobrescribirán con la nube al iniciar)
         let historyData = [{"Date": "2026-09-01", "Driver": "B1G BOSS", "VIP": "CommanderOb191436"}, {"Date": "2026-09-02", "Driver": "Borvey", "VIP": "Mia2424"}, {"Date": "2026-09-03", "Driver": "TartanTerror", "VIP": "Bales117"}, {"Date": "2026-09-04", "Driver": "MKMKMKMKMK", "VIP": "Countryguy"}, {"Date": "2026-09-05", "Driver": "Mia2424", "VIP": "낭만용사Maquina"}, {"Date": "2026-09-06", "Driver": "DadykaOz", "VIP": "KnNi Mert"}, {"Date": "2026-09-07", "Driver": "Destinuke", "VIP": "TwannaJ"}, {"Date": "2026-09-08", "Driver": "Góòse", "VIP": "B1G BOSS"}, {"Date": "2026-09-09", "Driver": "MKMKMKMKMK", "VIP": "Bales117"}, {"Date": "2026-09-10", "Driver": "shoo merito", "VIP": "Tomandante ajolotl"}, {"Date": "2026-09-11", "Driver": "Th3 FckinG Go4t", "VIP": "Jungle20"}, {"Date": "2026-09-12", "Driver": "spal4", "VIP": "spirit xx"}, {"Date": "2026-09-13", "Driver": "TartanTerror", "VIP": "Betty1010"}, {"Date": "2026-09-14", "Driver": "HackChop", "VIP": "낭만용사Maquina"}, {"Date": "2026-09-15", "Driver": "TartanTerror", "VIP": "DaViS"}, {"Date": "2026-09-16", "Driver": "RTAlejandro", "VIP": "DF66"}, {"Date": "2026-09-17", "Driver": "WilliamDOTJames", "VIP": "totto God Dog"}, {"Date": "2026-09-18", "Driver": "San Guillermo", "VIP": "boom boy"}, {"Date": "2026-09-19", "Driver": "JestFatality", "VIP": "Jamesson45891"}, {"Date": "2026-09-20", "Driver": "Borvey", "VIP": "JOAT79"}, {"Date": "2026-09-21", "Driver": "Maddog 1856", "VIP": "JP1351"}, {"Date": "2026-09-22", "Driver": "Musky78", "VIP": "KillB"}, {"Date": "2026-09-23", "Driver": "Bales117", "VIP": "LightIna"}, {"Date": "2026-09-24", "Driver": "JOAT79", "VIP": "shoo merito"}, {"Date": "2026-09-25", "Driver": "RuLez", "VIP": "ottotank"}, {"Date": "2026-09-26", "Driver": "lauda lahsun", "VIP": "RW12345"}, {"Date": "2026-09-27", "Driver": "B1G BOSS", "VIP": "Gensis"}, {"Date": "2026-09-28", "Driver": "Ricknick", "VIP": "tornillo90"}, {"Date": "2026-09-29", "Driver": "RLP castle", "VIP": "RW12345"}, {"Date": "2026-09-30", "Driver": "SaRgeReApEr", "VIP": "KnNi Mert"}, {"Date": "2026-10-01", "Driver": "Mia2424", "VIP": "spirit xx"}, {"Date": "2026-10-02", "Driver": "DaveyCrocket44", "VIP": "TheEnforcer77"}, {"Date": "2026-10-03", "Driver": "Defiant One", "VIP": "itsmeJJ"}, {"Date": "2026-10-04", "Driver": "Arturo H1234", "VIP": "Darth Grizzly"}, {"Date": "2026-10-05", "Driver": "Jungle20", "VIP": "WilliamDOTJames"}, {"Date": "2026-10-06", "Driver": "KnNi Mert", "VIP": "Cristophoros"}, {"Date": "2026-10-07", "Driver": "MKMKMKMKMK", "VIP": "Fighting Lawn Gnomes"}, {"Date": "2026-10-08", "Driver": "Cokeafgano", "VIP": "DaViS"}, {"Date": "2026-10-09", "Driver": "Tomandante ajolotl", "VIP": "Betty1010"}, {"Date": "2026-10-10", "Driver": "DaViS", "VIP": "B1G BOSS"}, {"Date": "2026-10-11", "Driver": "Albee3609", "VIP": "San Guillermo"}, {"Date": "2026-10-12", "Driver": "낭만용사Maquina", "VIP": "Kopa 빨간색"}, {"Date": "2026-10-13", "Driver": "Deroga da Grinch ", "VIP": "Countryguy "}, {"Date": "2026-10-14", "Driver": "Jack meHoff ", "VIP": "Hexina"}, {"Date": "2026-10-15", "Driver": "CommanderOb191436", "VIP": "TwannaJ"}, {"Date": "2026-10-16", "Driver": "shoo merito", "VIP": "Góòse"}, {"Date": "2026-10-17", "Driver": "HackChop ", "VIP": "KillB"}, {"Date": "2026-10-18", "Driver": "Allpau", "VIP": "BobGio밥지오"}, {"Date": "2026-10-19", "Driver": "CaptainZverman", "VIP": "JOAT79"}, {"Date": "2026-10-20", "Driver": "Army Moonlight ", "VIP": "MCPICKY "}, {"Date": "2026-10-21", "Driver": "CP6964", "VIP": "Arturo H1234"}, {"Date": "2026-10-22", "Driver": "Borvey", "VIP": "boom boy"}, {"Date": "2026-10-23", "Driver": "RW12345", "VIP": "HUEVO FIGHTER"}, {"Date": "2026-10-24", "Driver": "TartanTerror", "VIP": "낭만용사Maquina"}, {"Date": "2026-10-25", "Driver": "LightIna", "VIP": "tornillo90"}, {"Date": "2026-10-25", "Driver": "Fighting Lawn Gnomes", "VIP": "Bales117"}];
-        if(localStorage.getItem('knni_history')) {
-            try { historyData = JSON.parse(localStorage.getItem('knni_history')); } catch(e) {}
-        }
-
-        // Los 100 miembros iniciales de la alianza
         let allianceNames = [
             "Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AxiE", "B1G BOSS", "Bahrok", "Bales117", 
             "bcabes", "Betty1010", "BobB53", "BobGio밥지오", "boom boy", "Borvey", "Brokeback Hooty", "Captain Zverman", "Cokeafgano", "Th3 Lil Effin Go4t", 
@@ -579,20 +577,51 @@
             "RW12345", "San Guillermo", "SaRgeReApEr", "shoo merito", "spal4", "spirit xx", "TartanTerror", "tavo20", "TheEnforcer77", "TheRealBetty", 
             "Tomandante ajolotl", "tornillo90", "JP AH", "Turbonovtec", "TwannaJ", "VSSoldier", "WillDW", "WilliamDOTJames", "XLeo26", "낭만용사Maquina"
         ];
-        if(localStorage.getItem('knni_alliance_members')) {
-            try { allianceNames = JSON.parse(localStorage.getItem('knni_alliance_members')); } catch(e) {}
-        }
-
         let currentMvps = { week: "B1G BOSS", champion: "낭만용사Maquina", desert1: "---", desert2: "---", canon1: "---", canon2: "---" };
-        if(localStorage.getItem('knni_mvps')) {
-            try { currentMvps = JSON.parse(localStorage.getItem('knni_mvps')); } catch(e) {}
+        let discordLink = "https://discord.gg/knni-alianza";
+        let customQrData = "";
+        let targetTrainTime = new Date(Date.now() + 6 * 3600 * 1000).toISOString();
+
+        // FUNCIÓN CENTRALIZADA PARA GUARDAR TODO EN NPOINT EN VIVO
+        function syncToCloud() {
+            const payload = {
+                history: historyData,
+                alliance: allianceNames,
+                mvps: currentMvps,
+                discord: discordLink,
+                qr: customQrData,
+                trainTarget: targetTrainTime
+            };
+
+            fetch(URL_NPOINT, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .catch(err => console.error("Error al sincronizar con la nube:", err));
         }
 
-        let discordLink = localStorage.getItem('knni_discord_link') || "https://discord.gg/knni-alianza";
-        let customQrData = localStorage.getItem('knni_discord_qr') || "";
-
-        // Temporizador del tren (por defecto 6 horas adelante si no está configurado)
-        let targetTrainTime = localStorage.getItem('knni_train_target') || new Date(Date.now() + 6 * 3600 * 1000).toISOString();
+        // FUNCIÓN PARA CARGAR TODO DESDE LA NUBE AL ABRIR LA PÁGINA
+        function loadFromCloud(callback) {
+            fetch(URL_NPOINT)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && typeof data === 'object') {
+                        if (data.history && Array.isArray(data.history)) historyData = data.history;
+                        if (data.alliance && Array.isArray(data.alliance)) allianceNames = data.alliance;
+                        if (data.mvps) currentMvps = data.mvps;
+                        if (data.discord) discordLink = data.discord;
+                        if (data.qr) customQrData = data.qr;
+                        if (data.trainTarget) targetTrainTime = data.trainTarget;
+                    }
+                    if (callback) callback();
+                })
+                .catch(err => {
+                    console.error("Error al cargar de la nube, usando respaldos locales:", err);
+                    if (callback) callback();
+                });
+        }
 
         function toggleLang() {
             currentLang = currentLang === 'es' ? 'en' : 'es';
@@ -627,23 +656,18 @@
             document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // Cálculo de participaciones a partir del 1 de Noviembre de 2026
         function calculateAllianceParticipations() {
             let counts = {};
             allianceNames.forEach(name => counts[name] = 0);
 
             historyData.forEach(item => {
-                // Filtrar registros a partir del 1 de noviembre de 2026
                 if (item.Date >= "2026-11-01") {
                     [item.Driver, item.VIP].forEach(participant => {
                         const clean = participant.trim();
                         if (clean && clean !== '---') {
-                            // Buscar coincidencia exacta o case-insensitive en la alianza
                             const match = allianceNames.find(n => n.toLowerCase() === clean.toLowerCase());
                             if (match) {
                                 counts[match] = (counts[match] || 0) + 1;
-                            } else {
-                                // Si el participante no está en la lista de 100, se puede registrar opcionalmente o ignorar
                             }
                         }
                     });
@@ -674,13 +698,11 @@
             document.getElementById('display-mvp-canon-1').textContent = currentMvps.canon1;
             document.getElementById('display-mvp-canon-2').textContent = currentMvps.canon2;
 
-            // Discord & QR
             document.getElementById('discord-link-input').value = discordLink;
             document.getElementById('discord-external-btn').href = discordLink;
             const qrImg = customQrData ? customQrData : `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(discordLink)}`;
             document.getElementById('qr-image-preview').src = qrImg;
 
-            // Gráfico del Batallón (Top 10 a partir del 1 de Noviembre de 2026)
             const allianceStats = calculateAllianceParticipations();
             const sortedAlliance = [...allianceStats].sort((a,b) => b.Participations - a.Participations);
             const top10 = sortedAlliance.slice(0, 10);
@@ -712,7 +734,6 @@
                 }
             });
 
-            // Últimas gestas
             const tbody = document.getElementById('recent-history-tbody');
             tbody.innerHTML = '';
             [...historyData].reverse().slice(0,5).forEach(item => {
@@ -720,7 +741,6 @@
             });
         }
 
-        // Temporizador en vivo
         function updateCountdown() {
             const now = new Date().getTime();
             const target = new Date(targetTrainTime).getTime();
@@ -751,19 +771,19 @@
             const val = document.getElementById('input-target-time').value;
             if(val) {
                 targetTrainTime = new Date(val).toISOString();
-                localStorage.setItem('knni_train_target', targetTrainTime);
+                syncToCloud();
             }
             closeTimerModal();
         }
 
         function saveDiscordLink() {
             discordLink = document.getElementById('discord-link-input').value.trim();
-            localStorage.setItem('knni_discord_link', discordLink);
             document.getElementById('discord-external-btn').href = discordLink;
             if(!customQrData) {
                 document.getElementById('qr-image-preview').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(discordLink)}`;
             }
-            alert("¡Enlace de Discord actualizado con éxito!");
+            syncToCloud();
+            alert("¡Enlace de Discord actualizado en vivo para todos!");
         }
 
         function loadCustomQR(event) {
@@ -772,8 +792,8 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     customQrData = e.target.result;
-                    localStorage.setItem('knni_discord_qr', customQrData);
                     document.getElementById('qr-image-preview').src = customQrData;
+                    syncToCloud();
                 };
                 reader.readAsDataURL(file);
             }
@@ -895,16 +915,15 @@
             const today = new Date().toISOString().split('T')[0];
             
             historyData.push({ "Date": today, "Driver": currentDraw.Driver, "VIP": currentDraw.VIP });
-            localStorage.setItem('knni_history', JSON.stringify(historyData));
+            syncToCloud();
 
             loadParticipants(); initDashboard(); renderHistory(); renderAllianceTable(); switchTab('history');
         }
 
-        // Gestión de Crónicas (Historial)
         function deleteRecord(idx) {
             if(confirm(t('confirmDel'))) {
                 historyData.splice(idx, 1);
-                localStorage.setItem('knni_history', JSON.stringify(historyData));
+                syncToCloud();
                 initDashboard();
                 if(loadedPlayers.length > 0) loadParticipants(true);
                 renderHistory();
@@ -923,7 +942,7 @@
             historyData[idx].Date = document.getElementById('edit-date').value;
             historyData[idx].Driver = document.getElementById('edit-driver').value;
             historyData[idx].VIP = document.getElementById('edit-vip').value;
-            localStorage.setItem('knni_history', JSON.stringify(historyData));
+            syncToCloud();
             closeEditModal(); initDashboard();
             if(loadedPlayers.length > 0) loadParticipants(true);
             renderHistory();
@@ -942,7 +961,6 @@
             renderHistory(historyData.filter(item => item.Driver.toLowerCase().includes(q) || item.VIP.toLowerCase().includes(q) || item.Date.includes(q)));
         }
 
-        // Gestión de Miembros del Batallón (100 miembros completos + editar/borrar/añadir)
         function renderAllianceTable() {
             const tbody = document.getElementById('alliance-tbody');
             tbody.innerHTML = '';
@@ -1008,7 +1026,7 @@
                 if(!allianceNames.includes(newName)) allianceNames.push(newName);
             }
 
-            localStorage.setItem('knni_alliance_members', JSON.stringify(allianceNames));
+            syncToCloud();
             closeMemberModal();
             renderAllianceTable();
             initDashboard();
@@ -1017,13 +1035,12 @@
         function deleteMember(name) {
             if(confirm(t('confirmDelMember'))) {
                 allianceNames = allianceNames.filter(n => n !== name);
-                localStorage.setItem('knni_alliance_members', JSON.stringify(allianceNames));
+                syncToCloud();
                 renderAllianceTable();
                 initDashboard();
             }
         }
 
-        // Gestión del Salón de MVPs
         function openMvpModal() {
             document.getElementById('input-mvp-week').value = currentMvps.week;
             document.getElementById('input-champion').value = currentMvps.champion;
@@ -1041,15 +1058,18 @@
             currentMvps.desert2 = document.getElementById('input-mvp-desert-2').value.trim() || "---";
             currentMvps.canon1 = document.getElementById('input-mvp-canon-1').value.trim() || "---";
             currentMvps.canon2 = document.getElementById('input-mvp-canon-2').value.trim() || "---";
-            localStorage.setItem('knni_mvps', JSON.stringify(currentMvps));
+            syncToCloud();
             closeMvpModal(); initDashboard();
         }
 
+        // Al iniciar la página, se cargan los datos desde npoint.io y se pinta todo en vivo
         window.onload = () => {
-            initDashboard();
-            renderHistory();
-            renderAllianceTable();
-            document.getElementById('winner-display').textContent = t('msgWait');
+            loadFromCloud(() => {
+                initDashboard();
+                renderHistory();
+                renderAllianceTable();
+                document.getElementById('winner-display').textContent = t('msgWait');
+            });
         };
     </script>
 </body>
