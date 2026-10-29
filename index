@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KnNi - Mesa Redonda y Sorteos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0c120e; 
+            background-image: radial-gradient(circle at 50% 0%, #152219 0%, #0c120e 70%);
+            color: #d6d3d1;
+        }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .card-glass {
+            background: linear-gradient(145deg, rgba(22, 33, 24, 0.85), rgba(12, 18, 14, 0.95));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(63, 98, 56, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0c120e; }
+        ::-webkit-scrollbar-thumb { background: #2f4532; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f5f45; }
+        .tab-btn.active {
+            background-color: #1a2e20;
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            box-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.3);
+        }
+        .tab-btn:not(.active) { color: #a8a29e; border: 1px solid transparent; }
+        .tab-btn:not(.active):hover { color: #ffffff; background-color: #152419; }
+        thead { background: rgba(12, 18, 14, 0.95); }
+        tr:hover { background-color: rgba(30, 45, 33, 0.5) !important; }
+        @keyframes swordClash {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(15deg); filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.8)); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .animate-clash { animation: swordClash 0.8s infinite ease-in-out; }
+    </style>
+</head>
+<body class="flex flex-col selection:bg-green-800 selection:text-yellow-400 min-h-screen">
+
+    <header class="sticky top-0 z-50 border-b border-green-900/50 bg-[#0c120e]/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-800 border border-yellow-500/50 flex items-center justify-center shadow-[0_0_15px_rgba(202,138,4,0.3)] text-stone-100 text-xl">
+                    <i class="fa-solid fa-shield"></i>
+                </div>
+                <div>
+                    <h1 class="font-cinzel font-bold text-lg tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700" data-i18n="title">
+                        KnNi MESA REDONDA
+                    </h1>
+                    <p class="text-xs text-stone-400" data-i18n="subtitle">Tablero de Alianza y Sorteos</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex space-x-1 bg-[#101712] p-1 rounded-xl border border-green-900/40">
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-scroll mr-2"></i><span data-i18n="tabDashboard">Reino</span>
+                </button>
+                <button onclick="switchTab('giveaway')" id="btn-giveaway" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-dice-d20 mr-2"></i><span data-i18n="tabGiveaway">Sorteo Divino</span>
+                </button>
+                <button onclick="switchTab('history')" id="btn-history" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-book-journal-whills mr-2"></i><span data-i18n="tabHistory">Crónicas</span>
+                </button>
+                <button onclick="switchTab('alliance')" id="btn-alliance" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-chess-knight mr-2"></i><span data-i18n="tabAlliance">Batallón</span>
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleLang()" class="px-2.5 py-1 bg-green-900/40 border border-green-700/50 rounded hover:bg-green-800 transition-colors text-xs font-bold text-yellow-500 font-cinzel">
+                    <span id="lang-ind">ES</span> <i class="fa-solid fa-language ml-1"></i>
+                </button>
+                <div class="hidden sm:flex flex-col text-right">
+                    <span class="text-xs font-semibold text-yellow-500 font-cinzel" data-i18n="era">Era Actual</span>
+                    <span class="text-xs text-stone-400" id="current-date">...</span>
+                </div>
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg bg-[#101712] text-stone-300 hover:text-white border border-green-900/40">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1 bg-[#0c120e] border-b border-green-900/50">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-yellow-500" data-i18n="tabDashboard">Reino</button>
+            <button onclick="switchTab('giveaway'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-stone-300" data-i18n="tabGiveaway">Sorteo Divino</button>
+            <button onclick="switchTab('history'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-stone-300" data-i18n="tabHistory">Crónicas</button>
+            <button onclick="switchTab('alliance'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-stone-300" data-i18n="tabAlliance">Batallón</button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- TAB 1: REINO (DASHBOARD) -->
+        <div id="tab-dashboard" class="space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Temporizador del Tren -->
+                <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest font-cinzel" data-i18n="trainCountdown">Llegada del Tren</p>
+                        <button onclick="openTimerModal()" class="text-xs text-yellow-500 hover:text-yellow-400"><i class="fa-solid fa-gear"></i></button>
+                    </div>
+                    <h3 id="train-timer" class="text-2xl font-bold font-cinzel text-yellow-400">00:00:00</h3>
+                    <p class="text-[11px] text-stone-400 mt-1" id="train-target-label">Próxima estación</p>
+                </div>
+
+                <!-- Fuerza Aliada -->
+                <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest font-cinzel" data-i18n="force">Fuerza Aliada</p>
+                            <h3 id="stat-total-alliance" class="text-3xl font-bold font-cinzel text-stone-100 mt-1">100</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-lg bg-green-900/40 border border-green-700/30 flex items-center justify-center text-green-500 text-xl"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                </div>
+
+                <!-- Último Caballero -->
+                <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest font-cinzel" data-i18n="lastKnight">Último Conductor (Driver)</p>
+                            <h3 id="stat-last-driver" class="text-xl font-bold font-cinzel text-green-400 mt-1 truncate max-w-[150px]">---</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-lg bg-green-900/30 border border-green-600/30 flex items-center justify-center text-green-500 text-xl"><i class="fa-solid fa-train"></i></div>
+                    </div>
+                </div>
+
+                <!-- Último Lord VIP -->
+                <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest font-cinzel" data-i18n="lastLord">Último Lord VIP</p>
+                            <h3 id="stat-last-vip" class="text-xl font-bold font-cinzel text-yellow-500 mt-1 truncate max-w-[150px]">---</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-lg bg-yellow-900/30 border border-yellow-600/30 flex items-center justify-center text-yellow-500 text-xl"><i class="fa-solid fa-crown"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Discord & QR e Invitación -->
+            <div class="card-glass p-6 rounded-xl border-t-2 border-t-indigo-500 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="md:col-span-2 space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded bg-indigo-900/40 border border-indigo-700/50 flex items-center justify-center text-indigo-400"><i class="fa-brands fa-discord"></i></div>
+                        <h3 class="font-cinzel font-bold text-lg text-indigo-300" data-i18n="discordTitle">Comunidad y Convoy en Discord</h3>
+                    </div>
+                    <p class="text-xs text-stone-400" data-i18n="discordSub">Escanea el código QR o utiliza el enlace oficial para unirte al canal de voz y coordinación de trenes de la alianza KnNi.</p>
+                    <div class="flex items-center space-x-3 pt-2">
+                        <input type="text" id="discord-link-input" value="https://discord.gg/knni-alianza" class="bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 w-full max-w-sm outline-none focus:border-indigo-500">
+                        <button onclick="saveDiscordLink()" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 text-indigo-300 border border-indigo-700/50 rounded-lg text-xs font-cinzel font-bold" data-i18n="saveLinkBtn">Guardar Link</button>
+                        <a id="discord-external-btn" href="https://discord.gg/knni-alianza" target="_blank" class="px-3 py-2 bg-indigo-700 hover:bg-indigo-600 text-stone-100 rounded-lg text-xs font-cinzel font-bold shadow-[0_0_10px_rgba(99,102,241,0.3)]"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> <span data-i18n="joinDiscord">Unirse</span></a>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center justify-center bg-[#090d0a] border border-indigo-900/40 rounded-xl p-4 text-center">
+                    <div class="w-28 h-28 bg-white p-2 rounded-lg shadow-md mb-2 flex items-center justify-center overflow-hidden relative">
+                        <img id="qr-image-preview" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://discord.gg/knni-alianza" alt="QR Discord" class="w-full h-full object-contain">
+                    </div>
+                    <label class="text-[10px] text-indigo-400 font-cinzel uppercase cursor-pointer hover:underline">
+                        <i class="fa-solid fa-upload mr-1"></i> <span data-i18n="changeQr">Cambiar QR (Imagen)</span>
+                        <input type="file" id="qr-file-input" accept="image/*" class="hidden" onchange="loadCustomQR(event)">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Salón de MVPs y Campeones -->
+            <div class="card-glass p-6 rounded-xl border-t-2 border-t-yellow-600">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-cinzel font-bold text-xl text-yellow-500" data-i18n="mvpHallTitle">Salón de MVPs y Campeones</h3>
+                        <p class="text-xs text-stone-400" data-i18n="mvpHallSub">Reconocimientos especiales otorgados en combate y gestión.</p>
+                    </div>
+                    <button onclick="openMvpModal()" class="px-4 py-2 bg-yellow-700 text-stone-100 font-cinzel text-xs font-bold rounded-lg hover:bg-yellow-600 transition-colors border border-yellow-500/50 shadow-[0_0_10px_rgba(202,138,4,0.3)]">
+                        <i class="fa-solid fa-pen-to-square mr-1"></i> <span data-i18n="editMvpBtn">Editar MVPs</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-4 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <div class="w-7 h-7 rounded bg-yellow-900/30 border border-yellow-600/40 flex items-center justify-center text-yellow-500 text-xs"><i class="fa-solid fa-award"></i></div>
+                                <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i18n="mvpWeek">MVP de la Semana</p>
+                            </div>
+                            <h4 id="display-mvp-week" class="font-cinzel font-bold text-sm text-stone-100 truncate pl-9">B1G BOSS</h4>
+                        </div>
+                        <div class="border-t border-green-900/40 pt-2">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <div class="w-7 h-7 rounded bg-yellow-900/30 border border-yellow-600/40 flex items-center justify-center text-yellow-500 text-xs"><i class="fa-solid fa-crown"></i></div>
+                                <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i18n="championAlly">Campeón de Alianza</p>
+                            </div>
+                            <h5 id="display-champion" class="font-cinzel font-bold text-sm text-yellow-500 truncate pl-9">낭만용사Maquina</h5>
+                        </div>
+                    </div>
+                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-4 flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-10 h-10 rounded-lg bg-amber-900/30 border border-amber-600/40 flex items-center justify-center text-amber-500 text-lg"><i class="fa-solid fa-sun"></i></div>
+                            <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i18n="mvpDesert">MVP Desert Storm</p>
+                        </div>
+                        <div class="space-y-1">
+                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">1:</span> <span id="display-mvp-desert-1" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
+                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">2:</span> <span id="display-mvp-desert-2" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-4 flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-10 h-10 rounded-lg bg-red-900/30 border border-red-600/40 flex items-center justify-center text-red-500 text-lg"><i class="fa-solid fa-bullseye"></i></div>
+                            <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i18n="mvpCanon">MVP Cañón Storm</p>
+                        </div>
+                        <div class="space-y-1">
+                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">1:</span> <span id="display-mvp-canon-1" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
+                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">2:</span> <span id="display-mvp-canon-2" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico del Batallón y Últimas Gestas -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card-glass p-6 rounded-xl flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i18n="hallOfFame">Salón de la Fama (Batallón)</h3>
+                            <p class="text-xs text-stone-400" data-i18n="hallSubtitle">Campañas totales desde el 1 de Noviembre de 2026 (Top 10)</p>
+                        </div>
+                    </div>
+                    <div class="relative h-72 w-full"><canvas id="topDriversChart"></canvas></div>
+                </div>
+
+                <div class="card-glass p-6 rounded-xl flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-cinzel font-bold text-lg text-yellow-500 flex items-center">
+                            <i class="fa-solid fa-hourglass-half mr-2"></i> <span data-i18n="recentDraws">Últimas Gestas</span>
+                        </h3>
+                        <button onclick="switchTab('history')" class="text-xs text-yellow-600 hover:text-yellow-400 hover:underline" data-i18n="openChronicles">Abrir Crónicas &rarr;</button>
+                    </div>
+                    <div class="overflow-y-auto max-h-72">
+                        <table class="w-full text-left text-sm text-stone-300">
+                            <thead class="text-[10px] uppercase text-stone-500 border-b border-green-900/50 sticky top-0 font-cinzel tracking-wider">
+                                <tr>
+                                    <th class="px-4 py-3" data-i18n="day">Día</th>
+                                    <th class="px-4 py-3" data-i18n="knight">Conductor (Driver)</th>
+                                    <th class="px-4 py-3" data-i18n="lord">Lord (VIP)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-history-tbody" class="divide-y divide-green-900/30"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SORTEO DIVINO -->
+        <div id="tab-giveaway" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="card-glass p-6 rounded-xl lg:col-span-4 flex flex-col h-full border-t-2 border-t-green-700">
+                    <h2 class="font-cinzel font-bold text-xl text-yellow-500 mb-1" data-i18n="summonTroopsTitle">1. Convocar Tropa</h2>
+                    <p class="text-xs text-stone-400 mb-4" data-i18n="summonTroopsSub">Pega los nombres de los participantes de hoy. El sello mágico bloqueará a quienes hayan ganado en los últimos 14 sorteos.</p>
+                    <textarea id="bulk-names" rows="10" class="w-full flex-1 bg-[#090d0a] border border-green-900/50 rounded-lg p-4 text-sm text-stone-200 focus:border-yellow-600 outline-none resize-none transition-colors mb-4 placeholder-stone-600"></textarea>
+                    <button onclick="loadParticipants()" class="w-full py-4 bg-green-900/80 text-yellow-500 font-bold rounded-lg shadow-lg hover:bg-green-800 border border-green-700 transition-all font-cinzel tracking-widest">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> <span data-i18n="sealList">SELLAR LISTA</span>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="card-glass p-6 rounded-xl flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[300px]">
+                        <div class="w-full flex justify-between px-4 mb-4 z-10">
+                            <div class="text-left bg-[#090d0a] border border-green-900/50 rounded-lg p-3 min-w-[120px]">
+                                <p class="text-[10px] text-stone-500 uppercase font-bold tracking-widest mb-1 font-cinzel" data-i18n="aptDriver">Aptos (Driver)</p>
+                                <p id="count-driver" class="text-xl font-cinzel font-bold text-green-500">0</p>
+                            </div>
+                            <div class="text-right bg-[#090d0a] border border-green-900/50 rounded-lg p-3 min-w-[120px]">
+                                <p class="text-[10px] text-stone-500 uppercase font-bold tracking-widest mb-1 font-cinzel" data-i18n="aptLord">Aptos (Lord VIP)</p>
+                                <p id="count-vip" class="text-xl font-cinzel font-bold text-yellow-500">0</p>
+                            </div>
+                        </div>
+
+                        <!-- Ruleta Animada con Caballeros luchando -->
+                        <div id="roulette-box" class="w-full max-w-lg py-8 px-6 rounded-2xl bg-[#070a08] border-2 border-green-900/60 relative my-4 z-10 transition-all duration-300">
+                            <div id="combat-animation" class="flex items-center justify-center space-x-4 mb-3">
+                                <i class="fa-solid fa-chess-knight text-2xl text-green-500"></i>
+                                <i id="clash-icon" class="fa-solid fa-swords text-3xl text-yellow-500"></i>
+                                <i class="fa-solid fa-chess-knight text-2xl text-yellow-500 scale-x-[-1]"></i>
+                            </div>
+                            <p id="draw-type-label" class="text-xs text-yellow-600/70 uppercase tracking-widest mb-1 font-cinzel hidden" data-i18n="chosen">El Elegido</p>
+                            <h3 id="winner-display" class="font-cinzel font-extrabold text-3xl sm:text-4xl text-stone-600 min-h-[3.5rem] flex items-center justify-center drop-shadow-md">...</h3>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 w-full max-w-lg z-10">
+                            <button onclick="startDraw('Driver')" id="btn-draw-driver" disabled class="py-4 bg-green-900/30 text-green-500 border border-green-700/50 hover:bg-green-800 hover:text-white font-bold rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed font-cinzel">
+                                <i class="fa-solid fa-train mr-2"></i> <span data-i18n="drawDriver">Elegir DRIVER</span>
+                            </button>
+                            <button onclick="startDraw('VIP')" id="btn-draw-vip" disabled class="py-4 bg-yellow-900/30 text-yellow-500 border border-yellow-700/50 hover:bg-yellow-800 hover:text-white font-bold rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed font-cinzel">
+                                <i class="fa-solid fa-crown mr-2"></i> <span data-i18n="drawLord">Elegir LORD VIP</span>
+                            </button>
+                        </div>
+                        
+                        <button onclick="saveToHistory()" id="btn-save" class="w-full max-w-lg mt-4 py-3 bg-gradient-to-r from-yellow-700 to-yellow-600 text-stone-100 font-bold rounded-lg shadow-[0_0_15px_rgba(202,138,4,0.4)] hover:from-yellow-600 hover:to-yellow-500 transition-all hidden z-10 font-cinzel tracking-widest border border-yellow-400/50">
+                            <i class="fa-solid fa-feather-pointed mr-2"></i> <span data-i18n="writeChronicles">Escribir en las Crónicas</span>
+                        </button>
+                    </div>
+
+                    <div class="card-glass p-6 rounded-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i18n="battalionState">Estado del Batallón</h3>
+                            <span id="valid-count" class="px-3 py-1 bg-[#090d0a] text-stone-400 rounded-lg text-xs font-bold border border-green-900/50 font-cinzel">0</span>
+                        </div>
+                        <div id="status-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-48 overflow-y-auto pr-2">
+                            <p class="text-sm text-stone-500 col-span-full" data-i18n="summonLeft">Convoca la tropa en el pergamino izquierdo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: CRÓNICAS (HISTORIAL) -->
+        <div id="tab-history" class="hidden space-y-6">
+            <div class="card-glass p-6 rounded-xl border-t-2 border-t-yellow-700">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="font-cinzel font-bold text-xl text-yellow-500" data-i18n="chroniclesTitle">Las Crónicas (Historial)</h2>
+                        <p class="text-xs text-stone-400" data-i18n="chroniclesSub">Los últimos 14 registros bloquean a los guerreros de nuevas campañas.</p>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-500"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" id="search-history" onkeyup="filterHistory()" class="w-full sm:w-72 pl-10 pr-4 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-sm text-stone-200 focus:border-yellow-600 outline-none transition-all placeholder-stone-600">
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-green-900/40">
+                    <table class="w-full text-left text-sm text-stone-300">
+                        <thead class="text-xs uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">#</th>
+                                <th class="px-6 py-4" data-i18n="day">Día</th>
+                                <th class="px-6 py-4" data-i18n="knight">Conductor (Driver)</th>
+                                <th class="px-6 py-4" data-i18n="lord">Lord (VIP)</th>
+                                <th class="px-6 py-4 text-center" data-i18n="actions">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-history-tbody" class="divide-y divide-green-900/30"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: BATALLÓN (MIEMBROS DE ALIANZA) -->
+        <div id="tab-alliance" class="hidden space-y-6">
+            <div class="card-glass p-6 rounded-xl border-t-2 border-t-stone-500">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="font-cinzel font-bold text-xl text-stone-100" data-i18n="allianceTitle">Batallón de la Alianza KnNi</h2>
+                        <p class="text-xs text-stone-400" data-i18n="allianceSub">Listado completo de 100 miembros. Las participaciones se contabilizan a partir del 1 de Noviembre de 2026.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-500"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="search-alliance" onkeyup="filterAlliance()" class="w-full sm:w-60 pl-10 pr-4 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-sm text-stone-200 focus:border-stone-500 outline-none transition-all placeholder-stone-600">
+                        </div>
+                        <button onclick="openAddMemberModal()" class="px-3 py-2 bg-green-900/60 hover:bg-green-800 text-green-300 border border-green-700/50 rounded-lg text-xs font-cinzel font-bold whitespace-nowrap">
+                            <i class="fa-solid fa-user-plus mr-1"></i> <span data-i18n="addMemberBtn">Añadir Miembro</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-green-900/40">
+                    <table class="w-full text-left text-sm text-stone-300">
+                        <thead class="text-xs uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4" data-i18n="rank">Rango</th>
+                                <th class="px-6 py-4" data-i18n="warriorName">Nombre del Guerrero</th>
+                                <th class="px-6 py-4 text-center" data-i18n="totalParticipations">Participaciones (Desde 1 Nov)</th>
+                                <th class="px-6 py-4 text-center" data-i18n="actions">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alliance-tbody" class="divide-y divide-green-900/30"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-green-900/40 bg-[#090d0a] py-6 text-center text-xs text-stone-600 mt-auto font-cinzel tracking-widest">
+        <p data-i18n="footer">FORJADO EN LA ALIANZA KnNi &copy; 2026</p>
+    </footer>
+
+    <!-- MODAL TEMPORIZADOR TREN -->
+    <div id="timer-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-sm shadow-[0_0_30px_rgba(202,138,4,0.15)]">
+            <h3 class="text-xl font-cinzel text-yellow-500 mb-4" data-i18n="configTimerTitle">Configurar Hora del Tren</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="targetTimeLabel">Hora de llegada (Próximo Tren)</label>
+                    <input type="datetime-local" id="input-target-time" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm mt-1">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6">
+                <button onclick="closeTimerModal()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-lg hover:bg-stone-700 font-cinzel text-sm" data-i18n="cancelBtn">Cancelar</button>
+                <button onclick="saveTimer()" class="px-4 py-2 bg-yellow-700 text-stone-100 rounded-lg hover:bg-yellow-600 font-cinzel text-sm border border-yellow-500/50" data-i18n="saveBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR GESTA -->
+    <div id="edit-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-md shadow-[0_0_30px_rgba(202,138,4,0.15)]">
+            <h3 class="text-xl font-cinzel text-yellow-500 mb-4" data-i18n="editRecordTitle">Editar Gesta</h3>
+            <input type="hidden" id="edit-index">
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="day">Día</label>
+                    <input type="date" id="edit-date" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="knight">Conductor (Driver)</label>
+                    <input type="text" id="edit-driver" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="lord">Lord (VIP)</label>
+                    <input type="text" id="edit-vip" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6">
+                <button onclick="closeEditModal()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-lg hover:bg-stone-700 font-cinzel text-sm" data-i18n="cancelBtn">Cancelar</button>
+                <button onclick="saveEdit()" class="px-4 py-2 bg-yellow-700 text-stone-100 rounded-lg hover:bg-yellow-600 font-cinzel text-sm border border-yellow-500/50" data-i18n="saveBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR MVPS -->
+    <div id="mvp-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-lg shadow-[0_0_30px_rgba(202,138,4,0.15)]">
+            <h3 class="text-xl font-cinzel text-yellow-500 mb-4" data-i18n="editMvpsTitle">Editar Salón de MVPs y Campeones</h3>
+            <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+                <div>
+                    <label class="text-xs text-yellow-500 font-cinzel uppercase" data-i18n="mvpWeek">MVP de la Semana</label>
+                    <input type="text" id="input-mvp-week" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="text-xs text-yellow-500 font-cinzel uppercase" data-i18n="championAlly">Campeón de Alianza</label>
+                    <input type="text" id="input-champion" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="text-xs text-amber-400 font-cinzel uppercase" data-i18n="mvpDesert1">MVP Desert Storm (1)</label>
+                    <input type="text" id="input-mvp-desert-1" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="text-xs text-amber-400 font-cinzel uppercase" data-i18n="mvpDesert2">MVP Desert Storm (2)</label>
+                    <input type="text" id="input-mvp-desert-2" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="text-xs text-red-400 font-cinzel uppercase" data-i18n="mvpCanon1">MVP Cañón Storm (1)</label>
+                    <input type="text" id="input-mvp-canon-1" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="text-xs text-red-400 font-cinzel uppercase" data-i18n="mvpCanon2">MVP Cañón Storm (2)</label>
+                    <input type="text" id="input-mvp-canon-2" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6">
+                <button onclick="closeMvpModal()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-lg hover:bg-stone-700 font-cinzel text-sm" data-i18n="cancelBtn">Cancelar</button>
+                <button onclick="saveMvps()" class="px-4 py-2 bg-yellow-700 text-stone-100 rounded-lg hover:bg-yellow-600 font-cinzel text-sm border border-yellow-500/50" data-i18n="saveBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AÑADIR / EDITAR MIEMBRO DE ALIANZA -->
+    <div id="member-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#0c120e] border border-green-700/50 rounded-xl p-6 w-full max-w-md shadow-[0_0_30px_rgba(34,197,94,0.15)]">
+            <h3 id="member-modal-title" class="text-xl font-cinzel text-green-400 mb-4" data-i18n="addMemberTitle">Añadir Nuevo Guerrero</h3>
+            <input type="hidden" id="member-original-name">
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="warriorName">Nombre del Guerrero</label>
+                    <input type="text" id="member-input-name" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-green-500 outline-none mt-1">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6">
+                <button onclick="closeMemberModal()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-lg hover:bg-stone-700 font-cinzel text-sm" data-i18n="cancelBtn">Cancelar</button>
+                <button onclick="saveMember()" class="px-4 py-2 bg-green-700 text-stone-100 rounded-lg hover:bg-green-600 font-cinzel text-sm border border-green-500/50" data-i18n="saveBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const i18n = {
+            es: {
+                title: "KnNi MESA REDONDA", subtitle: "Tablero de Alianza y Sorteos",
+                tabDashboard: "Reino", tabGiveaway: "Sorteo Divino", tabHistory: "Crónicas", tabAlliance: "Batallón",
+                era: "Era Actual", force: "Fuerza Aliada", trainCountdown: "Llegada del Tren",
+                lastKnight: "Último Conductor (Driver)", lastLord: "Último Lord VIP",
+                discordTitle: "Comunidad y Convoy en Discord", discordSub: "Escanea el código QR o utiliza el enlace oficial para unirte al canal de voz y coordinación de trenes de la alianza KnNi.",
+                saveLinkBtn: "Guardar Link", joinDiscord: "Unirse", changeQr: "Cambiar QR (Imagen)",
+                mvpHallTitle: "Salón de MVPs y Campeones", mvpHallSub: "Reconocimientos especiales otorgados en combate y gestión.",
+                editMvpBtn: "Editar MVPs", mvpWeek: "MVP de la Semana", championAlly: "Campeón de Alianza",
+                mvpDesert: "MVP Desert Storm", mvpCanon: "MVP Cañón Storm",
+                hallOfFame: "Salón de la Fama (Batallón)", hallSubtitle: "Campañas totales desde el 1 de Noviembre de 2026 (Top 10)",
+                recentDraws: "Últimas Gestas", openChronicles: "Abrir Crónicas &rarr;",
+                day: "Día", knight: "Conductor (Driver)", lord: "Lord (VIP)", actions: "Acciones",
+                summonTroopsTitle: "1. Convocar Tropa", summonTroopsSub: "Pega los nombres de los participantes de hoy. El sello mágico bloqueará a quienes hayan ganado en los últimos 14 sorteos.",
+                sealList: "SELLAR LISTA", aptDriver: "Aptos (Driver)", aptLord: "Aptos (Lord VIP)", chosen: "El Elegido",
+                drawDriver: "Elegir DRIVER", drawLord: "Elegir LORD VIP", writeChronicles: "Escribir en las Crónicas",
+                battalionState: "Estado del Batallón", summonLeft: "Convoca la tropa en el pergamino izquierdo.",
+                chroniclesTitle: "Las Crónicas (Historial)", chroniclesSub: "Los últimos 14 registros bloquean a los guerreros de nuevas campañas.",
+                allianceTitle: "Batallón de la Alianza KnNi", allianceSub: "Listado completo de 100 miembros. Las participaciones se contabilizan a partir del 1 de Noviembre de 2026.",
+                rank: "Rango", warriorName: "Nombre del Guerrero", totalParticipations: "Participaciones (Desde 1 Nov)",
+                footer: "FORJADO EN LA ALIANZA KnNi &copy; 2026", editRecordTitle: "Editar Gesta", editMvpsTitle: "Editar Salón de MVPs y Campeones",
+                addMemberBtn: "Añadir Miembro", addMemberTitle: "Añadir Nuevo Guerrero", editMemberTitle: "Editar Guerrero",
+                configTimerTitle: "Configurar Hora del Tren", targetTimeLabel: "Hora de llegada (Próximo Tren)",
+                cancelBtn: "Cancelar", saveBtn: "Guardar",
+                msgWait: "Esperando Tropa...", msgSealed: "Lista Sellada", msgEmpty: "Debes escribir al menos un nombre en el pergamino.",
+                msgSeekD: "Buscando Driver...", msgSeekL: "Buscando Lord...",
+                msgChosenD: "Elegido: Conductor (Driver)", msgChosenL: "Elegido: Lord (VIP)",
+                badgeB: "🔒 Bloqueado", badgeKC: "⚔️ Listo", badgeLC: "👑 Listo",
+                confirmDel: "¿Estás seguro de eliminar esta gesta de las crónicas?",
+                confirmDelMember: "¿Estás seguro de eliminar a este guerrero de la alianza?",
+                msgSameUser: "¡El guerrero ya fue elegido como Driver! No puede ser Lord en el mismo sorteo."
+            },
+            en: {
+                title: "KnNi ROUND TABLE", subtitle: "Alliance & Draw Board",
+                tabDashboard: "Realm", tabGiveaway: "Divine Draw", tabHistory: "Chronicles", tabAlliance: "Battalion",
+                era: "Current Era", force: "Allied Force", trainCountdown: "Train Arrival",
+                lastKnight: "Last Driver", lastLord: "Last Lord VIP",
+                discordTitle: "Discord Community & Convoy", discordSub: "Scan the QR code or use the official link to join the KnNi alliance voice channel and train coordination.",
+                saveLinkBtn: "Save Link", joinDiscord: "Join", changeQr: "Change QR (Image)",
+                mvpHallTitle: "MVPs & Champions Hall", mvpHallSub: "Special recognitions awarded in combat and management.",
+                editMvpBtn: "Edit MVPs", mvpWeek: "Weekly MVP", championAlly: "Alliance Champion",
+                mvpDesert: "Desert Storm MVP", mvpCanon: "Cannon Storm MVP",
+                hallOfFame: "Hall of Fame (Battalion)", hallSubtitle: "Total campaigns since Nov 1, 2026 (Top 10)",
+                recentDraws: "Recent Deeds", openChronicles: "Open Chronicles &rarr;",
+                day: "Day", knight: "Driver", lord: "Lord (VIP)", actions: "Actions",
+                summonTroopsTitle: "1. Summon Troops", summonTroopsSub: "Paste today's participant names. The magic seal will block those who won in the last 14 draws.",
+                sealList: "SEAL LIST", aptDriver: "Eligible (Driver)", aptLord: "Eligible (Lord VIP)", chosen: "The Chosen",
+                drawDriver: "Choose DRIVER", drawLord: "Choose LORD VIP", writeChronicles: "Write in the Chronicles",
+                battalionState: "Battalion State", summonLeft: "Summon the troops on the left scroll.",
+                chroniclesTitle: "The Chronicles (History)", chroniclesSub: "The last 14 records block warriors from new campaigns.",
+                allianceTitle: "KnNi Alliance Battalion", allianceSub: "Complete roster of 100 members. Participations are counted starting November 1, 2026.",
+                rank: "Rank", warriorName: "Warrior Name", totalParticipations: "Participations (From Nov 1)",
+                footer: "FORGED IN THE KnNi ALLIANCE &copy; 2026", editRecordTitle: "Edit Deed", editMvpsTitle: "Edit MVPs & Champions Hall",
+                addMemberBtn: "Add Member", addMemberTitle: "Add New Warrior", editMemberTitle: "Edit Warrior",
+                configTimerTitle: "Configure Train Time", targetTimeLabel: "Arrival Time (Next Train)",
+                cancelBtn: "Cancel", saveBtn: "Save",
+                msgWait: "Waiting for Troops...", msgSealed: "List Sealed", msgEmpty: "You must write at least one name on the scroll.",
+                msgSeekD: "Seeking Driver...", msgSeekL: "Seeking Lord...",
+                msgChosenD: "Chosen: Driver", msgChosenL: "Chosen: Lord (VIP)",
+                badgeB: "🔒 Blocked", badgeKC: "⚔️ Ready", badgeLC: "👑 Ready",
+                confirmDel: "Are you sure you want to delete this deed from the chronicles?",
+                confirmDelMember: "Are you sure you want to remove this warrior from the alliance?",
+                msgSameUser: "The warrior is already chosen as Driver! Cannot be Lord in the same draw."
+            }
+        };
+
+        let currentLang = 'es';
+        const t = (key) => i18n[currentLang][key] || key;
+
+        // Historial base
+        let historyData = [{"Date": "2026-09-01", "Driver": "B1G BOSS", "VIP": "CommanderOb191436"}, {"Date": "2026-09-02", "Driver": "Borvey", "VIP": "Mia2424"}, {"Date": "2026-09-03", "Driver": "TartanTerror", "VIP": "Bales117"}, {"Date": "2026-09-04", "Driver": "MKMKMKMKMK", "VIP": "Countryguy"}, {"Date": "2026-09-05", "Driver": "Mia2424", "VIP": "낭만용사Maquina"}, {"Date": "2026-09-06", "Driver": "DadykaOz", "VIP": "KnNi Mert"}, {"Date": "2026-09-07", "Driver": "Destinuke", "VIP": "TwannaJ"}, {"Date": "2026-09-08", "Driver": "Góòse", "VIP": "B1G BOSS"}, {"Date": "2026-09-09", "Driver": "MKMKMKMKMK", "VIP": "Bales117"}, {"Date": "2026-09-10", "Driver": "shoo merito", "VIP": "Tomandante ajolotl"}, {"Date": "2026-09-11", "Driver": "Th3 FckinG Go4t", "VIP": "Jungle20"}, {"Date": "2026-09-12", "Driver": "spal4", "VIP": "spirit xx"}, {"Date": "2026-09-13", "Driver": "TartanTerror", "VIP": "Betty1010"}, {"Date": "2026-09-14", "Driver": "HackChop", "VIP": "낭만용사Maquina"}, {"Date": "2026-09-15", "Driver": "TartanTerror", "VIP": "DaViS"}, {"Date": "2026-09-16", "Driver": "RTAlejandro", "VIP": "DF66"}, {"Date": "2026-09-17", "Driver": "WilliamDOTJames", "VIP": "totto God Dog"}, {"Date": "2026-09-18", "Driver": "San Guillermo", "VIP": "boom boy"}, {"Date": "2026-09-19", "Driver": "JestFatality", "VIP": "Jamesson45891"}, {"Date": "2026-09-20", "Driver": "Borvey", "VIP": "JOAT79"}, {"Date": "2026-09-21", "Driver": "Maddog 1856", "VIP": "JP1351"}, {"Date": "2026-09-22", "Driver": "Musky78", "VIP": "KillB"}, {"Date": "2026-09-23", "Driver": "Bales117", "VIP": "LightIna"}, {"Date": "2026-09-24", "Driver": "JOAT79", "VIP": "shoo merito"}, {"Date": "2026-09-25", "Driver": "RuLez", "VIP": "ottotank"}, {"Date": "2026-09-26", "Driver": "lauda lahsun", "VIP": "RW12345"}, {"Date": "2026-09-27", "Driver": "B1G BOSS", "VIP": "Gensis"}, {"Date": "2026-09-28", "Driver": "Ricknick", "VIP": "tornillo90"}, {"Date": "2026-09-29", "Driver": "RLP castle", "VIP": "RW12345"}, {"Date": "2026-09-30", "Driver": "SaRgeReApEr", "VIP": "KnNi Mert"}, {"Date": "2026-10-01", "Driver": "Mia2424", "VIP": "spirit xx"}, {"Date": "2026-10-02", "Driver": "DaveyCrocket44", "VIP": "TheEnforcer77"}, {"Date": "2026-10-03", "Driver": "Defiant One", "VIP": "itsmeJJ"}, {"Date": "2026-10-04", "Driver": "Arturo H1234", "VIP": "Darth Grizzly"}, {"Date": "2026-10-05", "Driver": "Jungle20", "VIP": "WilliamDOTJames"}, {"Date": "2026-10-06", "Driver": "KnNi Mert", "VIP": "Cristophoros"}, {"Date": "2026-10-07", "Driver": "MKMKMKMKMK", "VIP": "Fighting Lawn Gnomes"}, {"Date": "2026-10-08", "Driver": "Cokeafgano", "VIP": "DaViS"}, {"Date": "2026-10-09", "Driver": "Tomandante ajolotl", "VIP": "Betty1010"}, {"Date": "2026-10-10", "Driver": "DaViS", "VIP": "B1G BOSS"}, {"Date": "2026-10-11", "Driver": "Albee3609", "VIP": "San Guillermo"}, {"Date": "2026-10-12", "Driver": "낭만용사Maquina", "VIP": "Kopa 빨간색"}, {"Date": "2026-10-13", "Driver": "Deroga da Grinch ", "VIP": "Countryguy "}, {"Date": "2026-10-14", "Driver": "Jack meHoff ", "VIP": "Hexina"}, {"Date": "2026-10-15", "Driver": "CommanderOb191436", "VIP": "TwannaJ"}, {"Date": "2026-10-16", "Driver": "shoo merito", "VIP": "Góòse"}, {"Date": "2026-10-17", "Driver": "HackChop ", "VIP": "KillB"}, {"Date": "2026-10-18", "Driver": "Allpau", "VIP": "BobGio밥지오"}, {"Date": "2026-10-19", "Driver": "CaptainZverman", "VIP": "JOAT79"}, {"Date": "2026-10-20", "Driver": "Army Moonlight ", "VIP": "MCPICKY "}, {"Date": "2026-10-21", "Driver": "CP6964", "VIP": "Arturo H1234"}, {"Date": "2026-10-22", "Driver": "Borvey", "VIP": "boom boy"}, {"Date": "2026-10-23", "Driver": "RW12345", "VIP": "HUEVO FIGHTER"}, {"Date": "2026-10-24", "Driver": "TartanTerror", "VIP": "낭만용사Maquina"}, {"Date": "2026-10-25", "Driver": "LightIna", "VIP": "tornillo90"}, {"Date": "2026-10-25", "Driver": "Fighting Lawn Gnomes", "VIP": "Bales117"}];
+        if(localStorage.getItem('knni_history')) {
+            try { historyData = JSON.parse(localStorage.getItem('knni_history')); } catch(e) {}
+        }
+
+        // Los 100 miembros iniciales de la alianza
+        let allianceNames = [
+            "Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AxiE", "B1G BOSS", "Bahrok", "Bales117", 
+            "bcabes", "Betty1010", "BobB53", "BobGio밥지오", "boom boy", "Borvey", "Brokeback Hooty", "Captain Zverman", "Cokeafgano", "Th3 Lil Effin Go4t", 
+            "Countryguy", "CP6964", "Cristophoros", "CSH SKYBLUE555", "Danos SR", "DarkZeru", "Darth Grizzly", "DaveyCrocket44", "DaViS", "DBrad11", 
+            "Defiant One", "Deroga da Grinch", "Destinuke", "DF66", "Drsimibelico", "Father McNulty", "Fighting Lawn Gnomes", "Gensis", "Geovane rech", "Getting by", 
+            "Góòse", "gosSipGirl", "GUNNER39", "HackChop", "Hexina", "HeyMarana", "HUEVO FIGHTER", "itsmeJJ", "Jack meHoff", "Jamesson45891", 
+            "JestFatality", "JOAT79", "JP1351", "juflash", "Jungle20", "KillB", "KillînPïxîeDuśt", "KnNi Mert", "Kopa 빨간색", "lauda lahsun", 
+            "LightIna", "lShadowKilll", "LuckStrayker", "Maddog 1856", "MCPicky", "MelRose", "Mia2424", "MKMKMKMKMK", "Mordally", "MPK Buff", 
+            "Musky78", "ottotank", "Pepperspray69", "PoO Bear", "Ricknick", "RiMMER", "RLP castle", "RTAlejandro", "RuLëz", "RUNTZ", 
+            "RW12345", "San Guillermo", "SaRgeReApEr", "shoo merito", "spal4", "spirit xx", "TartanTerror", "tavo20", "TheEnforcer77", "TheRealBetty", 
+            "Tomandante ajolotl", "tornillo90", "JP AH", "Turbonovtec", "TwannaJ", "VSSoldier", "WillDW", "WilliamDOTJames", "XLeo26", "낭만용사Maquina"
+        ];
+        if(localStorage.getItem('knni_alliance_members')) {
+            try { allianceNames = JSON.parse(localStorage.getItem('knni_alliance_members')); } catch(e) {}
+        }
+
+        let currentMvps = { week: "B1G BOSS", champion: "낭만용사Maquina", desert1: "---", desert2: "---", canon1: "---", canon2: "---" };
+        if(localStorage.getItem('knni_mvps')) {
+            try { currentMvps = JSON.parse(localStorage.getItem('knni_mvps')); } catch(e) {}
+        }
+
+        let discordLink = localStorage.getItem('knni_discord_link') || "https://discord.gg/knni-alianza";
+        let customQrData = localStorage.getItem('knni_discord_qr') || "";
+
+        // Temporizador del tren (por defecto 6 horas adelante si no está configurado)
+        let targetTrainTime = localStorage.getItem('knni_train_target') || new Date(Date.now() + 6 * 3600 * 1000).toISOString();
+
+        function toggleLang() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            document.getElementById('lang-ind').textContent = currentLang.toUpperCase();
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = t(key);
+                else el.innerHTML = t(key);
+            });
+            const wd = document.getElementById('winner-display').textContent;
+            if(wd.includes('Esperando') || wd.includes('Waiting')) document.getElementById('winner-display').textContent = t('msgWait');
+            else if(wd.includes('Sellada') || wd.includes('Sealed')) document.getElementById('winner-display').textContent = t('msgSealed');
+            initDashboard();
+            if(loadedPlayers.length > 0) loadParticipants(true);
+            renderHistory();
+            renderAllianceTable();
+        }
+
+        function switchTab(tabId) {
+            ['dashboard', 'history', 'giveaway', 'alliance'].forEach(id => {
+                document.getElementById('tab-' + id).classList.add('hidden');
+                document.getElementById('btn-' + id).classList.remove('active');
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+            if (tabId === 'dashboard') initDashboard();
+            if (tabId === 'history') renderHistory();
+            if (tabId === 'alliance') renderAllianceTable();
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // Cálculo de participaciones a partir del 1 de Noviembre de 2026
+        function calculateAllianceParticipations() {
+            let counts = {};
+            allianceNames.forEach(name => counts[name] = 0);
+
+            historyData.forEach(item => {
+                // Filtrar registros a partir del 1 de noviembre de 2026
+                if (item.Date >= "2026-11-01") {
+                    [item.Driver, item.VIP].forEach(participant => {
+                        const clean = participant.trim();
+                        if (clean && clean !== '---') {
+                            // Buscar coincidencia exacta o case-insensitive en la alianza
+                            const match = allianceNames.find(n => n.toLowerCase() === clean.toLowerCase());
+                            if (match) {
+                                counts[match] = (counts[match] || 0) + 1;
+                            } else {
+                                // Si el participante no está en la lista de 100, se puede registrar opcionalmente o ignorar
+                            }
+                        }
+                    });
+                }
+            });
+
+            return allianceNames.map(name => ({
+                "Alliance Members": name,
+                "Participations": counts[name] || 0
+            }));
+        }
+
+        let chartInstance = null;
+        function initDashboard() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+            document.getElementById('stat-total-alliance').textContent = allianceNames.length;
+            
+            if(historyData.length > 0) {
+                const last = historyData[historyData.length - 1];
+                document.getElementById('stat-last-driver').textContent = last.Driver;
+                document.getElementById('stat-last-vip').textContent = last.VIP;
+            }
+
+            document.getElementById('display-mvp-week').textContent = currentMvps.week;
+            document.getElementById('display-champion').textContent = currentMvps.champion;
+            document.getElementById('display-mvp-desert-1').textContent = currentMvps.desert1;
+            document.getElementById('display-mvp-desert-2').textContent = currentMvps.desert2;
+            document.getElementById('display-mvp-canon-1').textContent = currentMvps.canon1;
+            document.getElementById('display-mvp-canon-2').textContent = currentMvps.canon2;
+
+            // Discord & QR
+            document.getElementById('discord-link-input').value = discordLink;
+            document.getElementById('discord-external-btn').href = discordLink;
+            const qrImg = customQrData ? customQrData : `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(discordLink)}`;
+            document.getElementById('qr-image-preview').src = qrImg;
+
+            // Gráfico del Batallón (Top 10 a partir del 1 de Noviembre de 2026)
+            const allianceStats = calculateAllianceParticipations();
+            const sortedAlliance = [...allianceStats].sort((a,b) => b.Participations - a.Participations);
+            const top10 = sortedAlliance.slice(0, 10);
+
+            const ctx1 = document.getElementById('topDriversChart').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+            let gradient = ctx1.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(34, 197, 94, 0.8)');
+            gradient.addColorStop(1, 'rgba(21, 128, 61, 0.2)');
+            
+            chartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: top10.map(d => d['Alliance Members']),
+                    datasets: [{
+                        data: top10.map(d => d.Participations),
+                        backgroundColor: gradient,
+                        borderColor: 'rgba(74, 222, 128, 1)',
+                        borderWidth: 1, borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(63, 98, 56, 0.2)' }, ticks: { color: '#a8a29e', font: { family: 'Inter', size: 10 } } },
+                        y: { grid: { color: 'rgba(63, 98, 56, 0.2)' }, ticks: { color: '#a8a29e', precision: 0 } }
+                    }
+                }
+            });
+
+            // Últimas gestas
+            const tbody = document.getElementById('recent-history-tbody');
+            tbody.innerHTML = '';
+            [...historyData].reverse().slice(0,5).forEach(item => {
+                tbody.innerHTML += `<tr class="transition-colors"><td class="px-4 py-3 font-medium text-stone-400 font-mono text-xs">${item.Date}</td><td class="px-4 py-3 text-stone-200 font-semibold">${item.Driver}</td><td class="px-4 py-3 text-yellow-500 font-semibold">${item.VIP}</td></tr>`;
+            });
+        }
+
+        // Temporizador en vivo
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const target = new Date(targetTrainTime).getTime();
+            const diff = target - now;
+
+            if (diff <= 0) {
+                document.getElementById('train-timer').textContent = "¡LLEGÓ EL TREN!";
+                return;
+            }
+
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('train-timer').textContent = 
+                String(hours).padStart(2, '0') + ":" + 
+                String(minutes).padStart(2, '0') + ":" + 
+                String(seconds).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+
+        function openTimerModal() {
+            document.getElementById('input-target-time').value = targetTrainTime.slice(0, 16);
+            document.getElementById('timer-modal').classList.remove('hidden');
+        }
+        function closeTimerModal() { document.getElementById('timer-modal').classList.add('hidden'); }
+        function saveTimer() {
+            const val = document.getElementById('input-target-time').value;
+            if(val) {
+                targetTrainTime = new Date(val).toISOString();
+                localStorage.setItem('knni_train_target', targetTrainTime);
+            }
+            closeTimerModal();
+        }
+
+        function saveDiscordLink() {
+            discordLink = document.getElementById('discord-link-input').value.trim();
+            localStorage.setItem('knni_discord_link', discordLink);
+            document.getElementById('discord-external-btn').href = discordLink;
+            if(!customQrData) {
+                document.getElementById('qr-image-preview').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(discordLink)}`;
+            }
+            alert("¡Enlace de Discord actualizado con éxito!");
+        }
+
+        function loadCustomQR(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    customQrData = e.target.result;
+                    localStorage.setItem('knni_discord_qr', customQrData);
+                    document.getElementById('qr-image-preview').src = customQrData;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        let loadedPlayers = [];
+        let eligibleForDriver = [];
+        let eligibleForVIP = [];
+        let currentDraw = { Driver: null, VIP: null };
+
+        function getRecentWinners() {
+            const recentHistory = historyData.slice(-14);
+            return { drivers: recentHistory.map(h => h.Driver.trim().toLowerCase()), vips: recentHistory.map(h => h.VIP.trim().toLowerCase()) };
+        }
+
+        function loadParticipants(isLangSwitch = false) {
+            if(!isLangSwitch) {
+                const rawText = document.getElementById('bulk-names').value;
+                const namesArray = rawText.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
+                loadedPlayers = [...new Set(namesArray)];
+            }
+            if (loadedPlayers.length === 0 && !isLangSwitch) { alert(t('msgEmpty')); return; } 
+            else if (loadedPlayers.length === 0) return;
+
+            const { drivers, vips } = getRecentWinners();
+            eligibleForDriver = []; eligibleForVIP = [];
+            const listContainer = document.getElementById('status-list');
+            listContainer.innerHTML = '';
+            
+            loadedPlayers.sort((a, b) => a.localeCompare(b)).forEach(player => {
+                const lowerName = player.toLowerCase();
+                const isBlockedDriver = drivers.includes(lowerName);
+                const isBlockedVIP = vips.includes(lowerName);
+                if (!isBlockedDriver) eligibleForDriver.push(player);
+                if (!isBlockedVIP) eligibleForVIP.push(player);
+                
+                const div = document.createElement('div');
+                div.className = 'bg-[#090d0a] border border-green-900/40 rounded-lg p-3 flex flex-col hover:border-yellow-600/50 transition-colors';
+                let dBadge = isBlockedDriver ? '<span class="text-[10px] font-bold bg-red-900/30 text-red-400 border border-red-800/50 px-1.5 py-0.5 rounded">D: ' + t('badgeB') + '</span>' : '<span class="text-[10px] font-bold bg-green-900/40 text-green-400 border border-green-700/50 px-1.5 py-0.5 rounded">D: ' + t('badgeKC') + '</span>';
+                let vBadge = isBlockedVIP ? '<span class="text-[10px] font-bold bg-red-900/30 text-red-400 border border-red-800/50 px-1.5 py-0.5 rounded">V: ' + t('badgeB') + '</span>' : '<span class="text-[10px] font-bold bg-yellow-900/30 text-yellow-500 border border-yellow-700/50 px-1.5 py-0.5 rounded">V: ' + t('badgeLC') + '</span>';
+                div.innerHTML = '<span class="text-sm font-semibold text-stone-200 truncate mb-2" title="' + player + '">' + player + '</span><div class="flex flex-col gap-1">' + dBadge + vBadge + '</div>';
+                listContainer.appendChild(div);
+            });
+            
+            document.getElementById('valid-count').textContent = loadedPlayers.length;
+            document.getElementById('count-driver').textContent = eligibleForDriver.length;
+            document.getElementById('count-vip').textContent = eligibleForVIP.length;
+            
+            if(!isLangSwitch){
+                currentDraw = { Driver: null, VIP: null };
+                document.getElementById('btn-save').classList.add('hidden');
+                document.getElementById('draw-type-label').classList.add('hidden');
+                const winDisp = document.getElementById('winner-display');
+                winDisp.innerHTML = t('msgSealed');
+                winDisp.className = "font-cinzel font-extrabold text-3xl sm:text-4xl text-stone-600 min-h-[3.5rem] flex items-center justify-center";
+                document.getElementById('btn-draw-driver').disabled = eligibleForDriver.length === 0;
+                document.getElementById('btn-draw-vip').disabled = eligibleForVIP.length === 0;
+            }
+        }
+
+        function startDraw(role) {
+            let pool = role === 'Driver' ? [...eligibleForDriver] : [...eligibleForVIP];
+            if (role === 'VIP' && currentDraw.Driver) {
+                pool = pool.filter(p => p.toLowerCase() !== currentDraw.Driver.toLowerCase());
+            }
+            if (pool.length === 0) {
+                if (role === 'VIP' && currentDraw.Driver) alert(t('msgSameUser'));
+                return;
+            }
+            
+            document.getElementById('btn-draw-driver').disabled = true;
+            document.getElementById('btn-draw-vip').disabled = true;
+            document.getElementById('btn-save').classList.add('hidden');
+
+            const winnerEl = document.getElementById('winner-display');
+            const labelEl = document.getElementById('draw-type-label');
+            const clashIcon = document.getElementById('clash-icon');
+            
+            clashIcon.classList.add('animate-clash');
+            labelEl.classList.remove('hidden');
+            labelEl.textContent = role === 'Driver' ? t('msgSeekD') : t('msgSeekL');
+            
+            let colorClass = role === 'Driver' ? 'from-green-300 to-green-600' : 'from-yellow-200 to-yellow-600';
+            winnerEl.className = 'font-cinzel font-extrabold text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-br ' + colorClass + ' min-h-[3.5rem] flex items-center justify-center text-center break-words w-full px-4';
+
+            let counter = 0;
+            const interval = setInterval(() => {
+                winnerEl.textContent = pool[Math.floor(Math.random() * pool.length)];
+                counter++;
+                if (counter >= 25) {
+                    clearInterval(interval);
+                    clashIcon.classList.remove('animate-clash');
+                    const winner = pool[Math.floor(Math.random() * pool.length)];
+                    
+                    if (role === 'VIP' && currentDraw.Driver && winner.toLowerCase() === currentDraw.Driver.toLowerCase()) {
+                        alert(t('msgSameUser'));
+                        document.getElementById('btn-draw-vip').disabled = false;
+                        return;
+                    }
+
+                    let icon = role === 'Driver' ? '⚔️' : '👑';
+                    winnerEl.innerHTML = icon + ' ' + winner + ' ' + icon;
+                    labelEl.textContent = role === 'Driver' ? t('msgChosenD') : t('msgChosenL');
+                    currentDraw[role] = winner;
+
+                    if (!currentDraw.Driver && eligibleForDriver.length > 0) document.getElementById('btn-draw-driver').disabled = false;
+                    let vipPoolCheck = eligibleForVIP.filter(p => !currentDraw.Driver || p.toLowerCase() !== currentDraw.Driver.toLowerCase());
+                    if (!currentDraw.VIP && vipPoolCheck.length > 0) document.getElementById('btn-draw-vip').disabled = false;
+                    
+                    if (currentDraw.Driver && currentDraw.VIP) {
+                        document.getElementById('btn-save').classList.remove('hidden');
+                    }
+                }
+            }, 75);
+        }
+
+        function saveToHistory() {
+            if (!currentDraw.Driver || !currentDraw.VIP) return;
+            const today = new Date().toISOString().split('T')[0];
+            
+            historyData.push({ "Date": today, "Driver": currentDraw.Driver, "VIP": currentDraw.VIP });
+            localStorage.setItem('knni_history', JSON.stringify(historyData));
+
+            loadParticipants(); initDashboard(); renderHistory(); renderAllianceTable(); switchTab('history');
+        }
+
+        // Gestión de Crónicas (Historial)
+        function deleteRecord(idx) {
+            if(confirm(t('confirmDel'))) {
+                historyData.splice(idx, 1);
+                localStorage.setItem('knni_history', JSON.stringify(historyData));
+                initDashboard();
+                if(loadedPlayers.length > 0) loadParticipants(true);
+                renderHistory();
+            }
+        }
+        function editRecord(idx) {
+            document.getElementById('edit-index').value = idx;
+            document.getElementById('edit-date').value = historyData[idx].Date;
+            document.getElementById('edit-driver').value = historyData[idx].Driver;
+            document.getElementById('edit-vip').value = historyData[idx].VIP;
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+        function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+        function saveEdit() {
+            const idx = document.getElementById('edit-index').value;
+            historyData[idx].Date = document.getElementById('edit-date').value;
+            historyData[idx].Driver = document.getElementById('edit-driver').value;
+            historyData[idx].VIP = document.getElementById('edit-vip').value;
+            localStorage.setItem('knni_history', JSON.stringify(historyData));
+            closeEditModal(); initDashboard();
+            if(loadedPlayers.length > 0) loadParticipants(true);
+            renderHistory();
+        }
+
+        function renderHistory(data = historyData) {
+            const tbody = document.getElementById('full-history-tbody');
+            tbody.innerHTML = '';
+            [...data].reverse().forEach((item, revIdx) => {
+                const originalIndex = data.length - 1 - revIdx;
+                tbody.innerHTML += '<tr class="transition-colors border-b border-green-900/35"><td class="px-6 py-4 font-mono text-stone-500 text-xs">#' + (data.length - revIdx) + '</td><td class="px-6 py-4 font-medium text-stone-400">' + item.Date + '</td><td class="px-6 py-4 font-semibold text-stone-200">' + item.Driver + '</td><td class="px-6 py-4 font-semibold text-stone-200">' + item.VIP + '</td><td class="px-6 py-4 text-center space-x-2"><button onclick="editRecord(' + originalIndex + ')" class="text-stone-400 hover:text-yellow-500 transition-colors"><i class="fa-solid fa-pen"></i></button> <button onclick="deleteRecord(' + originalIndex + ')" class="text-stone-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button></td></tr>';
+            });
+        }
+        function filterHistory() {
+            const q = document.getElementById('search-history').value.toLowerCase();
+            renderHistory(historyData.filter(item => item.Driver.toLowerCase().includes(q) || item.VIP.toLowerCase().includes(q) || item.Date.includes(q)));
+        }
+
+        // Gestión de Miembros del Batallón (100 miembros completos + editar/borrar/añadir)
+        function renderAllianceTable() {
+            const tbody = document.getElementById('alliance-tbody');
+            tbody.innerHTML = '';
+            const stats = calculateAllianceParticipations();
+            [...stats].sort((a,b) => b.Participations - a.Participations).forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="transition-colors border-b border-green-900/35">
+                        <td class="px-6 py-4 font-cinzel text-stone-500 font-bold">${index + 1}</td>
+                        <td class="px-6 py-4 font-semibold text-stone-200">${item['Alliance Members']}</td>
+                        <td class="px-6 py-4 text-green-500 font-bold text-center">${item.Participations}</td>
+                        <td class="px-6 py-4 text-center space-x-3">
+                            <button onclick="openEditMemberModal('${item['Alliance Members']}')" class="text-stone-400 hover:text-yellow-500 transition-colors" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteMember('${item['Alliance Members']}')" class="text-stone-400 hover:text-red-500 transition-colors" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function filterAlliance() {
+            const q = document.getElementById('search-alliance').value.toLowerCase();
+            const tbody = document.getElementById('alliance-tbody');
+            tbody.innerHTML = '';
+            const stats = calculateAllianceParticipations().filter(i => i['Alliance Members'].toLowerCase().includes(q));
+            [...stats].sort((a,b) => b.Participations - a.Participations).forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="transition-colors border-b border-green-900/35">
+                        <td class="px-6 py-4 font-cinzel text-stone-500 font-bold">${index + 1}</td>
+                        <td class="px-6 py-4 font-semibold text-stone-200">${item['Alliance Members']}</td>
+                        <td class="px-6 py-4 text-green-500 font-bold text-center">${item.Participations}</td>
+                        <td class="px-6 py-4 text-center space-x-3">
+                            <button onclick="openEditMemberModal('${item['Alliance Members']}')" class="text-stone-400 hover:text-yellow-500 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteMember('${item['Alliance Members']}')" class="text-stone-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function openAddMemberModal() {
+            document.getElementById('member-original-name').value = "";
+            document.getElementById('member-input-name').value = "";
+            document.getElementById('member-modal-title').textContent = t('addMemberTitle');
+            document.getElementById('member-modal').classList.remove('hidden');
+        }
+
+        function openEditMemberModal(name) {
+            document.getElementById('member-original-name').value = name;
+            document.getElementById('member-input-name').value = name;
+            document.getElementById('member-modal-title').textContent = t('editMemberTitle');
+            document.getElementById('member-modal').classList.remove('hidden');
+        }
+
+        function closeMemberModal() { document.getElementById('member-modal').classList.add('hidden'); }
+
+        function saveMember() {
+            const original = document.getElementById('member-original-name').value.trim();
+            const newName = document.getElementById('member-input-name').value.trim();
+            if(!newName) return;
+
+            if(original) {
+                const idx = allianceNames.indexOf(original);
+                if(idx !== -1) allianceNames[idx] = newName;
+            } else {
+                if(!allianceNames.includes(newName)) allianceNames.push(newName);
+            }
+
+            localStorage.setItem('knni_alliance_members', JSON.stringify(allianceNames));
+            closeMemberModal();
+            renderAllianceTable();
+            initDashboard();
+        }
+
+        function deleteMember(name) {
+            if(confirm(t('confirmDelMember'))) {
+                allianceNames = allianceNames.filter(n => n !== name);
+                localStorage.setItem('knni_alliance_members', JSON.stringify(allianceNames));
+                renderAllianceTable();
+                initDashboard();
+            }
+        }
+
+        // Gestión del Salón de MVPs
+        function openMvpModal() {
+            document.getElementById('input-mvp-week').value = currentMvps.week;
+            document.getElementById('input-champion').value = currentMvps.champion;
+            document.getElementById('input-mvp-desert-1').value = currentMvps.desert1;
+            document.getElementById('input-mvp-desert-2').value = currentMvps.desert2;
+            document.getElementById('input-mvp-canon-1').value = currentMvps.canon1;
+            document.getElementById('input-mvp-canon-2').value = currentMvps.canon2;
+            document.getElementById('mvp-modal').classList.remove('hidden');
+        }
+        function closeMvpModal() { document.getElementById('mvp-modal').classList.add('hidden'); }
+        function saveMvps() {
+            currentMvps.week = document.getElementById('input-mvp-week').value.trim() || "---";
+            currentMvps.champion = document.getElementById('input-champion').value.trim() || "---";
+            currentMvps.desert1 = document.getElementById('input-mvp-desert-1').value.trim() || "---";
+            currentMvps.desert2 = document.getElementById('input-mvp-desert-2').value.trim() || "---";
+            currentMvps.canon1 = document.getElementById('input-mvp-canon-1').value.trim() || "---";
+            currentMvps.canon2 = document.getElementById('input-mvp-canon-2').value.trim() || "---";
+            localStorage.setItem('knni_mvps', JSON.stringify(currentMvps));
+            closeMvpModal(); initDashboard();
+        }
+
+        window.onload = () => {
+            initDashboard();
+            renderHistory();
+            renderAllianceTable();
+            document.getElementById('winner-display').textContent = t('msgWait');
+        };
+    </script>
+</body>
+</html>
