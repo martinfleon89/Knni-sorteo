@@ -104,13 +104,13 @@
                     <p class="text-[11px] text-stone-400 mt-1" id="train-target-label">Próxima estación</p>
                 </div>
 
-                <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
+                <div onclick="switchTab('alliance')" class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest font-cinzel" data-i18n="force">Fuerza Aliada</p>
                             <h3 id="stat-total-alliance" class="text-3xl font-bold font-cinzel text-stone-100 mt-1">100</h3>
                         </div>
-                        <div class="w-12 h-12 rounded-lg bg-green-900/40 border border-green-700/30 flex items-center justify-center text-green-500 text-xl"><i class="fa-solid fa-users"></i></div>
+                        <div class="w-12 h-12 rounded-lg bg-green-900/40 border border-green-700/30 flex items-center justify-center text-green-500 text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-users"></i></div>
                     </div>
                 </div>
 
@@ -372,7 +372,7 @@
         </div>
     </main>
 
-    <!-- REPRODUCTOR DE MÚSICA DE GUERRA (OST) -->
+    <!-- REPRODUCTOR DE MÚSICA DE GUERRA (OST MEDIEVAL) -->
     <div class="fixed bottom-4 left-4 z-40 bg-[#0c120e]/90 border border-yellow-700/40 rounded-xl p-2.5 flex items-center space-x-3 shadow-lg backdrop-blur-md">
         <button onclick="toggleMusic()" id="music-btn" class="w-10 h-10 rounded-lg bg-yellow-900/30 border border-yellow-600/40 flex items-center justify-center text-yellow-500 hover:bg-yellow-800/40 transition-colors">
             <i class="fa-solid fa-music" id="music-icon"></i>
@@ -381,10 +381,9 @@
             <p class="text-[10px] font-cinzel text-yellow-500 uppercase tracking-widest font-bold">War OST</p>
             <p class="text-[9px] text-stone-400">KnNi Battle Anthem</p>
         </div>
-        <!-- Archivo directo compatible con HTML5 Audio -->
+        <!-- Pista de audio medieval / épica de guerra libre y estable -->
         <audio id="bg-music" loop preload="auto">
-            <source src="https://actions.google.com/sounds/v1/ambiences/battlefield.ogg" type="audio/ogg">
-            <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=epic-battle-music-111409.mp3" type="audio/mpeg">
+            <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=celtic-medieval-war-1-104930.mp3" type="audio/mpeg">
         </audio>
     </div>
 
@@ -407,12 +406,16 @@
 
     <!-- MODAL TEMPORIZADOR TREN -->
     <div id="timer-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-sm shadow-[0_0_30px_rgba(202,138,4,0.15)]">
+        <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-md shadow-[0_0_30px_rgba(202,138,4,0.15)]">
             <h3 class="text-xl font-cinzel text-yellow-500 mb-4" data-i18n="configTimerTitle">Configurar Hora del Tren</h3>
             <div class="space-y-4">
                 <div>
                     <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="targetTimeLabel">Hora de llegada (Próximo Tren)</label>
                     <input type="datetime-local" id="input-target-time" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm mt-1">
+                </div>
+                <div class="flex items-center space-x-2 pt-2">
+                    <input type="checkbox" id="check-not-assigned" onchange="toggleUnassignedTime()" class="w-4 h-4 accent-yellow-600 rounded bg-[#090d0a] border-green-900">
+                    <label for="check-not-assigned" class="text-xs text-stone-300 font-cinzel cursor-pointer">Todavía no asignado</label>
                 </div>
             </div>
             <div class="flex justify-end space-x-3 mt-6">
@@ -591,7 +594,7 @@
                     isPlaying = true;
                 }).catch(e => {
                     console.log("Autoplay bloqueado:", e);
-                    alert("Para reproducir música, haz primero un clic en cualquier parte de la página y vuelve a presionar el botón de audio.");
+                    alert("Haz clic en cualquier parte de la página y vuelve a presionar el botón de música para iniciar el audio.");
                 });
             }
         }
@@ -672,6 +675,7 @@
         let discordLink = "https://discord.gg/knni-alianza";
         let customQrData = "";
         let targetTrainTime = "2026-11-01T00:00:00.000Z";
+        let isTrainUnassigned = false;
 
         function loadFromCloud() {
             fetch(BIN_URL, {
@@ -686,7 +690,8 @@
                     if (record.mvps) currentMvps = record.mvps;
                     if (record.discord) discordLink = record.discord;
                     if (record.qr) customQrData = record.qr;
-                    if (record.trainTarget) targetTrainTime = record.trainTarget;
+                    if (record.trainTarget !== undefined) targetTrainTime = record.trainTarget;
+                    if (record.trainUnassigned !== undefined) isTrainUnassigned = record.trainUnassigned;
                 }
                 initDashboard();
                 renderHistory();
@@ -705,7 +710,8 @@
                 mvps: currentMvps,
                 discord: discordLink,
                 qr: customQrData,
-                trainTarget: targetTrainTime
+                trainTarget: targetTrainTime,
+                trainUnassigned: isTrainUnassigned
             };
 
             fetch(BIN_URL, {
@@ -835,12 +841,19 @@
         }
 
         function updateCountdown() {
+            if (isTrainUnassigned) {
+                document.getElementById('train-timer').textContent = "---";
+                document.getElementById('train-target-label').textContent = "Todavía no asignado";
+                return;
+            }
+
             const now = new Date().getTime();
             const target = new Date(targetTrainTime).getTime();
             const diff = target - now;
 
             if (diff <= 0) {
-                document.getElementById('train-timer').textContent = "¡LLEGÓ EL TREN!";
+                document.getElementById('train-timer').textContent = "TREN EN LA ESTACIÓN";
+                document.getElementById('train-target-label').textContent = "¡Llegada cumplida!";
                 return;
             }
 
@@ -852,21 +865,35 @@
                 String(hours).padStart(2, '0') + ":" + 
                 String(minutes).padStart(2, '0') + ":" + 
                 String(seconds).padStart(2, '0');
+            document.getElementById('train-target-label').textContent = "Próxima estación";
         }
         setInterval(updateCountdown, 1000);
 
         function openTimerModal() {
             document.getElementById('input-target-time').value = targetTrainTime.slice(0, 16);
+            document.getElementById('check-not-assigned').checked = isTrainUnassigned;
+            document.getElementById('input-target-time').disabled = isTrainUnassigned;
             document.getElementById('timer-modal').classList.remove('hidden');
         }
+
+        function toggleUnassignedTime() {
+            const unassigned = document.getElementById('check-not-assigned').checked;
+            document.getElementById('input-target-time').disabled = unassigned;
+        }
+
         function closeTimerModal() { document.getElementById('timer-modal').classList.add('hidden'); }
+        
         function saveTimer() {
-            const val = document.getElementById('input-target-time').value;
-            if(val) {
-                targetTrainTime = new Date(val).toISOString();
-                saveToCloud();
+            isTrainUnassigned = document.getElementById('check-not-assigned').checked;
+            if(!isTrainUnassigned) {
+                const val = document.getElementById('input-target-time').value;
+                if(val) {
+                    targetTrainTime = new Date(val).toISOString();
+                }
             }
+            saveToCloud();
             closeTimerModal();
+            updateCountdown();
         }
 
         function saveDiscordLink() {
