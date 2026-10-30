@@ -391,6 +391,7 @@
         </div>
     </main>
 
+    <!-- REPRODUCTOR DE MÚSICA DE GUERRA (OST) -->
     <div class="fixed bottom-4 left-4 z-40 bg-[#0c120e]/90 border border-yellow-700/40 rounded-xl p-2.5 flex items-center space-x-3 shadow-lg backdrop-blur-md">
         <button onclick="toggleMusic()" id="music-btn" class="w-10 h-10 rounded-lg bg-yellow-900/30 border border-yellow-600/40 flex items-center justify-center text-yellow-500 hover:bg-yellow-800/40 transition-colors">
             <i class="fa-solid fa-music" id="music-icon"></i>
@@ -408,8 +409,7 @@
         <p data-i18n="footer">FORJADO EN LA ALIANZA KnNi &copy; 2026</p>
     </footer>
 
-    <!-- MODALES OMITIDOS PARA AHORRAR ESPACIO VISUAL, PERO ESTÁN INCLUIDOS EN EL CÓDIGO (SON LOS MISMOS) -->
-    
+    <!-- MODALES -->
     <div id="admin-modal" class="hidden fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-sm shadow-[0_0_30px_rgba(202,138,4,0.15)] text-center">
             <h3 class="text-xl font-cinzel text-yellow-500 mb-2">Acceso de Administrador</h3>
@@ -520,10 +520,9 @@
         </div>
     </div>
 
-    <!-- EL CAMBIO VITAL ESTÁ AQUÍ EN EL SCRIPT: LAS FUNCIONES DE FETCH A LA NUBE -->
     <script>
-        const BIN_URL = 'https://api.jsonbin.io/v3/b/6ae3e464ffd5d16053973fbc';
-        const MASTER_KEY = '$2a$10$a5VyH.YAeeP8djArd4kpV.tXeHFKEJ2hbZlitrM/.g8edAv3Wlgn2';
+        const BIN_URL = 'https://api.jsonbin.io/v3/b/6ae46b59ac6210605a5e6c27';
+        const MASTER_KEY = '$2a$10$f1Gcp8STx7CBF9TOWIsWveT/ykIgJWOkoIZ0Ke9QJHhYk347U4GRq';
         const ADMIN_PASSWORD = 'knni485';
 
         let isAdmin = false;
@@ -689,21 +688,36 @@
         let currentLang = 'es';
         const t = (key) => i18n[currentLang][key] || key;
 
-        let historyData = [];
+        // AQUÍ ESTÁN LOS DATOS PRECARGADOS DIRECTAMENTE EN EL CÓDIGO
+        let historyData = [
+            { "Date": "2026-10-27", "Driver": "DF66", "VIP": "---" },
+            { "Date": "2026-10-28", "Driver": "GoSsipGirl", "VIP": "KnNi Mert" },
+            { "Date": "2026-10-29", "Driver": "ItsmeJJ", "VIP": "Th3 Lil Effin Go4t" }
+        ];
         let allianceNames = [];
-        let currentMvps = { week: "B1G BOSS", champion: "낭만용사Maquina", desert1: "---", desert2: "---", canon1: "---", canon2: "---" };
+        let currentMvps = { 
+            week: "B1G BOSS", 
+            champion: "낭만용사Maquina", 
+            desert1: "---", 
+            desert2: "---", 
+            canon1: "Jungle20", 
+            canon2: "spiritxx" 
+        };
         let discordLink = "https://discord.gg/knni-alianza";
         let customQrData = "";
         let targetTrainTime = "2026-11-01T00:00:00.000Z";
         let isTrainUnassigned = false;
 
-        // VERSIÓN BLINDADA DE LA FUNCIÓN DE CARGA
         function loadFromCloud() {
+            initDashboard(); // Carga los datos por defecto primero para que no haya demoras visuales
+            renderHistory();
+            renderAllianceTable();
+
             fetch(BIN_URL, {
                 method: 'GET',
                 headers: { 
                     'X-Master-Key': MASTER_KEY,
-                    'Cache-Control': 'no-cache' // Fuerza al navegador a no usar caché vieja
+                    'Cache-Control': 'no-cache' 
                 }
             })
             .then(res => {
@@ -713,8 +727,8 @@
             .then(data => {
                 const record = data.record || data;
                 if (record) {
-                    if (record.history) historyData = record.history;
-                    if (record.alliance) allianceNames = record.alliance;
+                    if (record.history && record.history.length > 0) historyData = record.history;
+                    if (record.alliance && record.alliance.length > 0) allianceNames = record.alliance;
                     if (record.mvps) currentMvps = record.mvps;
                     if (record.discord) discordLink = record.discord;
                     if (record.qr) customQrData = record.qr;
@@ -728,11 +742,9 @@
             })
             .catch(err => {
                 console.error("Error al cargar de JSONBin:", err);
-                alert("Hubo un error cargando los datos de la nube. Asegúrate de tener conexión.");
             });
         }
 
-        // VERSIÓN BLINDADA DE LA FUNCIÓN DE GUARDADO
         function saveToCloud() {
             const payload = {
                 history: historyData,
@@ -749,7 +761,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Master-Key': MASTER_KEY,
-                    'X-Bin-Versioning': 'false' // ¡CRÍTICO! Evita que el archivo genere un límite y se bloquee.
+                    'X-Bin-Versioning': 'false' 
                 },
                 body: JSON.stringify(payload)
             })
