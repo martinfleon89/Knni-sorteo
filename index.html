@@ -95,7 +95,6 @@
         <!-- TAB 1: REINO (DASHBOARD) -->
         <div id="tab-dashboard" class="space-y-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Temporizador del Tren -->
                 <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
                     <div class="flex items-center justify-between mb-2">
                         <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest font-cinzel" data-i18n="trainCountdown">Llegada del Tren</p>
@@ -105,7 +104,6 @@
                     <p class="text-[11px] text-stone-400 mt-1" id="train-target-label">Próxima estación</p>
                 </div>
 
-                <!-- Fuerza Aliada -->
                 <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
                     <div class="flex items-center justify-between">
                         <div>
@@ -116,7 +114,6 @@
                     </div>
                 </div>
 
-                <!-- Último Caballero -->
                 <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
                     <div class="flex items-center justify-between">
                         <div>
@@ -127,7 +124,6 @@
                     </div>
                 </div>
 
-                <!-- Último Lord VIP -->
                 <div class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all">
                     <div class="flex items-center justify-between">
                         <div>
@@ -139,7 +135,6 @@
                 </div>
             </div>
 
-            <!-- Sección de Discord & Enlace -->
             <div class="card-glass p-6 rounded-xl border-t-2 border-t-indigo-500 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <div class="space-y-3">
                     <div class="flex items-center space-x-2">
@@ -161,7 +156,6 @@
                 </div>
             </div>
 
-            <!-- Salón de MVPs y Campeones -->
             <div class="card-glass p-6 rounded-xl border-t-2 border-t-yellow-600">
                 <div class="flex items-center justify-between mb-4">
                     <div>
@@ -212,7 +206,6 @@
                 </div>
             </div>
 
-            <!-- Gráfico del Batallón y Últimas Gestas -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="card-glass p-6 rounded-xl flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-4">
@@ -272,7 +265,6 @@
                             </div>
                         </div>
 
-                        <!-- Ruleta Animada con Caballeros luchando -->
                         <div id="roulette-box" class="w-full max-w-lg py-8 px-6 rounded-2xl bg-[#070a08] border-2 border-green-900/60 relative my-4 z-10 transition-all duration-300">
                             <div id="combat-animation" class="flex items-center justify-center space-x-4 mb-3">
                                 <i class="fa-solid fa-chess-knight text-2xl text-green-500"></i>
@@ -318,9 +310,14 @@
                         <h2 class="font-cinzel font-bold text-xl text-yellow-500" data-i18n="chroniclesTitle">Las Crónicas (Historial)</h2>
                         <p class="text-xs text-stone-400" data-i18n="chroniclesSub">Los últimos 14 registros bloquean a los guerreros de nuevas campañas.</p>
                     </div>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-500"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" id="search-history" onkeyup="filterHistory()" class="w-full sm:w-72 pl-10 pr-4 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-sm text-stone-200 focus:border-yellow-600 outline-none transition-all placeholder-stone-600">
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-500"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="search-history" onkeyup="filterHistory()" class="w-full sm:w-60 pl-10 pr-4 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-sm text-stone-200 focus:border-yellow-600 outline-none transition-all placeholder-stone-600">
+                        </div>
+                        <button onclick="checkAdminBefore(openManualAddRecordModal)" id="btn-manual-add" class="px-3 py-2 bg-stone-800 text-stone-400 border border-stone-700 rounded-lg text-xs font-cinzel font-bold whitespace-nowrap">
+                            <i class="fa-solid fa-lock mr-1" id="history-lock-icon"></i> <span data-i18n="addManualRecord">Añadir Gesta</span>
+                        </button>
                     </div>
                 </div>
                 <div class="overflow-x-auto rounded-lg border border-green-900/40">
@@ -384,9 +381,10 @@
             <p class="text-[10px] font-cinzel text-yellow-500 uppercase tracking-widest font-bold">War OST</p>
             <p class="text-[9px] text-stone-400">KnNi Battle Anthem</p>
         </div>
-        <!-- Audio libre de guerra épica de fondo (puedes cambiar el link del MP3 si gustas) -->
+        <!-- Audio directo y estable con pista épica de guerra -->
         <audio id="bg-music" loop>
-            <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=epic-battle-music-111409.mp3" type="audio/mpeg">
+            <source src="https://actions.google.com/sounds/v1/ambiences/battlefield.ogg" type="audio/ogg">
+            <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=war-riors-108785.mp3" type="audio/mpeg">
         </audio>
     </div>
 
@@ -424,11 +422,11 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR GESTA -->
+    <!-- MODAL EDITAR / AÑADIR GESTA MANUAL -->
     <div id="edit-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-md shadow-[0_0_30px_rgba(202,138,4,0.15)]">
-            <h3 class="text-xl font-cinzel text-yellow-500 mb-4" data-i18n="editRecordTitle">Editar Gesta</h3>
-            <input type="hidden" id="edit-index">
+            <h3 id="record-modal-title" class="text-xl font-cinzel text-yellow-500 mb-4">Editar Gesta</h3>
+            <input type="hidden" id="edit-index" value="-1">
             <div class="space-y-4">
                 <div>
                     <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="day">Día</label>
@@ -436,11 +434,11 @@
                 </div>
                 <div>
                     <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="knight">Conductor (Driver)</label>
-                    <input type="text" id="edit-driver" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
+                    <input type="text" id="edit-driver" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none" placeholder="Nombre Driver...">
                 </div>
                 <div>
                     <label class="text-xs text-stone-400 font-cinzel uppercase" data-i18n="lord">Lord (VIP)</label>
-                    <input type="text" id="edit-vip" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
+                    <input type="text" id="edit-vip" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none" placeholder="Nombre Lord VIP...">
                 </div>
             </div>
             <div class="flex justify-end space-x-3 mt-6">
@@ -508,7 +506,7 @@
     <script>
         const BIN_URL = 'https://api.jsonbin.io/v3/b/6ae3e464ffd5d16053973fbc';
         const MASTER_KEY = '$2a$10$a5VyH.YAeeP8djArd4kpV.tXeHFKEJ2hbZlitrM/.g8edAv3Wlgn2';
-        const ADMIN_PASSWORD = 'knni485'; // <-- CONTRASEÑA DE ADMINISTRADOR (puedes cambiarla)
+        const ADMIN_PASSWORD = 'knni485';
 
         let isAdmin = false;
         let pendingAction = null;
@@ -526,6 +524,8 @@
                 document.getElementById('mvp-lock-icon').className = "fa-solid fa-lock mr-1";
                 document.getElementById('btn-add-member').className = "px-3 py-2 bg-stone-800 text-stone-400 border border-stone-700 rounded-lg text-xs font-cinzel font-bold whitespace-nowrap";
                 document.getElementById('member-lock-icon').className = "fa-solid fa-lock mr-1";
+                document.getElementById('btn-manual-add').className = "px-3 py-2 bg-stone-800 text-stone-400 border border-stone-700 rounded-lg text-xs font-cinzel font-bold whitespace-nowrap";
+                document.getElementById('history-lock-icon').className = "fa-solid fa-lock mr-1";
                 alert("Modo Administrador cerrado.");
             } else {
                 document.getElementById('admin-pass-input').value = "";
@@ -552,6 +552,8 @@
                 document.getElementById('mvp-lock-icon').className = "fa-solid fa-lock-open mr-1";
                 document.getElementById('btn-add-member').className = "px-3 py-2 bg-green-900/60 hover:bg-green-800 text-green-300 border border-green-700/50 rounded-lg text-xs font-cinzel font-bold whitespace-nowrap";
                 document.getElementById('member-lock-icon').className = "fa-solid fa-lock-open mr-1";
+                document.getElementById('btn-manual-add').className = "px-3 py-2 bg-yellow-900/60 hover:bg-yellow-800 text-yellow-300 border border-yellow-700/50 rounded-lg text-xs font-cinzel font-bold whitespace-nowrap";
+                document.getElementById('history-lock-icon').className = "fa-solid fa-lock-open mr-1";
                 closeAdminModal();
                 alert("¡Modo Administrador activado con éxito!");
                 renderHistory();
@@ -587,7 +589,10 @@
                 audio.play().then(() => {
                     icon.className = "fa-solid fa-volume-high animate-pulse text-yellow-400";
                     isPlaying = true;
-                }).catch(e => console.log("Audio play blocked", e));
+                }).catch(e => {
+                    alert("Haz clic en cualquier parte de la página y vuelve a tocar el botón de música para iniciar el audio.");
+                    console.log("Audio play blocked", e);
+                });
             }
         }
 
@@ -612,7 +617,7 @@
                 chroniclesTitle: "Las Crónicas (Historial)", chroniclesSub: "Los últimos 14 registros bloquean a los guerreros de nuevas campañas.",
                 allianceTitle: "Batallón de la Alianza KnNi", allianceSub: "Listado completo de 100 miembros. Las participaciones se contabilizan a partir del 1 de Noviembre de 2026.",
                 rank: "Rango", warriorName: "Nombre del Guerrero", totalParticipations: "Participaciones (Desde 1 Nov)",
-                footer: "FORJADO EN LA ALIANZA KnNi &copy; 2026", editRecordTitle: "Editar Gesta", editMvpsTitle: "Editar Salón de MVPs y Campeones",
+                footer: "FORJADO EN LA ALIANZA KnNi &copy; 2026", editRecordTitle: "Editar Gesta", addManualRecord: "Añadir Gesta", editMvpsTitle: "Editar Salón de MVPs y Campeones",
                 addMemberBtn: "Añadir Miembro", addMemberTitle: "Añadir Nuevo Guerrero", editMemberTitle: "Editar Guerrero",
                 configTimerTitle: "Configurar Hora del Tren", targetTimeLabel: "Hora de llegada (Próximo Tren)",
                 cancelBtn: "Cancelar", saveBtn: "Guardar",
@@ -644,7 +649,7 @@
                 chroniclesTitle: "The Chronicles (History)", chroniclesSub: "The last 14 records block warriors from new campaigns.",
                 allianceTitle: "KnNi Alliance Battalion", allianceSub: "Complete roster of 100 members. Participations are counted starting November 1, 2026.",
                 rank: "Rank", warriorName: "Warrior Name", totalParticipations: "Participations (From Nov 1)",
-                footer: "FORGED IN THE KnNi ALLIANCE &copy; 2026", editRecordTitle: "Edit Deed", editMvpsTitle: "Edit MVPs & Champions Hall",
+                footer: "FORGED IN THE KnNi ALLIANCE &copy; 2026", editRecordTitle: "Edit Deed", addManualRecord: "Add Deed", editMvpsTitle: "Edit MVPs & Champions Hall",
                 addMemberBtn: "Add Member", addMemberTitle: "Add New Warrior", editMemberTitle: "Edit Warrior",
                 configTimerTitle: "Configure Train Time", targetTimeLabel: "Arrival Time (Next Train)",
                 cancelBtn: "Cancel", saveBtn: "Save",
@@ -997,6 +1002,16 @@
             loadParticipants(); initDashboard(); renderHistory(); renderAllianceTable(); switchTab('history');
         }
 
+        function openManualAddRecordModal() {
+            if(!isAdmin) { alert("Acción restringida solo para administradores."); return; }
+            document.getElementById('edit-index').value = "-1";
+            document.getElementById('record-modal-title').textContent = "Añadir Gesta Manual";
+            document.getElementById('edit-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('edit-driver').value = "";
+            document.getElementById('edit-vip').value = "";
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
         function deleteRecord(idx) {
             if(!isAdmin) { alert("Acción restringida solo para administradores."); return; }
             if(confirm(t('confirmDel'))) {
@@ -1007,24 +1022,46 @@
                 renderHistory();
             }
         }
+
         function editRecord(idx) {
             if(!isAdmin) { alert("Acción restringida solo para administradores."); return; }
             document.getElementById('edit-index').value = idx;
+            document.getElementById('record-modal-title').textContent = "Editar Gesta";
             document.getElementById('edit-date').value = historyData[idx].Date;
             document.getElementById('edit-driver').value = historyData[idx].Driver;
             document.getElementById('edit-vip').value = historyData[idx].VIP;
             document.getElementById('edit-modal').classList.remove('hidden');
         }
+
         function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+
         function saveEdit() {
-            const idx = document.getElementById('edit-index').value;
-            historyData[idx].Date = document.getElementById('edit-date').value;
-            historyData[idx].Driver = document.getElementById('edit-driver').value;
-            historyData[idx].VIP = document.getElementById('edit-vip').value;
+            const idx = parseInt(document.getElementById('edit-index').value);
+            const dateVal = document.getElementById('edit-date').value;
+            const driverVal = document.getElementById('edit-driver').value.trim();
+            const vipVal = document.getElementById('edit-vip').value.trim();
+
+            if(!dateVal || !driverVal || !vipVal) {
+                alert("Por favor completa todos los campos.");
+                return;
+            }
+
+            if (idx === -1) {
+                // Añadir nuevo manualmente
+                historyData.push({ "Date": dateVal, "Driver": driverVal, "VIP": vipVal });
+            } else {
+                // Editar existente
+                historyData[idx].Date = dateVal;
+                historyData[idx].Driver = driverVal;
+                historyData[idx].VIP = vipVal;
+            }
+
             saveToCloud();
-            closeEditModal(); initDashboard();
+            closeEditModal(); 
+            initDashboard();
             if(loadedPlayers.length > 0) loadParticipants(true);
             renderHistory();
+            renderAllianceTable();
         }
 
         function renderHistory(data = historyData) {
