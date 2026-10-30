@@ -688,7 +688,6 @@
         let currentLang = 'es';
         const t = (key) => i18n[currentLang][key] || key;
 
-        // AQUÍ ESTÁN LOS DATOS PRECARGADOS DIRECTAMENTE EN EL CÓDIGO
         let historyData = [
             { "Date": "2026-10-27", "Driver": "DF66", "VIP": "---" },
             { "Date": "2026-10-28", "Driver": "GoSsipGirl", "VIP": "KnNi Mert" },
@@ -709,7 +708,7 @@
         let isTrainUnassigned = false;
 
         function loadFromCloud() {
-            initDashboard(); // Carga los datos por defecto primero para que no haya demoras visuales
+            initDashboard();
             renderHistory();
             renderAllianceTable();
 
