@@ -381,10 +381,10 @@
             <p class="text-[10px] font-cinzel text-yellow-500 uppercase tracking-widest font-bold">War OST</p>
             <p class="text-[9px] text-stone-400">KnNi Battle Anthem</p>
         </div>
-        <!-- Audio directo y estable con pista épica de guerra -->
-        <audio id="bg-music" loop>
+        <!-- Archivo directo compatible con HTML5 Audio -->
+        <audio id="bg-music" loop preload="auto">
             <source src="https://actions.google.com/sounds/v1/ambiences/battlefield.ogg" type="audio/ogg">
-            <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=war-riors-108785.mp3" type="audio/mpeg">
+            <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=epic-battle-music-111409.mp3" type="audio/mpeg">
         </audio>
     </div>
 
@@ -590,8 +590,8 @@
                     icon.className = "fa-solid fa-volume-high animate-pulse text-yellow-400";
                     isPlaying = true;
                 }).catch(e => {
-                    alert("Haz clic en cualquier parte de la página y vuelve a tocar el botón de música para iniciar el audio.");
-                    console.log("Audio play blocked", e);
+                    console.log("Autoplay bloqueado:", e);
+                    alert("Para reproducir música, haz primero un clic en cualquier parte de la página y vuelve a presionar el botón de audio.");
                 });
             }
         }
@@ -748,10 +748,6 @@
             if (tabId === 'dashboard') initDashboard();
             if (tabId === 'history') renderHistory();
             if (tabId === 'alliance') renderAllianceTable();
-        }
-
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
         function calculateAllianceParticipations() {
@@ -1047,10 +1043,8 @@
             }
 
             if (idx === -1) {
-                // Añadir nuevo manualmente
                 historyData.push({ "Date": dateVal, "Driver": driverVal, "VIP": vipVal });
             } else {
-                // Editar existente
                 historyData[idx].Date = dateVal;
                 historyData[idx].Driver = driverVal;
                 historyData[idx].VIP = vipVal;
