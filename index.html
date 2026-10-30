@@ -490,8 +490,8 @@
     </div>
 
     <script>
-        // Enlace de tu API en npoint.io configurado con el nuevo contenedor
-        const URL_NPOINT = 'https://api.npoint.io/ac74458d8431e9634c79';
+        const BIN_URL = 'https://api.jsonbin.io/v3/b/6ae3e464ffd5d16053973fbc';
+        const MASTER_KEY = '$2a$10$a5VyH.YAeeP8djArd4kpV.tXeHFKEJ2hbZlitrM/.g8edAv3Wlgn2';
 
         const i18n = {
             es: {
@@ -563,14 +563,39 @@
         let currentLang = 'es';
         const t = (key) => i18n[currentLang][key] || key;
 
-        let historyData = [{"Date": "2026-09-01", "Driver": "B1G BOSS", "VIP": "CommanderOb191436"}];
-        let allianceNames = ["Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AxiE", "B1G BOSS", "Bahrok", "Bales117"];
+        let historyData = [];
+        let allianceNames = [];
         let currentMvps = { week: "B1G BOSS", champion: "낭만용사Maquina", desert1: "---", desert2: "---", canon1: "---", canon2: "---" };
         let discordLink = "https://discord.gg/knni-alianza";
         let customQrData = "";
         let targetTrainTime = "2026-11-01T00:00:00.000Z";
 
-        function syncToCloud() {
+        function loadFromCloud() {
+            fetch(BIN_URL, {
+                headers: { 'X-Master-Key': MASTER_KEY }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const record = data.record || data;
+                if (record) {
+                    if (record.history) historyData = record.history;
+                    if (record.alliance) allianceNames = record.alliance;
+                    if (record.mvps) currentMvps = record.mvps;
+                    if (record.discord) discordLink = record.discord;
+                    if (record.qr) customQrData = record.qr;
+                    if (record.trainTarget) targetTrainTime = record.trainTarget;
+                }
+                initDashboard();
+                renderHistory();
+                renderAllianceTable();
+                document.getElementById('winner-display').textContent = t('msgWait');
+            })
+            .catch(err => {
+                console.error("Error al cargar de JSONBin:", err);
+            });
+        }
+
+        function saveToCloud() {
             const payload = {
                 history: historyData,
                 alliance: allianceNames,
@@ -580,44 +605,17 @@
                 trainTarget: targetTrainTime
             };
 
-            fetch(URL_NPOINT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            fetch(BIN_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': MASTER_KEY
+                },
                 body: JSON.stringify(payload)
             })
-            .then(res => {
-                if (!res.ok) {
-                    return fetch(URL_NPOINT, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                }
-                return res;
-            })
             .then(res => res.json())
-            .then(data => console.log("Sincronizado con éxito a la nube"))
-            .catch(err => console.error("Error al sincronizar con la nube:", err));
-        }
-
-        function loadFromCloud(callback) {
-            fetch(URL_NPOINT)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && typeof data === 'object') {
-                        if (data.history && Array.isArray(data.history)) historyData = data.history;
-                        if (data.alliance && Array.isArray(data.alliance)) allianceNames = data.alliance;
-                        if (data.mvps) currentMvps = data.mvps;
-                        if (data.discord) discordLink = data.discord;
-                        if (data.qr) customQrData = data.qr;
-                        if (data.trainTarget) targetTrainTime = data.trainTarget;
-                    }
-                    if (callback) callback();
-                })
-                .catch(err => {
-                    console.error("Error al cargar de la nube:", err);
-                    if (callback) callback();
-                });
+            .then(data => console.log("Guardado en JSONBin con éxito"))
+            .catch(err => console.error("Error al guardar en JSONBin:", err));
         }
 
         function toggleLang() {
@@ -768,7 +766,7 @@
             const val = document.getElementById('input-target-time').value;
             if(val) {
                 targetTrainTime = new Date(val).toISOString();
-                syncToCloud();
+                saveToCloud();
             }
             closeTimerModal();
         }
@@ -779,8 +777,8 @@
             if(!customQrData) {
                 document.getElementById('qr-image-preview').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(discordLink)}`;
             }
-            syncToCloud();
-            alert("¡Enlace de Discord actualizado en vivo para todos!");
+            saveToCloud();
+            alert("¡Enlace de Discord actualizado!");
         }
 
         function loadCustomQR(event) {
@@ -790,7 +788,7 @@
                 reader.onload = function(e) {
                     customQrData = e.target.result;
                     document.getElementById('qr-image-preview').src = customQrData;
-                    syncToCloud();
+                    saveToCloud();
                 };
                 reader.readAsDataURL(file);
             }
@@ -912,7 +910,7 @@
             const today = new Date().toISOString().split('T')[0];
             
             historyData.push({ "Date": today, "Driver": currentDraw.Driver, "VIP": currentDraw.VIP });
-            syncToCloud();
+            saveToCloud();
 
             loadParticipants(); initDashboard(); renderHistory(); renderAllianceTable(); switchTab('history');
         }
@@ -920,7 +918,7 @@
         function deleteRecord(idx) {
             if(confirm(t('confirmDel'))) {
                 historyData.splice(idx, 1);
-                syncToCloud();
+                saveToCloud();
                 initDashboard();
                 if(loadedPlayers.length > 0) loadParticipants(true);
                 renderHistory();
@@ -939,7 +937,7 @@
             historyData[idx].Date = document.getElementById('edit-date').value;
             historyData[idx].Driver = document.getElementById('edit-driver').value;
             historyData[idx].VIP = document.getElementById('edit-vip').value;
-            syncToCloud();
+            saveToCloud();
             closeEditModal(); initDashboard();
             if(loadedPlayers.length > 0) loadParticipants(true);
             renderHistory();
@@ -1023,7 +1021,7 @@
                 if(!allianceNames.includes(newName)) allianceNames.push(newName);
             }
 
-            syncToCloud();
+            saveToCloud();
             closeMemberModal();
             renderAllianceTable();
             initDashboard();
@@ -1032,7 +1030,7 @@
         function deleteMember(name) {
             if(confirm(t('confirmDelMember'))) {
                 allianceNames = allianceNames.filter(n => n !== name);
-                syncToCloud();
+                saveToCloud();
                 renderAllianceTable();
                 initDashboard();
             }
@@ -1055,18 +1053,12 @@
             currentMvps.desert2 = document.getElementById('input-mvp-desert-2').value.trim() || "---";
             currentMvps.canon1 = document.getElementById('input-mvp-canon-1').value.trim() || "---";
             currentMvps.canon2 = document.getElementById('input-mvp-canon-2').value.trim() || "---";
-            syncToCloud();
+            saveToCloud();
             closeMvpModal(); initDashboard();
         }
 
-        // Al iniciar la página, se cargan los datos desde npoint.io y se pinta todo en vivo
         window.onload = () => {
-            loadFromCloud(() => {
-                initDashboard();
-                renderHistory();
-                renderAllianceTable();
-                document.getElementById('winner-display').textContent = t('msgWait');
-            });
+            loadFromCloud();
         };
     </script>
 </body>
