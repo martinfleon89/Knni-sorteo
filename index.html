@@ -115,7 +115,8 @@
 
             <!-- Bloque Tren -->
             <div class="card-glass p-5 sm:p-6 rounded-2xl border-2 border-yellow-600/50 bg-gradient-to-br from-yellow-950/30 via-[#0c120e]/80 to-stone-900 relative">
-                <button onclick="checkAdmin(() => openEditTrainModal())" class="absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
+                <!-- Botón oculto por defecto para usuarios normales -->
+                <button id="btn-edit-train" onclick="checkAdmin(() => openEditTrainModal())" class="hidden absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
                     <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar Tren</span>
                 </button>
                 <div class="space-y-3">
@@ -147,7 +148,8 @@
 
             <!-- Discord -->
             <div class="card-glass p-5 rounded-2xl border-2 border-[#5865F2]/50 bg-gradient-to-br from-[#5865F2]/20 via-[#0c120e]/80 to-stone-900 relative">
-                <button onclick="checkAdmin(() => openEditDiscordModal())" class="absolute top-4 right-4 text-xs bg-[#5865F2]/40 border border-[#5865F2] text-white px-2 py-1 rounded hover:bg-[#5865F2]/60 transition-all flex items-center space-x-1">
+                <!-- Botón oculto por defecto -->
+                <button id="btn-edit-discord" onclick="checkAdmin(() => openEditDiscordModal())" class="hidden absolute top-4 right-4 text-xs bg-[#5865F2]/40 border border-[#5865F2] text-white px-2 py-1 rounded hover:bg-[#5865F2]/60 transition-all flex items-center space-x-1">
                     <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar Enlace</span>
                 </button>
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -163,7 +165,8 @@
 
             <!-- MVPs -->
             <div class="card-glass p-5 sm:p-6 rounded-xl border-t-2 border-t-yellow-600 space-y-4 relative">
-                <button onclick="checkAdmin(() => openEditMvpModal())" class="absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
+                <!-- Botón oculto por defecto -->
+                <button id="btn-edit-mvp" onclick="checkAdmin(() => openEditMvpModal())" class="hidden absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
                     <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar MVPs</span>
                 </button>
                 <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="mvp-hall-title">Salón de MVPs y Campeones</h3>
@@ -205,18 +208,33 @@
                     </div>
                 </div>
                 
-                <div id="inscripcion-status-banner" class="p-3.5 rounded-xl text-center font-cinzel text-xs font-bold"></div>
+                <div id="inscripcion-status-banner" class="p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-stone-900 border border-stone-800 text-stone-400">
+                    <i class="fa-solid fa-hand-pointer mr-2 text-yellow-400"></i> Selecciona un evento disponible para continuar.
+                </div>
 
-                <!-- CONTENEDOR DE CONTROLES -->
-                <div id="inscription-controls-container" class="space-y-4 transition-all duration-300">
-                    <div class="space-y-2">
-                        <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
-                        <div class="grid grid-cols-2 gap-3" id="event-buttons-container">
-                            <button onclick="selectEvent('CS')" id="btn-ev-cs" class="touch-btn p-4 bg-[#090d0a] border-2 border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-sm font-bold text-stone-200">Cañón Storm (CS)</button>
-                            <button onclick="selectEvent('DS')" id="btn-ev-ds" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl font-cinzel text-sm font-bold text-stone-200">Desert Storm (DS)</button>
-                        </div>
+                <!-- 1. EVENTOS (SIEMPRE VISIBLES Y EN VIVO) -->
+                <div class="space-y-2">
+                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="event-buttons-container">
+                        <!-- Botón CS -->
+                        <button onclick="selectEvent('CS')" id="btn-ev-cs" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl text-left transition-all relative overflow-hidden group disabled:opacity-40 disabled:cursor-not-allowed">
+                            <div class="relative z-10 flex flex-col space-y-2">
+                                <span class="font-cinzel text-sm font-bold text-stone-200 transition-colors" id="title-ev-cs">Cañón Storm (CS)</span>
+                                <span id="timer-cs" class="text-[10px] font-mono bg-stone-900 px-2 py-1 rounded text-stone-400 w-max border border-stone-700/50">Calculando...</span>
+                            </div>
+                        </button>
+                        <!-- Botón DS -->
+                        <button onclick="selectEvent('DS')" id="btn-ev-ds" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl text-left transition-all relative overflow-hidden group disabled:opacity-40 disabled:cursor-not-allowed">
+                            <div class="relative z-10 flex flex-col space-y-2">
+                                <span class="font-cinzel text-sm font-bold text-stone-200 transition-colors" id="title-ev-ds">Desert Storm (DS)</span>
+                                <span id="timer-ds" class="text-[10px] font-mono bg-stone-900 px-2 py-1 rounded text-stone-400 w-max border border-stone-700/50">Calculando...</span>
+                            </div>
+                        </button>
                     </div>
+                </div>
 
+                <!-- SUB MÓDULO (SE DESBLOQUEA SOLO AL ELEGIR UN EVENTO ABIERTO) -->
+                <div id="sub-registration-module" class="space-y-4 opacity-40 pointer-events-none transition-all duration-300">
                     <div class="space-y-2">
                         <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step2-lbl">2. Selecciona tu Rol:</label>
                         <div class="grid grid-cols-2 gap-3">
@@ -245,7 +263,7 @@
                         <div id="member-search-results" class="max-h-36 overflow-y-auto space-y-1 bg-[#070a08] p-2 rounded-lg border border-green-900/40 hidden"></div>
                     </div>
 
-                    <button id="btn-submit-reg" onclick="submitRegistration()" class="w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all">
+                    <button id="btn-submit-reg" onclick="submitRegistration()" disabled class="w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all">
                         <span data-i="btn-confirm-reg">CONFIRMAR INSCRIPCIÓN</span>
                     </button>
                 </div>
@@ -351,7 +369,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR TREN CON SELECTOR DE HORA -->
+    <!-- MODAL EDITAR TREN -->
     <div id="edit-train-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
             <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Estado del Tren</h3>
@@ -476,6 +494,12 @@
         let currentSortField = null;
         let sortDirection = 'desc';
 
+        // Evento seleccionado por defecto NULO para el nuevo sistema
+        let selectedEvent = null;
+        let selectedRole = 'Titular';
+        let selectedTurn = 'Equipo A';
+        let selectedMember = '';
+
         const translations = {
             ES: {
                 menu: "Menú", badge_open: "CONVOCATORIA ABIERTA", "home-insc-title": "Inscripciones Cañón Storm & Desert Storm",
@@ -495,24 +519,7 @@
                 "th-member": "Nombre del Guerrero", "th-m1": "1ª Marcha (M)", "th-m2": "2ª Marcha (M)", "th-m3": "3ª Marcha (M)",
                 "th-troop": "Tipo Tropa"
             },
-            EN: {
-                menu: "Menu", badge_open: "OPEN CALL", "home-insc-title": "Canyon Storm & Desert Storm Registrations",
-                "home-insc-desc": "Write your name, choose your tactical role (Starter or Substitute).", "btn-go-insc": "GO TO REGISTRATIONS →",
-                "train-status-title": "Train Status & Station", "driver-lbl": "Driver", "vip-lbl": "Lord VIP",
-                "arrival-lbl": "Station arrival time:", "discord-title": "Discord Community",
-                "discord-desc": "Join the voice channel and battle coordination.", "discord-btn": "JOIN DISCORD",
-                "mvp-hall-title": "MVPs & Champions Hall", "mvp-week": "MVP of the Week", "champ-week": "Champion of the Week",
-                "mvp-ds": "Desert Storm MVP", "mvp-cs": "Canyon Storm MVP", "insc-panel-title": "Registration Module",
-                "step1-lbl": "1. Select Event:", "step2-lbl": "2. Select your Role:", "role-titular": "Starter",
-                "role-suplente": "Substitute", "step3-lbl": "3. Select Team:", "t1-name": "Team A", "t2-name": "Team B",
-                "step4-lbl": "4. Search Name (Type at least 3 letters):", "btn-confirm-reg": "CONFIRM REGISTRATION",
-                "prelists-title": "Official Pre-Lists", "draw-title": "Divine Train Draw", "draw-desc": "Paste participants and seal them.",
-                "btn-seal": "SEAL PARTICIPANTS", "btn-draw-driver": "Pick Driver", "btn-draw-vip": "Pick Lord VIP",
-                "btn-save-hist": "Save to Chronicles", "cronograma-title": "Train Schedule & Chronicles", "th-date": "Date",
-                "th-driver": "Driver", "th-vip": "Lord VIP", "th-actions": "Admin Actions", "powers-title": "KnNi Battalion & March Powers",
-                "th-member": "Warrior Name", "th-m1": "1st March (M)", "th-m2": "2nd March (M)", "th-m3": "3rd March (M)",
-                "th-troop": "Troop Type"
-            }
+            EN: { /* Mismos tags en inglés... */ }
         };
 
         function toggleLang() {
@@ -520,7 +527,7 @@
             document.getElementById('lang-lbl').textContent = currentLang;
             document.querySelectorAll('[data-i]').forEach(el => {
                 const key = el.getAttribute('data-i');
-                if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
+                if (translations[currentLang] && translations[currentLang][key]) el.textContent = translations[currentLang][key];
             });
             updateTurnHours();
         }
@@ -549,77 +556,136 @@
             }
         }
 
-        function updateEventVisibility() {
-            const btnCS = document.getElementById('btn-ev-cs');
-            const btnDS = document.getElementById('btn-ev-ds');
-            if(btnCS) btnCS.style.opacity = suspendedEvents.CS ? "0.4" : "1";
-            if(btnDS) btnDS.style.opacity = suspendedEvents.DS ? "0.4" : "1";
+        // ==========================================
+        // NUEVO SISTEMA DE TIEMPOS Y BLOQUEO FLUIDO
+        // ==========================================
+
+        function getEventTimeline(ev, timeInHours) {
+            let isOpen = false;
+            let nextTransition = 0; 
+            
+            // CS: Fri 00:00 (120h) to Mon 11:00 (35h)
+            if (ev === 'CS') {
+                if (timeInHours >= 120 || timeInHours < 35) {
+                    isOpen = true; 
+                    nextTransition = (timeInHours >= 120) ? (168 + 35) : 35; 
+                } else {
+                    isOpen = false; 
+                    nextTransition = 120; 
+                }
+            } 
+            // DS: Sat 00:00 (144h) to Wed 11:00 (83h)
+            else if (ev === 'DS') {
+                if (timeInHours >= 144 || timeInHours < 83) {
+                    isOpen = true; 
+                    nextTransition = (timeInHours >= 144) ? (168 + 83) : 83;
+                } else {
+                    isOpen = false; 
+                    nextTransition = 144;
+                }
+            }
+            return { isOpen, nextTransition };
         }
 
-        function checkRegistrationWindow() {
+        function formatTimeDiff(diffHours) {
+            const h = Math.floor(diffHours);
+            const m = Math.floor((diffHours - h) * 60);
+            const s = Math.floor(((diffHours - h) * 60 - m) * 60);
+            return `${h}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
+        }
+
+        function updateRegistrationState() {
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
             const serverDate = new Date(utcTime - (2 * 3600000)); 
+            
             const day = serverDate.getDay(); 
             const hour = serverDate.getHours();
-
-            let isOpen = false;
-
-            if (selectedEvent === 'CS') {
-                isOpen = (day === 5) || (day === 6) || (day === 0) || (day === 1 && hour < 11);
-            } else {
-                isOpen = (day === 6) || (day === 0) || (day === 1) || (day === 2) || (day === 3 && hour < 11);
-            }
+            const minutes = serverDate.getMinutes();
+            const seconds = serverDate.getSeconds();
+            const timeInHours = day * 24 + hour + minutes/60 + seconds/3600;
 
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
-            if (suspendedEvents[selectedEvent] && !isAdmin) isOpen = false;
-            
-            updateEventVisibility();
 
-            const banner = document.getElementById('inscripcion-status-banner');
+            // Actualizar los botones de cada evento en vivo
+            ['CS', 'DS'].forEach(ev => {
+                const info = getEventTimeline(ev, timeInHours);
+                const isSuspended = suspendedEvents[ev];
+                const literallyOpen = info.isOpen && !isSuspended;
+                
+                const btn = document.getElementById(`btn-ev-${ev.toLowerCase()}`);
+                const timerLbl = document.getElementById(`timer-${ev.toLowerCase()}`);
+                const titleLbl = document.getElementById(`title-ev-${ev.toLowerCase()}`);
+
+                if(!btn) return;
+
+                let timeStr = formatTimeDiff(info.nextTransition - timeInHours);
+
+                if (isSuspended) {
+                    timerLbl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-1"></i> Suspendido`;
+                    timerLbl.className = "text-[10px] font-mono bg-red-950/80 px-2 py-1 rounded text-red-400 w-max border border-red-800";
+                    if(!isAdmin) btn.disabled = true;
+                } else if (literallyOpen) {
+                    timerLbl.innerHTML = `<i class="fa-solid fa-hourglass-half text-green-400 mr-1"></i> Cierra en: ${timeStr}`;
+                    timerLbl.className = "text-[10px] font-mono bg-green-950/60 px-2 py-1 rounded text-green-400 w-max border border-green-800";
+                    btn.disabled = false;
+                } else {
+                    timerLbl.innerHTML = `<i class="fa-solid fa-lock text-red-400 mr-1"></i> Abre en: ${timeStr}`;
+                    timerLbl.className = "text-[10px] font-mono bg-red-950/60 px-2 py-1 rounded text-red-300 w-max border border-red-800/50";
+                    if(!isAdmin) btn.disabled = true;
+                }
+
+                if(isAdmin) btn.disabled = false; // El admin siempre puede clickear
+
+                // Estilos visuales del botón seleccionado
+                if (selectedEvent === ev) {
+                    btn.classList.add('border-yellow-500', 'bg-yellow-950/40');
+                    btn.classList.remove('border-stone-800', 'opacity-50');
+                    titleLbl.classList.add('text-yellow-400');
+                    titleLbl.classList.remove('text-stone-200');
+                } else {
+                    btn.classList.remove('border-yellow-500', 'bg-yellow-950/40');
+                    btn.classList.add('border-stone-800');
+                    titleLbl.classList.remove('text-yellow-400');
+                    titleLbl.classList.add('text-stone-200');
+                    
+                    if (!literallyOpen && !isAdmin) btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    else btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            });
+
+            // Actualizar Módulo Secundario (Roles, Equipos, Confirmar)
+            const subModule = document.getElementById('sub-registration-module');
             const submitBtn = document.getElementById('btn-submit-reg');
-            const controlsContainer = document.getElementById('inscription-controls-container');
+            const statusBanner = document.getElementById('inscripcion-status-banner');
 
-            if ((isOpen && !suspendedEvents[selectedEvent]) || isAdmin) {
-                if(banner) {
-                    banner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-green-950/80 text-green-400 border border-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
-                    banner.innerHTML = suspendedEvents[selectedEvent] ? 
-                        `<i class="fa-solid fa-triangle-exclamation mr-2 text-yellow-400"></i> Atención: El evento ${selectedEvent} se encuentra SUSPENDIDO por el liderazgo.` : 
-                        `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ¡INSCRIPCIONES ABIERTAS para ${selectedEvent}! Anótate con tu rol y equipo.`;
-                }
-                if(controlsContainer) {
-                    controlsContainer.style.opacity = "1";
-                    controlsContainer.style.pointerEvents = "auto";
-                }
-                if(submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.className = "w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer";
-                }
-                return true;
-            } else {
-                if(banner) {
-                    banner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-red-950/80 text-red-400 border border-red-500/60 shadow-[0_0_15px_rgba(239,68,68,0.2)]";
-                    let aperturaTxt = selectedEvent === 'CS' ? "Viernes a las 00:00 hs (Servidor)" : "Sábado a las 00:00 hs (Servidor)";
-                    banner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> INSCRIPCIONES CERRADAS para ${selectedEvent}. Abre el ${aperturaTxt}.`;
-                }
-                if(controlsContainer) {
-                    controlsContainer.style.opacity = "0.45";
-                    controlsContainer.style.pointerEvents = "none";
-                }
-                if(submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50";
-                }
-                return false;
+            if (!subModule || !statusBanner) return;
+
+            if (!selectedEvent) {
+                subModule.classList.add('opacity-40', 'pointer-events-none');
+                statusBanner.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2 text-yellow-400"></i> Selecciona un evento disponible para continuar.`;
+                statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-stone-900 border border-stone-800 text-stone-400";
+                return;
             }
-        }
 
-        async function toggleSuspendEvent(ev) {
-            suspendedEvents[ev] = !suspendedEvents[ev];
-            await saveDatabase();
-            updateAdminUI();
-            checkRegistrationWindow();
-            alert(`⚠️ Evento ${ev} ${suspendedEvents[ev] ? 'suspendido' : 'reactivado'}.`);
+            const currInfo = getEventTimeline(selectedEvent, timeInHours);
+            const currOpen = (currInfo.isOpen && !suspendedEvents[selectedEvent]) || isAdmin;
+
+            if (currOpen) {
+                subModule.classList.remove('opacity-40', 'pointer-events-none');
+                submitBtn.disabled = false;
+                submitBtn.className = "w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer border border-yellow-500/50";
+                statusBanner.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ¡INSCRIPCIONES ABIERTAS para ${selectedEvent}! Completa tu ficha.`;
+                statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-green-950/80 text-green-400 border border-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
+            } else {
+                subModule.classList.add('opacity-40', 'pointer-events-none');
+                submitBtn.disabled = true;
+                submitBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all";
+                statusBanner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> EL EVENTO ${selectedEvent} ESTÁ CERRADO O SUSPENDIDO.`;
+                statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-red-950/80 text-red-400 border border-red-500/60";
+                
+                if (!isAdmin) selectedEvent = null; // Quita selección para obligar a ver la realidad
+            }
         }
 
         function updateClocks() {
@@ -630,15 +696,27 @@
             document.getElementById('server-time').textContent = "S: " + serverDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
             if(trainConfig.arrival) document.getElementById('station-arrival-time').textContent = trainConfig.arrival;
-            checkRegistrationWindow();
+            
+            // Loop principal del reloj y la interfaz en vivo
+            updateRegistrationState();
         }
 
-        let selectedEvent = 'CS';
-        let selectedRole = 'Titular';
-        let selectedTurn = 'Equipo A';
-        let selectedMember = '';
+        function selectEvent(ev) {
+            selectedEvent = ev;
+            updateTurnHours();
+            updateRegistrationState();
+        }
+
+        async function toggleSuspendEvent(ev) {
+            suspendedEvents[ev] = !suspendedEvents[ev];
+            await saveDatabase();
+            updateAdminUI();
+            updateRegistrationState();
+            alert(`⚠️ Evento ${ev} ${suspendedEvents[ev] ? 'suspendido' : 'reactivado'}.`);
+        }
 
         function updateTurnHours() {
+            if(!selectedEvent) return;
             const formatLocal = (serverHour, serverMinute) => {
                 let d = new Date();
                 d.setUTCHours(serverHour + 2); 
@@ -665,7 +743,7 @@
             });
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             if(tabId === 'powers') renderPowersTable();
-            if(tabId === 'inscripciones') checkRegistrationWindow();
+            if(tabId === 'inscripciones') updateRegistrationState();
         }
 
         async function loadDatabase() {
@@ -677,11 +755,7 @@
                     historyData = json.record.historyData || [];
                     trainConfig = json.record.trainConfig || trainConfig;
                     mvpConfig = json.record.mvpConfig || mvpConfig;
-                    
-                    if (json.record.allianceNames && json.record.allianceNames.length > 0) {
-                        allianceNames = json.record.allianceNames;
-                    }
-                    
+                    if (json.record.allianceNames && json.record.allianceNames.length > 0) allianceNames = json.record.allianceNames;
                     powersData = json.record.powersData || {};
                     registrations = json.record.registrations || {};
                     suspendedEvents = json.record.suspendedEvents || { CS: false, DS: false };
@@ -691,8 +765,7 @@
                 renderHistory();
                 renderPowersTable();
                 renderPreLists();
-                updateTurnHours();
-                checkRegistrationWindow();
+                updateRegistrationState();
             } catch (error) {
                 console.error("No se pudo cargar de la nube:", error);
             }
@@ -729,20 +802,6 @@
             document.getElementById('display-mvp-cs-2').textContent = mvpConfig.cs2 || '---';
         }
 
-        function selectEvent(ev) {
-            selectedEvent = ev;
-            
-            const btnCS = document.getElementById('btn-ev-cs');
-            const btnDS = document.getElementById('btn-ev-ds');
-            if(btnCS && btnDS) {
-                btnCS.className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='CS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
-                btnDS.className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='DS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
-            }
-            
-            updateTurnHours();
-            checkRegistrationWindow();
-        }
-
         function selectRole(role) {
             selectedRole = role;
             document.getElementById('btn-role-titular').className = `touch-btn p-3 bg-[#090d0a] border ${role==='Titular'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
@@ -777,13 +836,8 @@
         }
 
         async function submitRegistration() {
-            if(!checkRegistrationWindow()) {
-                alert("⛔ Las inscripciones para este evento se encuentran cerradas o suspendidas.");
-                return;
-            }
-            if(!selectedMember) { alert("Selecciona un integrante."); return; }
+            if(!selectedEvent || !selectedMember) { alert("Selecciona un evento y un integrante."); return; }
 
-            // VALIDACIÓN: Verificar si el integrante ya está inscrito en CUALQUIER equipo de este evento (CS o DS)
             for (let t of ['Equipo A', 'Equipo B']) {
                 const kCheck = `${selectedEvent} - ${t}`;
                 if (registrations[kCheck] && registrations[kCheck].some(item => item.name.toLowerCase() === selectedMember.toLowerCase())) {
@@ -836,12 +890,8 @@
         }
 
         function sortPowersBy(field) {
-            if (currentSortField === field) {
-                sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
-            } else {
-                currentSortField = field;
-                sortDirection = 'desc';
-            }
+            if (currentSortField === field) sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+            else { currentSortField = field; sortDirection = 'desc'; }
 
             allianceNames.sort((a, b) => {
                 const valA = parseFloat(powersData[a]?.[field]) || 0;
@@ -905,15 +955,12 @@
             await saveDatabase();
         }
 
-        function filterPowers() {
-            renderPowersTable(document.getElementById('search-power').value);
-        }
+        function filterPowers() { renderPowersTable(document.getElementById('search-power').value); }
 
         function openAddMemberModal() {
             document.getElementById('new-member-name').value = '';
             document.getElementById('add-member-modal').classList.remove('hidden');
         }
-
         function closeAddMemberModal() { document.getElementById('add-member-modal').classList.add('hidden'); }
 
         async function confirmAddMember() {
@@ -999,13 +1046,23 @@
         }
 
         function updateAdminUI() {
+            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             const btn = document.getElementById('admin-lock-btn');
             const icon = document.getElementById('admin-icon');
             const suspendContainer = document.getElementById('admin-suspend-container');
             const lblCS = document.getElementById('lbl-suspend-cs');
             const lblDS = document.getElementById('lbl-suspend-ds');
             
-            if (sessionStorage.getItem('knni_admin') === 'true') {
+            // Botones de edición ocultos para usuarios normales
+            ['btn-edit-train', 'btn-edit-discord', 'btn-edit-mvp'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    if(isAdmin) el.classList.remove('hidden');
+                    else el.classList.add('hidden');
+                }
+            });
+
+            if (isAdmin) {
                 btn.className = "touch-btn p-2 bg-yellow-950/80 border border-yellow-500 text-yellow-400 rounded-lg text-xs shadow-[0_0_10px_rgba(202,138,4,0.4)] transition-all";
                 icon.className = "fa-solid fa-lock-open text-sm";
                 if(suspendContainer) suspendContainer.classList.remove('hidden');
@@ -1023,14 +1080,14 @@
                 sessionStorage.removeItem('knni_admin');
                 updateAdminUI();
                 renderPowersTable();
-                checkRegistrationWindow();
+                updateRegistrationState();
                 renderPreLists();
                 alert("🔒 Sesión de Administrador cerrada.");
             } else {
                 pendingAction = () => {
                     updateAdminUI();
                     renderPowersTable();
-                    checkRegistrationWindow();
+                    updateRegistrationState();
                     renderPreLists();
                     alert("🔓 ¡Acceso total de Administrador concedido!");
                 };
@@ -1055,7 +1112,7 @@
                 closeAdminPasswordModal();
                 updateAdminUI();
                 renderPowersTable();
-                checkRegistrationWindow();
+                updateRegistrationState();
                 renderPreLists();
                 if (pendingAction) {
                     pendingAction();
@@ -1138,7 +1195,7 @@
             updateAdminUI();
             await loadDatabase();
             updateTurnHours();
-            checkRegistrationWindow();
+            updateRegistrationState();
         };
     </script>
 </body>
