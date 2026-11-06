@@ -204,10 +204,13 @@
             <div class="card-glass p-5 rounded-xl space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
                     <h3 class="font-cinzel font-bold text-lg text-yellow-500 text-center sm:text-left" data-i="insc-panel-title">Módulo de Inscripciones (Domingo 12am - Miércoles 11pm Server)</h3>
-                    <!-- Botón exclusivo Admin para suspender inscripciones manualmente -->
-                    <div id="admin-suspend-container" class="hidden">
-                        <button onclick="toggleGlobalSuspend()" id="btn-toggle-suspend" class="px-3 py-1.5 bg-red-950 border border-red-600 text-red-400 rounded-lg text-xs font-cinzel font-bold">
-                            <i class="fa-solid fa-ban mr-1"></i> <span id="suspend-lbl">Suspender Inscripciones</span>
+                    <!-- Botones exclusivos Admin para suspender por separado CS o DS -->
+                    <div id="admin-suspend-container" class="hidden flex items-center space-x-2">
+                        <button onclick="toggleSuspendEvent('CS')" id="btn-suspend-cs" class="px-2.5 py-1 bg-red-950 border border-red-600 text-red-400 rounded-lg text-[10px] font-cinzel font-bold">
+                            <span id="lbl-suspend-cs">Suspender CS</span>
+                        </button>
+                        <button onclick="toggleSuspendEvent('DS')" id="btn-suspend-ds" class="px-2.5 py-1 bg-red-950 border border-red-600 text-red-400 rounded-lg text-[10px] font-cinzel font-bold">
+                            <span id="lbl-suspend-ds">Suspender DS</span>
                         </button>
                     </div>
                 </div>
@@ -216,7 +219,7 @@
 
                 <div class="space-y-2">
                     <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-3" id="event-buttons-container">
                         <button onclick="selectEvent('CS')" id="btn-ev-cs" class="touch-btn p-4 bg-[#090d0a] border-2 border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-sm font-bold text-stone-200">Cañón Storm (CS)</button>
                         <button onclick="selectEvent('DS')" id="btn-ev-ds" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl font-cinzel text-sm font-bold text-stone-200">Desert Storm (DS)</button>
                     </div>
@@ -436,7 +439,7 @@
         let historyData = [];
         let registrations = {};
         let powersData = {};
-        let manualSuspend = false; 
+        let suspendedEvents = { CS: false, DS: false }; // Suspensión independiente por evento
         let currentLang = 'ES';
         let pendingAction = null;
         let currentSortField = null;
@@ -515,6 +518,32 @@
             }
         }
 
+        function updateEventVisibility() {
+            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
+            const btnCS = document.getElementById('btn-ev-cs');
+            const btnDS = document.getElementById('btn-ev-ds');
+
+            // Si CS está suspendido y no es admin, se oculta; si es admin se muestra tenue
+            if (suspendedEvents.CS && !isAdmin) {
+                btnCS.classList.add('hidden');
+                if (selectedEvent === 'CS') { selectEvent('DS'); }
+            } else {
+                btnCS.classList.remove('hidden');
+                if (suspendedEvents.CS) btnCS.style.opacity = "0.4";
+                else btnCS.style.opacity = "1";
+            }
+
+            // Lo mismo para DS
+            if (suspendedEvents.DS && !isAdmin) {
+                btnDS.classList.add('hidden');
+                if (selectedEvent === 'DS') { selectEvent('CS'); }
+            } else {
+                btnDS.classList.remove('hidden');
+                if (suspendedEvents.DS) btnDS.style.opacity = "0.4";
+                else btnDS.style.opacity = "1";
+            }
+        }
+
         function checkRegistrationWindow() {
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -533,17 +562,20 @@
 
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             
-            if (manualSuspend && !isAdmin) {
+            // Si el evento seleccionado está suspendido manualmente
+            if (suspendedEvents[selectedEvent] && !isAdmin) {
                 isOpen = false;
             }
+
+            updateEventVisibility();
 
             const banner = document.getElementById('inscripcion-status-banner');
             const submitBtn = document.getElementById('btn-submit-reg');
 
-            if (isOpen || isAdmin) {
+            if ((isOpen && !suspendedEvents[selectedEvent]) || isAdmin) {
                 if(banner) {
                     banner.className = "p-3 rounded-lg text-center font-cinzel text-xs font-bold bg-green-950/60 text-green-400 border border-green-700/50";
-                    banner.innerHTML = manualSuspend ? `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Inscripciones Suspendidas por el Admin (Modo Admin activo para pruebas)` : `<i class="fa-solid fa-circle-check mr-1"></i> Inscripciones Abiertas (Horario Servidor)`;
+                    banner.innerHTML = suspendedEvents[selectedEvent] ? `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${selectedEvent} Suspendido (Modo Admin activo para pruebas)` : `<i class="fa-solid fa-circle-check mr-1"></i> Inscripciones Abiertas para ${selectedEvent} (Servidor)`;
                 }
                 if(submitBtn) {
                     submitBtn.disabled = false;
@@ -553,7 +585,7 @@
             } else {
                 if(banner) {
                     banner.className = "p-3 rounded-lg text-center font-cinzel text-xs font-bold bg-red-950/60 text-red-400 border border-red-700/50";
-                    banner.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Inscripciones Suspendidas / Cerradas`;
+                    banner.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Inscripciones para ${selectedEvent} Suspendidas / Cerradas`;
                 }
                 if(submitBtn) {
                     submitBtn.disabled = true;
@@ -563,12 +595,12 @@
             }
         }
 
-        async function toggleGlobalSuspend() {
-            manualSuspend = !manualSuspend;
+        async function toggleSuspendEvent(ev) {
+            suspendedEvents[ev] = !suspendedEvents[ev];
             await saveDatabase();
             updateAdminUI();
             checkRegistrationWindow();
-            alert(manualSuspend ? "⛔ Inscripciones suspendidas manualmente." : "✅ Inscripciones reactivadas.");
+            alert(`⚠️ Evento ${ev} ${suspendedEvents[ev] ? 'suspendido' : 'reactivado'}.`);
         }
 
         function updateClocks() {
@@ -619,7 +651,7 @@
                     allianceNames = json.record.allianceNames || allianceNames;
                     powersData = json.record.powersData || {};
                     registrations = json.record.registrations || {};
-                    manualSuspend = json.record.manualSuspend || false;
+                    suspendedEvents = json.record.suspendedEvents || { CS: false, DS: false };
                 }
                 initDashboard();
                 renderHistory();
@@ -637,7 +669,7 @@
                 await fetch(BIN_URL, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
-                    body: JSON.stringify({ historyData, trainConfig, allianceNames, powersData, registrations, manualSuspend })
+                    body: JSON.stringify({ historyData, trainConfig, allianceNames, powersData, registrations, suspendedEvents })
                 });
             } catch (error) {
                 console.error("Error al guardar en la nube:", error);
@@ -654,10 +686,12 @@
         }
 
         function selectEvent(ev) {
+            if(suspendedEvents[ev] && sessionStorage.getItem('knni_admin') !== 'true') return;
             selectedEvent = ev;
             document.getElementById('btn-ev-cs').className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='CS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
             document.getElementById('btn-ev-ds').className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='DS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
             updateTurnHours();
+            checkRegistrationWindow();
         }
 
         function selectRole(role) {
@@ -695,7 +729,7 @@
 
         async function submitRegistration() {
             if(!checkRegistrationWindow()) {
-                alert("⛔ Las inscripciones se encuentran cerradas o suspendidas en este momento.");
+                alert("⛔ Las inscripciones para este evento se encuentran cerradas o suspendidas.");
                 return;
             }
             if(!selectedMember) { alert("Selecciona un integrante."); return; }
@@ -783,17 +817,17 @@
                 if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
                 const p = powersData[name];
                 
-                // Si están vacías o no definidas, por defecto asignamos '0.00'
-                const valM1 = (p.m1 !== undefined && p.m1 !== '') ? p.m1 : '0.00';
-                const valM2 = (p.m2 !== undefined && p.m2 !== '') ? p.m2 : '0.00';
-                const valM3 = (p.m3 !== undefined && p.m3 !== '') ? p.m3 : '0.00';
+                // Si están vacías o no definidas, por defecto asignamos '00.00'
+                const valM1 = (p.m1 !== undefined && p.m1 !== '') ? p.m1 : '00.00';
+                const valM2 = (p.m2 !== undefined && p.m2 !== '') ? p.m2 : '00.00';
+                const valM3 = (p.m3 !== undefined && p.m3 !== '') ? p.m3 : '00.00';
 
                 let row = `<tr class="border-b border-green-900/35 hover:bg-green-950/20">
                     <td class="px-3 py-2.5 font-mono text-xs text-stone-400">${idx + 1}</td>
                     <td class="px-3 py-2.5 font-cinzel text-stone-200">${name}</td>
-                    <td class="px-3 py-2.5"><input type="text" value="${valM1}" onchange="updatePower('${name}', 'm1', this.value)" placeholder="0.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
-                    <td class="px-3 py-2.5"><input type="text" value="${valM2}" onchange="updatePower('${name}', 'm2', this.value)" placeholder="0.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
-                    <td class="px-3 py-2.5"><input type="text" value="${valM3}" onchange="updatePower('${name}', 'm3', this.value)" placeholder="0.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${valM1}" onchange="updatePower('${name}', 'm1', this.value)" placeholder="00.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${valM2}" onchange="updatePower('${name}', 'm2', this.value)" placeholder="00.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${valM3}" onchange="updatePower('${name}', 'm3', this.value)" placeholder="00.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
                     <td class="px-3 py-2.5"><select onchange="updatePower('${name}', 'troop', this.value)" class="bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none">
                         <option value="Tank" ${p.troop==='Tank'?'selected':''}>Tank</option>
                         <option value="Air" ${p.troop==='Air'?'selected':''}>Air</option>
@@ -810,8 +844,7 @@
 
         async function updatePower(name, field, val) {
             if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
-            // Si el campo queda vacío al escribir, lo guardamos como '0.00'
-            powersData[name][field] = (val.trim() === '') ? '0.00' : val;
+            powersData[name][field] = (val.trim() === '') ? '00.00' : val;
             await saveDatabase();
         }
 
@@ -833,7 +866,7 @@
             if(allianceNames.includes(name)) { alert("El integrante ya existe."); return; }
             allianceNames.push(name);
             allianceNames.sort();
-            powersData[name] = { m1: '0.00', m2: '0.00', m3: '0.00', troop: 'Tank' };
+            powersData[name] = { m1: '00.00', m2: '00.00', m3: '00.00', troop: 'Tank' };
             await saveDatabase();
             closeAddMemberModal();
             renderPowersTable();
@@ -915,13 +948,15 @@
             const btn = document.getElementById('admin-lock-btn');
             const icon = document.getElementById('admin-icon');
             const suspendContainer = document.getElementById('admin-suspend-container');
-            const suspendLbl = document.getElementById('suspend-lbl');
+            const lblCS = document.getElementById('lbl-suspend-cs');
+            const lblDS = document.getElementById('lbl-suspend-ds');
             
             if (sessionStorage.getItem('knni_admin') === 'true') {
                 btn.className = "touch-btn p-2 bg-yellow-950/80 border border-yellow-500 text-yellow-400 rounded-lg text-xs shadow-[0_0_10px_rgba(202,138,4,0.4)] transition-all";
                 icon.className = "fa-solid fa-lock-open text-sm";
                 if(suspendContainer) suspendContainer.classList.remove('hidden');
-                if(suspendLbl) suspendLbl.textContent = manualSuspend ? "Reactivar Inscripciones" : "Suspender Inscripciones";
+                if(lblCS) lblCS.textContent = suspendedEvents.CS ? "Reactivar CS" : "Suspender CS";
+                if(lblDS) lblDS.textContent = suspendedEvents.DS ? "Reactivar DS" : "Suspender DS";
             } else {
                 btn.className = "touch-btn p-2 bg-stone-900 border border-stone-800 text-stone-400 rounded-lg text-xs transition-all";
                 icon.className = "fa-solid fa-lock text-sm";
