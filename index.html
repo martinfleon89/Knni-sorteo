@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KnNi - Mesa Redonda e Inscripciones CS & DS</title>
+    <title>KnNi - Alianza Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -28,49 +27,10 @@
             z-index: 10;
         }
         
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0c120e; }
         ::-webkit-scrollbar-thumb { background: #2f4532; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3f5f45; }
         
-        .tab-btn.active {
-            background-color: #1a2e20;
-            color: #fbbf24;
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            box-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.3);
-        }
-        .tab-btn:not(.active) { color: #a8a29e; border: 1px solid transparent; }
-        .tab-btn:not(.active):hover { color: #ffffff; background-color: #152419; }
-        
-        thead { background: rgba(12, 18, 14, 0.95); }
-        tr:hover { background-color: rgba(30, 45, 33, 0.5) !important; }
-
-        .touch-btn {
-            transition: all 0.2s ease;
-            cursor: pointer;
-            user-select: none;
-        }
-        .touch-btn:active {
-            transform: scale(0.98);
-        }
-        .role-option-btn {
-            border: 2px solid rgba(63, 98, 56, 0.5);
-            background-color: #090d0a;
-            color: #a8a29e;
-        }
-        .role-option-btn.selected-titular {
-            border-color: #22c55e;
-            background-color: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
-        }
-        .role-option-btn.selected-suplente {
-            border-color: #eab308;
-            background-color: rgba(234, 179, 8, 0.2);
-            color: #eab308;
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
-        }
-
         .ash-particle {
             position: fixed;
             background: rgba(214, 211, 209, 0.35);
@@ -91,375 +51,290 @@
 
     <div id="ash-container"></div>
 
-    <!-- Top Navigation Bar -->
+    <!-- TOP NAVIGATION BAR -->
     <header class="sticky top-0 z-50 border-b border-green-900/50 bg-[#0c120e]/95 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
-                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-800 border border-yellow-500/50 flex items-center justify-center shadow-[0_0_15px_rgba(202,138,4,0.3)] text-stone-100 text-xl">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
+            
+            <!-- Logo y Nombre -->
+            <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchTab('dashboard')">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-800 border border-yellow-500/50 flex items-center justify-center shadow-[0_0_15px_rgba(202,138,4,0.3)] text-stone-100 text-base sm:text-xl">
                     <i class="fa-solid fa-shield"></i>
                 </div>
-                <div>
-                    <h1 class="font-cinzel font-bold text-lg tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700">
-                        KnNi ALIANZA
-                    </h1>
-                    <p class="text-xs text-stone-400" data-translate="sub-title">Inscripciones CS & DS y Sorteos</p>
+                <h1 class="font-cinzel font-extrabold text-lg sm:text-xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 leading-none">
+                    KnNi
+                </h1>
+            </div>
+
+            <!-- Menú Desplegable Principal -->
+            <div class="relative">
+                <button onclick="toggleDropdownMenu()" class="touch-btn px-2.5 py-1.5 bg-[#142217] border border-green-800/60 rounded-lg text-xs font-cinzel text-yellow-400 font-bold flex items-center space-x-1.5">
+                    <i class="fa-solid fa-bars"></i>
+                    <span data-i="menu" class="hidden sm:inline">Menú</span>
+                </button>
+                <div id="dropdown-menu" class="hidden absolute left-0 mt-2 w-56 bg-[#0c120e] border border-green-800 rounded-xl shadow-2xl py-2 z-50 text-xs font-cinzel">
+                    <button onclick="switchTab('dashboard'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-house mr-2 text-yellow-500"></i>Home</button>
+                    <button onclick="switchTab('inscripciones'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-flag-checkered mr-2 text-yellow-500"></i>Inscripción DS & CS</button>
+                    <button onclick="switchTab('giveaway'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-dice-d20 mr-2 text-yellow-500"></i>Sorteo Divino</button>
+                    <button onclick="switchTab('powers'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-users-rectangle mr-2 text-yellow-500"></i>Batallón & Poderes</button>
                 </div>
             </div>
-            
-            <!-- Tab Navigation -->
-            <nav class="hidden md:flex space-x-1 bg-[#101712] p-1 rounded-xl border border-green-900/40">
-                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                    <i class="fa-solid fa-scroll mr-2"></i><span data-translate="nav-realm">Reino</span>
-                </button>
-                <button onclick="switchTab('inscripciones')" id="btn-inscripciones" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                    <i class="fa-solid fa-flag-checkered mr-2"></i><span data-translate="nav-regs">Inscripciones CS & DS</span>
-                </button>
-                <button onclick="switchTab('giveaway')" id="btn-giveaway" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                    <i class="fa-solid fa-dice-d20 mr-2"></i><span data-translate="nav-draw">Sorteo Divino</span>
-                </button>
-                <button onclick="switchTab('history')" id="btn-history" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                    <i class="fa-solid fa-book-journal-whills mr-2"></i><span data-translate="nav-chronicles">Crónicas</span>
-                </button>
-                <button onclick="switchTab('alliance')" id="btn-alliance" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                    <i class="fa-solid fa-chess-knight mr-2"></i><span data-translate="nav-battalion">Batallón</span>
-                </button>
-            </nav>
 
-            <div class="flex items-center space-x-3">
-                <!-- Reproductor de Música Épica de Guerra (Fuente Libre Pixabay) -->
-                <button onclick="toggleMusic()" id="music-btn" class="touch-btn px-2.5 py-1.5 bg-stone-900 border border-green-900/60 rounded-lg hover:bg-green-950 transition-colors text-xs text-stone-400" title="Música Épica / Guerra">
-                    <i id="music-icon" class="fa-solid fa-volume-xmark text-stone-400"></i>
+            <!-- Controles Derecha -->
+            <div class="flex items-center space-x-1 sm:space-x-2.5">
+                <!-- Música -->
+                <button onclick="toggleMusic()" id="music-btn" class="touch-btn p-2 bg-stone-900 border border-green-900/60 rounded-lg text-xs text-stone-400" title="Música de Guerra">
+                    <i id="music-icon" class="fa-solid fa-volume-xmark"></i>
                 </button>
                 <audio id="bg-music" loop>
                     <source src="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=epic-battle-decisive-action-123475.mp3" type="audio/mpeg">
                 </audio>
 
-                <button onclick="toggleLang()" class="px-2 py-1 bg-green-900/40 border border-green-700/50 rounded hover:bg-green-800 transition-colors text-xs font-bold text-yellow-500 font-cinzel">
-                    <span id="lang-ind">ES</span> <i class="fa-solid fa-language ml-1"></i>
+                <!-- Traductor ES/EN -->
+                <button onclick="toggleLang()" class="touch-btn px-2 py-1.5 bg-green-950 border border-green-800 text-yellow-400 font-cinzel text-xs font-bold rounded-lg">
+                    <span id="lang-lbl">ES</span>
                 </button>
 
-                <!-- Botón Admin / Bandeja -->
-                <div class="flex items-center space-x-2">
-                    <button onclick="checkAdmin(() => openAdminInboxModal())" class="touch-btn bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2.5 py-1.5 rounded-lg text-xs font-cinzel font-bold flex items-center space-x-1" title="Bandeja / Admin">
-                        <i class="fa-solid fa-user-shield"></i>
-                        <span id="ticket-count" class="bg-red-600 text-white px-1.5 py-0.2 rounded-full text-[10px]">0</span>
-                    </button>
-                </div>
+                <!-- Admin (Candado con Acceso Total) -->
+                <button id="admin-lock-btn" onclick="toggleAdminSession()" class="touch-btn p-2 bg-stone-900 border border-stone-800 text-stone-400 rounded-lg text-xs transition-all" title="Modo Administrador">
+                    <i id="admin-icon" class="fa-solid fa-lock text-sm"></i>
+                </button>
 
-                <div class="hidden sm:flex flex-col text-right">
-                    <span class="text-xs font-semibold text-yellow-500 font-cinzel" data-translate="era-title">Era / Horarios</span>
-                    <span class="text-[11px] text-stone-300" id="current-date">...</span>
-                </div>
-                <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg bg-[#101712] text-stone-300 hover:text-white border border-green-900/40">
-                        <i class="fa-solid fa-bars text-lg"></i>
-                    </button>
+                <!-- Horarios compactos para móvil vertical -->
+                <div class="flex flex-col px-1.5 py-0.5 bg-[#142217]/90 border border-green-800/50 rounded-lg text-[9px] sm:text-[10px] font-mono leading-tight">
+                    <span id="server-time" class="text-yellow-400 font-bold whitespace-nowrap">S: --:--</span>
+                    <span id="local-time" class="text-stone-300 whitespace-nowrap">L: --:--</span>
                 </div>
             </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1 bg-[#0c120e] border-b border-green-900/50">
-            <button onclick="switchTab('dashboard'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-yellow-500" data-translate="nav-realm">Reino</button>
-            <button onclick="switchTab('inscripciones'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-stone-300" data-translate="nav-regs">Inscripciones CS & DS</button>
-            <button onclick="switchTab('giveaway'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-stone-300" data-translate="nav-draw">Sorteo Divino</button>
-            <button onclick="switchTab('history'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-stone-300" data-translate="nav-chronicles">Crónicas</button>
-            <button onclick="switchTab('alliance'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-stone-300" data-translate="nav-battalion">Batallón</button>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative z-10">
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6 relative z-10">
 
-        <!-- TAB 1: DASHBOARD (REINO) -->
-        <div id="tab-dashboard" class="space-y-8">
+        <!-- TAB 1: HOME / DASHBOARD -->
+        <div id="tab-dashboard" class="space-y-6">
             
-            <div class="card-glass p-6 rounded-2xl border-l-4 border-l-yellow-500 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-yellow-950/40 via-stone-900/60 to-emerald-950/40">
+            <div class="card-glass p-5 rounded-2xl border-l-4 border-l-yellow-500 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-yellow-950/40 via-stone-900/60 to-emerald-950/40">
                 <div class="space-y-1 text-center sm:text-left">
-                    <span class="text-[10px] bg-yellow-900/60 text-yellow-300 px-2.5 py-1 rounded-full font-bold font-cinzel" data-translate="convocatoria-badge">CONVOCATORIA ABIERTA</span>
-                    <h2 class="font-cinzel font-bold text-xl text-yellow-400" data-translate="convocatoria-title">Inscripciones Cañón Storm & Desert Storm</h2>
-                    <p class="text-xs text-stone-300" data-translate="convocatoria-desc">Anota tu nombre, elige tu rol táctico (Titular o Suplente) y verifica tu horario local.</p>
+                    <span id="convocatoria-badge" class="text-[10px] bg-yellow-900/60 text-yellow-300 px-2.5 py-1 rounded-full font-bold font-cinzel">CONVOCATORIA ABIERTA</span>
+                    <h2 class="font-cinzel font-bold text-lg sm:text-xl text-yellow-400" data-i="home-insc-title">Inscripciones Cañón Storm & Desert Storm</h2>
+                    <p class="text-xs text-stone-300" data-i="home-insc-desc">Anota tu nombre, elige tu rol táctico (Titular o Suplente).</p>
                 </div>
-                <button onclick="switchTab('inscripciones')" class="touch-btn px-6 py-3.5 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-xl font-cinzel text-xs font-bold border border-yellow-500/50 shadow-lg flex items-center space-x-2 whitespace-nowrap">
-                    <i class="fa-solid fa-flag-checkered"></i>
-                    <span data-translate="btn-go-regs">IR A INSCRIPCIONES &rarr;</span>
+                <button onclick="switchTab('inscripciones')" class="touch-btn px-6 py-3.5 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-xl font-cinzel text-xs font-bold border border-yellow-500/50 shadow-lg whitespace-nowrap">
+                    <span data-i="btn-go-insc">IR A INSCRIPCIONES &rarr;</span>
                 </button>
             </div>
 
-            <!-- TARJETA DE MIEMBROS QUE ENVÍA A BATALLÓN -->
-            <div class="grid grid-cols-1 sm:grid-cols-1 gap-4">
-                <div onclick="switchTab('alliance')" class="card-glass p-5 rounded-xl relative overflow-hidden group hover:border-yellow-600/50 transition-all cursor-pointer">
-                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-green-700/10 rounded-full blur-xl"></div>
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest font-cinzel" data-translate="stat-alliance">Fuerza Aliada (Miembros)</p>
-                            <h3 id="stat-total-alliance" class="text-3xl font-bold font-cinzel text-stone-100 mt-1">0</h3>
-                            <span class="text-[11px] text-yellow-500 hover:underline mt-1 inline-block" data-translate="view-battalion-link">Ver listado en Batallón &rarr;</span>
+            <!-- Bloque Tren -->
+            <div class="card-glass p-5 sm:p-6 rounded-2xl border-2 border-yellow-600/50 bg-gradient-to-br from-yellow-950/30 via-[#0c120e]/80 to-stone-900 relative">
+                <button onclick="checkAdmin(() => openEditTrainModal())" class="absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
+                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar Tren</span>
+                </button>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-700/40 border border-yellow-500/50 text-yellow-400 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-train"></i>
                         </div>
-                        <div class="w-12 h-12 rounded-lg bg-green-900/40 border border-green-700/30 flex items-center justify-center text-green-500 text-xl"><i class="fa-solid fa-users"></i></div>
+                        <span id="train-status-badge" class="text-[11px] font-mono bg-yellow-900/60 text-yellow-300 px-2.5 py-0.5 rounded-full border border-yellow-700/50 font-bold">Sin Tren Activo</span>
+                    </div>
+                    <h2 class="font-cinzel font-bold text-lg sm:text-xl text-yellow-400" data-i="train-status-title">Estado del Tren y Estación</h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div class="bg-[#090d0a] p-3 rounded-xl border border-green-900/50">
+                            <span class="text-[10px] text-stone-400 font-cinzel uppercase block" data-i="driver-lbl">Conductor (Driver)</span>
+                            <strong id="display-train-driver" class="text-stone-100 font-cinzel text-sm block truncate">---</strong>
+                        </div>
+                        <div class="bg-[#090d0a] p-3 rounded-xl border border-yellow-900/50">
+                            <span class="text-[10px] text-stone-400 font-cinzel uppercase block" data-i="vip-lbl">Lord VIP</span>
+                            <strong id="display-train-vip" class="text-yellow-500 font-cinzel text-sm block truncate">---</strong>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#090d0a] p-3.5 rounded-xl border border-amber-600/40 flex justify-between items-center text-xs text-amber-400 font-cinzel font-bold">
+                        <span data-i="arrival-lbl"><i class="fa-solid fa-clock mr-1"></i> Hora de llegada a la estación:</span>
+                        <span id="station-arrival-time" class="font-mono text-white text-xs sm:text-sm">--:--</span>
                     </div>
                 </div>
             </div>
 
-            <!-- MVP Section -->
-            <div class="card-glass p-6 rounded-xl border-t-2 border-t-yellow-600">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <h3 class="font-cinzel font-bold text-xl text-yellow-500" data-translate="mvp-section-title">Salón de MVPs y Campeones</h3>
-                        <p class="text-xs text-stone-400" data-translate="mvp-section-desc">Reconocimientos especiales otorgados en combate y gestión.</p>
+            <!-- Discord -->
+            <div class="card-glass p-5 rounded-2xl border-2 border-[#5865F2]/50 bg-gradient-to-br from-[#5865F2]/20 via-[#0c120e]/80 to-stone-900 relative">
+                <button onclick="checkAdmin(() => openEditDiscordModal())" class="absolute top-4 right-4 text-xs bg-[#5865F2]/40 border border-[#5865F2] text-white px-2 py-1 rounded hover:bg-[#5865F2]/60 transition-all flex items-center space-x-1">
+                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar Enlace</span>
+                </button>
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-center sm:text-left">
+                        <h2 class="font-cinzel font-bold text-lg text-stone-100" data-i="discord-title">Comunidad en Discord</h2>
+                        <p class="text-xs text-stone-300" data-i="discord-desc">Únete al canal de voz y coordinación de batallas.</p>
                     </div>
-                    <button onclick="checkAdmin(() => openMvpModal())" class="px-4 py-2 bg-yellow-700 text-stone-100 font-cinzel text-xs font-bold rounded-lg hover:bg-yellow-600 transition-colors border border-yellow-500/50 shadow-[0_0_10px_rgba(202,138,4,0.3)]">
-                        <i class="fa-solid fa-pen-to-square mr-1"></i> <span data-translate="btn-edit-mvps">Editar MVPs</span>
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-4 flex flex-col justify-between">
-                        <div class="space-y-3">
-                            <div>
-                                <div class="flex items-center space-x-2 mb-1">
-                                    <div class="w-7 h-7 rounded bg-yellow-900/30 border border-yellow-600/40 flex items-center justify-center text-yellow-500 text-xs"><i class="fa-solid fa-award"></i></div>
-                                    <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-translate="mvp-week-title">MVP de la Semana</p>
-                                </div>
-                                <h4 id="display-mvp-week" class="font-cinzel font-bold text-sm text-stone-100 truncate pl-9">---</h4>
-                            </div>
-                            <div class="border-t border-green-900/40 pt-2">
-                                <div class="flex items-center space-x-2 mb-1">
-                                    <div class="w-7 h-7 rounded bg-yellow-900/30 border border-yellow-600/40 flex items-center justify-center text-yellow-500 text-xs"><i class="fa-solid fa-crown"></i></div>
-                                    <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-translate="champion-title">Campeón de Alianza</p>
-                                </div>
-                                <h5 id="display-champion" class="font-cinzel font-bold text-sm text-yellow-500 truncate pl-9">---</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-4 flex flex-col justify-between">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-10 h-10 rounded-lg bg-amber-900/30 border border-amber-600/40 flex items-center justify-center text-amber-500 text-lg"><i class="fa-solid fa-sun"></i></div>
-                            <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-translate="mvp-ds-title">MVP Desert Storm</p>
-                        </div>
-                        <div class="space-y-1">
-                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">1:</span> <span id="display-mvp-desert-1" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
-                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">2:</span> <span id="display-mvp-desert-2" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
-                        </div>
-                    </div>
-                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-4 flex flex-col justify-between">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-10 h-10 rounded-lg bg-red-900/30 border border-red-600/40 flex items-center justify-center text-red-500 text-lg"><i class="fa-solid fa-bullseye"></i></div>
-                            <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-translate="mvp-cs-title">MVP Cañón Storm</p>
-                        </div>
-                        <div class="space-y-1">
-                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">1:</span> <span id="display-mvp-canon-1" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
-                            <div><span class="text-[9px] text-stone-500 font-bold uppercase">2:</span> <span id="display-mvp-canon-2" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
-                        </div>
-                    </div>
+                    <a id="discord-link-btn" href="https://discord.gg/TU_ENLACE_DE_DISCORD" target="_blank" class="touch-btn px-6 py-3 bg-[#5865F2] hover:bg-[#4752c4] text-white font-cinzel text-xs font-bold rounded-xl shadow whitespace-nowrap">
+                        <i class="fa-brands fa-discord mr-2"></i><span data-i="discord-btn">UNIRSE AL DISCORD</span>
+                    </a>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card-glass p-6 rounded-xl flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-translate="hof-title">Salón de la Fama (Caballeros)</h3>
-                            <p class="text-xs text-stone-400" data-translate="hof-desc">Guerreros con más campañas lideradas</p>
+            <!-- MVPs -->
+            <div class="card-glass p-5 sm:p-6 rounded-xl border-t-2 border-t-yellow-600 space-y-4">
+                <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="mvp-hall-title">Salón de MVPs y Campeones</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-3.5 space-y-2">
+                        <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i="mvp-week">MVP de la Semana</p>
+                        <h4 id="display-mvp-week" class="font-cinzel font-bold text-sm text-stone-100">---</h4>
+                        <div class="border-t border-green-900/40 pt-2">
+                            <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i="champ-week">Campeón de la Semana</p>
+                            <h5 id="display-champion" class="font-cinzel font-bold text-sm text-yellow-500">---</h5>
                         </div>
                     </div>
-                    <div class="relative h-72 w-full"><canvas id="topDriversChart"></canvas></div>
-                </div>
-
-                <div class="card-glass p-6 rounded-xl flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-cinzel font-bold text-lg text-yellow-500 flex items-center">
-                            <i class="fa-solid fa-hourglass-half mr-2"></i> <span data-translate="recent-gestures-title">Últimas Gestas</span>
-                        </h3>
-                        <button onclick="switchTab('history')" class="text-xs text-yellow-600 hover:text-yellow-400 hover:underline" data-translate="open-chronicles-link">Abrir Crónicas &rarr;</button>
+                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-3.5 space-y-1">
+                        <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i="mvp-ds">MVP Desert Storm</p>
+                        <div><span class="text-[9px] text-stone-500 uppercase">T1:</span> <span id="display-mvp-ds-1" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
+                        <div><span class="text-[9px] text-stone-500 uppercase">T2:</span> <span id="display-mvp-ds-2" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
                     </div>
-                    <div class="overflow-y-auto max-h-72">
-                        <table class="w-full text-left text-sm text-stone-300">
-                            <thead class="text-[10px] uppercase text-stone-500 border-b border-green-900/50 sticky top-0 font-cinzel tracking-wider">
-                                <tr>
-                                    <th class="px-4 py-3" data-translate="table-col-day">Día</th>
-                                    <th class="px-4 py-3" data-translate="table-col-driver">Caballero (Driver)</th>
-                                    <th class="px-4 py-3" data-translate="table-col-vip">Lord (VIP)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recent-history-tbody" class="divide-y divide-green-900/30">
-                            </tbody>
-                        </table>
+                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-3.5 space-y-1">
+                        <p class="text-[10px] font-bold text-stone-400 uppercase font-cinzel" data-i="mvp-cs">MVP Cañón Storm</p>
+                        <div><span class="text-[9px] text-stone-500 uppercase">T1:</span> <span id="display-mvp-cs-1" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
+                        <div><span class="text-[9px] text-stone-500 uppercase">T2:</span> <span id="display-mvp-cs-2" class="font-cinzel font-bold text-sm text-stone-100">---</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB: INSCRIPCIONES CS & DS -->
+        <!-- TAB 2: INSCRIPCIONES -->
         <div id="tab-inscripciones" class="hidden space-y-6">
-            <div class="card-glass p-5 rounded-2xl border-l-4 border-l-yellow-500 space-y-3">
-                <h3 class="font-cinzel font-bold text-sm text-yellow-400 flex items-center">
-                    <i class="fa-solid fa-calendar-days mr-2"></i> <span data-translate="regs-period-title">Período Oficial de Inscripción (Domingo a Miércoles)</span>
-                </h3>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-[#090d0a] p-3.5 rounded-xl border border-green-900/40 items-center">
-                    <div>
-                        <span class="text-stone-500 block" data-translate="regs-open-server">Apertura (Server UTC-2):</span>
-                        <span class="text-stone-200 font-bold" data-translate="regs-open-time">Domingo 00:00 hs</span> 
-                        <span class="text-yellow-500 block">➔ <span data-translate="your-time">Tu hora</span>: <span id="open-local" class="font-bold">Calculando...</span></span>
-                    </div>
-                    <div>
-                        <span class="text-stone-500 block" data-translate="regs-close-server">Cierre (Server UTC-2):</span>
-                        <span class="text-stone-200 font-bold" data-translate="regs-close-time">Miércoles 23:30 hs</span> 
-                        <span class="text-yellow-500 block">➔ <span data-translate="your-time">Tu hora</span>: <span id="close-local" class="font-bold">Calculando...</span></span>
-                    </div>
-                    <div class="bg-amber-950/40 border border-amber-600/50 p-3 rounded-xl text-center space-y-1">
-                        <span class="text-[10px] uppercase font-cinzel text-amber-400 block"><i class="fa-solid fa-stopwatch mr-1"></i> <span data-translate="time-remaining">Tiempo Restante</span></span>
-                        <strong id="countdown-timer" class="text-sm text-white font-mono block">--:--:--</strong>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BOTONES PRINCIPALES -->
-            <div class="text-center py-4 space-y-3">
-                <button onclick="openRegisterWizardModal()" class="touch-btn px-8 py-4 bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-600 hover:to-yellow-500 text-stone-100 rounded-2xl font-cinzel text-sm font-bold border border-yellow-400/50 shadow-[0_0_20px_rgba(202,138,4,0.4)] flex items-center justify-center space-x-3 mx-auto">
-                    <i class="fa-solid fa-file-pen text-lg"></i>
-                    <span data-translate="btn-wizard-regs">¡REGISTRARSE AHORA (PASO A PASO)!</span>
-                </button>
-                <div>
-                    <button onclick="openSupportModal()" class="touch-btn inline-flex items-center space-x-2 text-xs font-cinzel text-amber-500 hover:text-amber-400 bg-amber-950/30 border border-amber-700/40 px-4 py-2 rounded-xl transition-colors">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span data-translate="btn-support-report">¿Problemas para registrarse? Avisar al Liderazgo</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- VISTA DE LISTAS ACTIVAS -->
-            <div class="card-glass p-6 rounded-xl space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-translate="official-lists-title">Listas Preoficiales de Convocatoria</h3>
-                    <span id="admin-mode-indicator" class="text-[10px] bg-red-950 text-red-400 border border-red-800 px-2 py-1 rounded font-bold hidden" data-translate="admin-mode-active">Modo Administrador Activo</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="lists-container"></div>
-            </div>
-        </div>
-
-        <!-- TAB 2: SORTEADOR -->
-        <div id="tab-giveaway" class="hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <div class="card-glass p-6 rounded-xl lg:col-span-4 flex flex-col h-full border-t-2 border-t-green-700">
-                    <h2 class="font-cinzel font-bold text-xl text-yellow-500 mb-1" data-translate="convoke-title">1. Convocar Tropa</h2>
-                    <p class="text-xs text-stone-400 mb-4" data-translate="convoke-desc">Ingresa los nombres de los valientes. El sello mágico bloqueará a quienes hayan ganado en las últimas 14 gestas.</p>
-                    
-                    <textarea id="bulk-names" rows="10" class="w-full flex-1 bg-[#090d0a] border border-green-900/50 rounded-lg p-4 text-sm text-stone-200 focus:border-yellow-600 outline-none resize-none transition-colors mb-4 placeholder-stone-600" placeholder="Nombres..."></textarea>
-                    
-                    <button onclick="loadParticipants()" class="w-full py-4 bg-green-900/80 text-yellow-500 font-bold rounded-lg shadow-lg hover:bg-green-800 border border-green-700 transition-all font-cinzel tracking-widest">
-                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> <span data-translate="btn-seal-list">SELLAR LISTA</span>
-                    </button>
-                </div>
-
-                <div class="lg:col-span-8 space-y-6">
-                    <div class="card-glass p-6 rounded-xl flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[300px]">
-                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-yellow-600/10 rounded-full blur-3xl"></div>
-                        <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-green-600/10 rounded-full blur-3xl"></div>
-
-                        <div class="w-full flex justify-between px-4 mb-4 z-10">
-                            <div class="text-left bg-[#090d0a] border border-green-900/50 rounded-lg p-3 min-w-[120px]">
-                                <p class="text-[10px] text-stone-500 uppercase font-bold tracking-widest mb-1 font-cinzel" data-translate="apt-driver">Aptos (Caballero)</p>
-                                <p id="count-driver" class="text-xl font-cinzel font-bold text-green-500">0</p>
-                            </div>
-                            <div class="text-right bg-[#090d0a] border border-green-900/50 rounded-lg p-3 min-w-[120px]">
-                                <p class="text-[10px] text-stone-500 uppercase font-bold tracking-widest mb-1 font-cinzel" data-translate="apt-vip">Aptos (Lord VIP)</p>
-                                <p id="count-vip" class="text-xl font-cinzel font-bold text-yellow-500">0</p>
-                            </div>
-                        </div>
-
-                        <div id="roulette-box" class="w-full max-w-lg py-10 px-6 rounded-2xl bg-[#070a08] border-2 border-green-900/60 relative my-4 z-10 transition-all duration-300">
-                            <p id="draw-type-label" class="text-xs text-yellow-600/70 uppercase tracking-widest mb-3 font-cinzel hidden" data-translate="chosen-label">El Elegido</p>
-                            <h3 id="winner-display" class="font-cinzel font-extrabold text-3xl sm:text-5xl text-stone-600 min-h-[4rem] flex items-center justify-center drop-shadow-md">
-                                ...
-                            </h3>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 w-full max-w-lg z-10">
-                            <button onclick="checkAdmin(() => startDraw('Driver'))" id="btn-draw-driver" disabled class="py-4 bg-green-900/30 text-green-500 border border-green-700/50 hover:bg-green-800 hover:text-white font-bold rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed font-cinzel">
-                                <i class="fa-solid fa-horse-head mr-2"></i> <span data-translate="btn-pick-driver">Elegir CABALLERO</span>
-                            </button>
-                            <button onclick="checkAdmin(() => startDraw('VIP'))" id="btn-draw-vip" disabled class="py-4 bg-yellow-900/30 text-yellow-500 border border-yellow-700/50 hover:bg-yellow-800 hover:text-white font-bold rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed font-cinzel">
-                                <i class="fa-solid fa-crown mr-2"></i> <span data-translate="btn-pick-vip">Elegir LORD VIP</span>
-                            </button>
-                        </div>
-                        
-                        <button onclick="checkAdmin(() => saveToHistory())" id="btn-save" class="w-full max-w-lg mt-4 py-3 bg-gradient-to-r from-yellow-700 to-yellow-600 text-stone-100 font-bold rounded-lg shadow-[0_0_15px_rgba(202,138,4,0.4)] hover:from-yellow-600 hover:to-yellow-500 transition-all hidden z-10 font-cinzel tracking-widest border border-yellow-400/50">
-                            <i class="fa-solid fa-feather-pointed mr-2"></i> <span data-translate="btn-save-chronicles">Escribir en las Crónicas</span>
+            <div class="card-glass p-5 rounded-xl space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                    <h3 class="font-cinzel font-bold text-lg text-yellow-500 text-center sm:text-left" data-i="insc-panel-title">Módulo de Inscripciones (Domingo 12am - Miércoles 11pm Server)</h3>
+                    <!-- Botón exclusivo Admin para suspender inscripciones manualmente -->
+                    <div id="admin-suspend-container" class="hidden">
+                        <button onclick="toggleGlobalSuspend()" id="btn-toggle-suspend" class="px-3 py-1.5 bg-red-950 border border-red-600 text-red-400 rounded-lg text-xs font-cinzel font-bold">
+                            <i class="fa-solid fa-ban mr-1"></i> <span id="suspend-lbl">Suspender Inscripciones</span>
                         </button>
                     </div>
+                </div>
+                
+                <div id="inscripcion-status-banner" class="p-3 rounded-lg text-center font-cinzel text-xs font-bold"></div>
 
-                    <div class="card-glass p-6 rounded-xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-translate="battalion-status-title">Estado del Batallón</h3>
-                            <span id="valid-count" class="px-3 py-1 bg-[#090d0a] text-stone-400 rounded-lg text-xs font-bold border border-green-900/50 font-cinzel">0</span>
-                        </div>
-                        <div id="status-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-48 overflow-y-auto pr-2">
-                            <p class="text-sm text-stone-500 col-span-full" data-translate="battalion-empty">Convoca la tropa en el pergamino izquierdo.</p>
-                        </div>
+                <div class="space-y-2">
+                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectEvent('CS')" id="btn-ev-cs" class="touch-btn p-4 bg-[#090d0a] border-2 border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-sm font-bold text-stone-200">Cañón Storm (CS)</button>
+                        <button onclick="selectEvent('DS')" id="btn-ev-ds" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl font-cinzel text-sm font-bold text-stone-200">Desert Storm (DS)</button>
                     </div>
                 </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step2-lbl">2. Selecciona tu Rol:</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectRole('Titular')" id="btn-role-titular" class="touch-btn p-3 bg-[#090d0a] border border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-xs font-bold text-stone-300" data-i="role-titular">Titular</button>
+                        <button onclick="selectRole('Suplente')" id="btn-role-suplente" class="touch-btn p-3 bg-[#090d0a] border border-green-800 rounded-xl font-cinzel text-xs font-bold text-stone-300" data-i="role-suplente">Suplente</button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step3-lbl">3. Selecciona el Equipo:</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectTurn('Equipo A')" id="btn-turno-1" class="touch-btn p-3 bg-[#090d0a] border border-yellow-500 bg-yellow-950/40 rounded-xl text-xs text-stone-300">
+                            <strong class="block text-yellow-400" data-i="t1-name">Equipo A</strong>
+                            <span id="t1-hours" class="text-[10px] text-stone-400 block leading-tight">---</span>
+                        </button>
+                        <button onclick="selectTurn('Equipo B')" id="btn-turno-2" class="touch-btn p-3 bg-[#090d0a] border border-green-800 rounded-xl text-xs text-stone-300">
+                            <strong class="block text-yellow-400" data-i="t2-name">Equipo B</strong>
+                            <span id="t2-hours" class="text-[10px] text-stone-400 block leading-tight">---</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step4-lbl">4. Buscar tu Nombre (Escribe al menos 3 letras):</label>
+                    <input type="text" id="member-search-input" oninput="filterMemberSearch()" placeholder="Escribe tu nick..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
+                    <div id="member-search-results" class="max-h-36 overflow-y-auto space-y-1 bg-[#070a08] p-2 rounded-lg border border-green-900/40 hidden"></div>
+                </div>
+
+                <button id="btn-submit-reg" onclick="submitRegistration()" class="w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all">
+                    <span data-i="btn-confirm-reg">CONFIRMAR INSCRIPCIÓN</span>
+                </button>
+            </div>
+
+            <div class="card-glass p-5 rounded-xl space-y-4">
+                <h3 class="font-cinzel font-bold text-base text-yellow-500" data-i="prelists-title">Pre-Listas Oficiales</h3>
+                <div id="prelist-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
         </div>
 
-        <!-- TAB 3: HISTORIAL -->
-        <div id="tab-history" class="hidden space-y-6">
-            <div class="card-glass p-6 rounded-xl border-t-2 border-t-yellow-700">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                    <div>
-                        <h2 class="font-cinzel font-bold text-xl text-yellow-500" data-translate="chronicles-title">Las Crónicas (Historial)</h2>
-                        <p class="text-xs text-stone-400" data-translate="chronicles-desc">Los últimos 14 registros bloquean a los guerreros de nuevas campañas.</p>
-                    </div>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-500"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" id="search-history" onkeyup="filterHistory()" placeholder="Buscar en los pergaminos..." data-translate-placeholder="search-placeholder" class="w-full sm:w-72 pl-10 pr-4 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-sm text-stone-200 focus:border-yellow-600 outline-none transition-all placeholder-stone-600">
+        <!-- TAB 3: SORTEO DIVINO -->
+        <div id="tab-giveaway" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="card-glass p-5 rounded-xl lg:col-span-4 space-y-3">
+                    <h2 class="font-cinzel font-bold text-lg text-yellow-500" data-i="draw-title">Sorteo Divino de Trenes</h2>
+                    <p class="text-xs text-stone-400" data-i="draw-desc">Pega la lista de participantes y séllala.</p>
+                    <textarea id="bulk-names" rows="6" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg p-3 text-xs text-stone-200 outline-none resize-none" placeholder="Nombres..."></textarea>
+                    <button onclick="loadParticipants()" class="touch-btn w-full py-3 bg-green-900/80 text-yellow-500 font-bold rounded-lg font-cinzel text-xs" data-i="btn-seal">
+                        SELLAR PARTICIPANTES
+                    </button>
+                </div>
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="card-glass p-5 rounded-xl flex flex-col items-center justify-center text-center relative min-h-[220px]">
+                        <div class="w-full max-w-md py-5 px-4 rounded-2xl bg-[#070a08] border-2 border-green-900/60 my-2">
+                            <h3 id="winner-display" class="font-cinzel font-extrabold text-2xl sm:text-3xl text-stone-500 min-h-[3rem] flex items-center justify-center">...</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 w-full max-w-md z-10 text-xs">
+                            <button onclick="checkAdmin(() => startDraw('Driver'))" id="btn-draw-driver" disabled class="touch-btn py-3 bg-green-900/35 text-green-500 border border-green-700/50 font-bold rounded-lg disabled:opacity-30 font-cinzel" data-i="btn-draw-driver">Elegir Conductor</button>
+                            <button onclick="checkAdmin(() => startDraw('VIP'))" id="btn-draw-vip" disabled class="touch-btn py-3 bg-yellow-900/35 text-yellow-500 border border-yellow-700/50 font-bold rounded-lg disabled:opacity-30 font-cinzel" data-i="btn-draw-vip">Elegir Lord VIP</button>
+                        </div>
+                        <button onclick="checkAdmin(() => saveToHistory())" id="btn-save" class="touch-btn w-full max-w-md mt-3 py-3 bg-gradient-to-r from-yellow-700 to-yellow-600 text-stone-100 font-bold rounded-lg shadow hidden font-cinzel text-xs" data-i="btn-save-hist">Guardar en Crónicas</button>
                     </div>
                 </div>
+            </div>
 
+            <div class="card-glass p-5 rounded-xl space-y-4">
+                <h3 class="font-cinzel font-bold text-base text-yellow-500" data-i="cronograma-title">Cronograma y Crónicas de Trenes</h3>
                 <div class="overflow-x-auto rounded-lg border border-green-900/40">
-                    <table class="w-full text-left text-sm text-stone-300">
-                        <thead class="text-xs uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel tracking-wider">
+                    <table class="w-full text-left text-xs sm:text-sm text-stone-300">
+                        <thead class="text-[10px] uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel">
                             <tr>
-                                <th class="px-6 py-4">#</th>
-                                <th class="px-6 py-4" data-translate="table-col-day">Día</th>
-                                <th class="px-6 py-4" data-translate="table-col-driver">Caballero (Driver)</th>
-                                <th class="px-6 py-4" data-translate="table-col-vip">Lord (VIP)</th>
-                                <th class="px-6 py-4 text-center" data-translate="table-col-actions">Acciones</th>
+                                <th class="px-4 py-3" data-i="th-date">Fecha</th>
+                                <th class="px-4 py-3" data-i="th-driver">Conductor</th>
+                                <th class="px-4 py-3" data-i="th-vip">Lord VIP</th>
+                                <th class="px-4 py-3 text-center" data-i="th-actions">Acciones Admin</th>
                             </tr>
                         </thead>
                         <tbody id="full-history-tbody" class="divide-y divide-green-900/30">
+                            <tr><td colspan="4" class="text-center py-6 text-stone-500 italic">No hay registros.</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 4: ALIANZA -->
-        <div id="tab-alliance" class="hidden space-y-6">
-            <div class="card-glass p-6 rounded-xl border-t-2 border-t-stone-500">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <!-- TAB 4: BATALLÓN & PODERES UNIFICADO -->
+        <div id="tab-powers" class="hidden space-y-6">
+            <div class="card-glass p-5 sm:p-6 rounded-xl space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
-                        <h2 class="font-cinzel font-bold text-xl text-stone-100" data-translate="alliance-roster-title">Batallón de la Alianza KnNi</h2>
-                        <p class="text-xs text-stone-400" data-translate="alliance-roster-desc">Listado completo de la alianza (incluyendo miembros sin participación en sorteos).</p>
+                        <h2 class="font-cinzel font-bold text-lg text-yellow-500" data-i="powers-title">Batallón KnNi y Poderes de Marcha</h2>
+                        <p class="text-xs text-stone-400">Total de guerreros: <span id="stat-total-alliance" class="font-bold text-yellow-400">0</span></p>
                     </div>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-500"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" id="search-alliance" onkeyup="filterAlliance()" placeholder="Buscar aliado..." data-translate-placeholder="search-ally-placeholder" class="w-full sm:w-72 pl-10 pr-4 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-sm text-stone-200 focus:border-stone-500 outline-none transition-all placeholder-stone-600">
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="search-power" onkeyup="filterPowers()" placeholder="Buscar aliado..." class="w-full sm:w-48 px-3 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-xs text-stone-200 outline-none">
+                        <button onclick="checkAdmin(() => openAddMemberModal())" class="touch-btn px-3 py-2 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-lg font-cinzel text-xs font-bold whitespace-nowrap">
+                            <i class="fa-solid fa-user-plus mr-1"></i> Agregar
+                        </button>
                     </div>
                 </div>
-
                 <div class="overflow-x-auto rounded-lg border border-green-900/40">
-                    <table class="w-full text-left text-sm text-stone-300">
-                        <thead class="text-xs uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel tracking-wider">
+                    <table class="w-full text-left text-xs sm:text-sm text-stone-300">
+                        <thead class="text-[10px] uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel cursor-pointer">
                             <tr>
-                                <th class="px-6 py-4" data-translate="table-col-rank">Rango</th>
-                                <th class="px-6 py-4" data-translate="table-col-warrior">Nombre del Guerrero</th>
-                                <th class="px-6 py-4 text-center" data-translate="table-col-total-campaigns">Campañas Totales</th>
+                                <th class="px-3 py-3">#</th>
+                                <th class="px-3 py-3" data-i="th-member">Nombre del Guerrero</th>
+                                <th class="px-3 py-3 hover:text-yellow-400" onclick="sortPowersBy('m1')"><span data-i="th-m1">1ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
+                                <th class="px-3 py-3 hover:text-yellow-400" onclick="sortPowersBy('m2')"><span data-i="th-m2">2ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
+                                <th class="px-3 py-3 hover:text-yellow-400" onclick="sortPowersBy('m3')"><span data-i="th-m3">3ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
+                                <th class="px-3 py-3" data-i="th-troop">Tipo Tropa</th>
+                                <th class="px-3 py-3 text-center admin-col hidden">Admin</th>
                             </tr>
                         </thead>
-                        <tbody id="alliance-tbody" class="divide-y divide-green-900/30">
-                        </tbody>
+                        <tbody id="powers-tbody" class="divide-y divide-green-900/30"></tbody>
                     </table>
                 </div>
             </div>
@@ -467,256 +342,67 @@
 
     </main>
 
-    <footer class="border-t border-green-900/40 bg-[#090d0a] py-6 text-center text-xs text-stone-600 mt-auto font-cinzel tracking-widest relative z-10">
-        <p data-translate="footer-text">FORJADO EN LA ALIANZA KnNi &copy; 2026</p>
-    </footer>
-
-    <!-- MODAL DE INSCRIPCIÓN PASO A PASO -->
-    <div id="register-wizard-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="card-glass p-6 rounded-2xl w-full max-w-lg space-y-5 border border-yellow-600/50 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-green-900/40 pb-3">
-                <h3 class="font-cinzel font-bold text-xl text-yellow-500 flex items-center">
-                    <i class="fa-solid fa-file-shield mr-2"></i> <span data-translate="wizard-title">Asistente de Inscripción</span>
-                </h3>
-                <button onclick="closeRegisterWizardModal()" class="text-stone-400 hover:text-stone-200 text-lg"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <!-- PASO 1: SELECCIONAR MODO (CS o DS) -->
-            <div id="wizard-step-1" class="space-y-4">
-                <label class="text-xs text-yellow-400 font-cinzel uppercase block tracking-wider" data-translate="wizard-step1-label">1. Selecciona el evento al que deseas inscribirte:</label>
-                <div class="grid grid-cols-2 gap-4">
-                    <button type="button" onclick="wizardSelectEvent('CS')" class="touch-btn p-5 bg-[#090d0a] border-2 border-red-700/60 hover:bg-red-950/40 rounded-xl text-center space-y-2 transition-all">
-                        <i class="fa-solid fa-bullseye text-2xl text-red-500"></i>
-                        <span class="font-cinzel font-bold text-sm text-stone-100 block">CAÑÓN STORM (CS)</span>
-                    </button>
-                    <button type="button" onclick="wizardSelectEvent('DS')" class="touch-btn p-5 bg-[#090d0a] border-2 border-amber-700/60 hover:bg-amber-950/40 rounded-xl text-center space-y-2 transition-all">
-                        <i class="fa-solid fa-sun text-2xl text-amber-500"></i>
-                        <span class="font-cinzel font-bold text-sm text-stone-100 block">DESERT STORM (DS)</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- PASO 2: SELECCIONAR TURNO -->
-            <div id="wizard-step-2" class="space-y-4 hidden">
-                <div class="flex items-center justify-between">
-                    <span id="wizard-selected-event-badge" class="text-xs px-3 py-1 bg-yellow-900/50 text-yellow-400 border border-yellow-700/50 rounded-lg font-cinzel font-bold"></span>
-                    <button onclick="wizardBackToStep(1)" class="text-xs text-stone-400 hover:text-white underline" data-translate="wizard-change-event">&larr; Cambiar Evento</button>
-                </div>
-                <label class="text-xs text-yellow-400 font-cinzel uppercase block tracking-wider" data-translate="wizard-step2-label">2. Selecciona el Turno:</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button type="button" onclick="wizardSelectTurn('Turno 1')" class="touch-btn p-4 bg-[#090d0a] border border-green-900/60 hover:bg-green-950/40 rounded-xl text-left space-y-1">
-                        <span class="font-cinzel font-bold text-sm text-stone-200 block" data-translate="turn-1">TURNO 1</span>
-                        <span id="wizard-t1-time" class="text-xs text-yellow-500">...</span>
-                    </button>
-                    <button type="button" onclick="wizardSelectTurn('Turno 2')" class="touch-btn p-4 bg-[#090d0a] border border-green-900/60 hover:bg-green-950/40 rounded-xl text-left space-y-1">
-                        <span class="font-cinzel font-bold text-sm text-stone-200 block" data-translate="turn-2">TURNO 2</span>
-                        <span id="wizard-t2-time" class="text-xs text-yellow-500">...</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- PASO 3: SELECCIONAR NOMBRE Y ROL -->
-            <div id="wizard-step-3" class="space-y-4 hidden">
-                <div class="flex items-center justify-between">
-                    <span id="wizard-summary-badge" class="text-xs px-3 py-1 bg-green-900/50 text-green-400 border border-green-700/50 rounded-lg font-cinzel font-bold"></span>
-                    <button onclick="wizardBackToStep(2)" class="text-xs text-stone-400 hover:text-white underline" data-translate="wizard-change-turn">&larr; Cambiar Turno</button>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-xs text-yellow-400 font-cinzel uppercase block tracking-wider" data-translate="wizard-step3-label">3. Nombre del Guerrero:</label>
-                    <div class="flex gap-2">
-                        <select id="wizard-member-select" onchange="handleMemberSelectChange()" class="flex-1 bg-[#090d0a] border border-green-900 rounded-xl px-4 py-3 text-sm text-stone-200 focus:border-yellow-600 outline-none">
-                            <option value="" data-translate="select-ally-opt">-- Selecciona de la Alianza --</option>
-                        </select>
-                        <button type="button" onclick="toggleCustomNameInput()" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-yellow-400 border border-yellow-600/40 rounded-xl text-xs font-cinzel font-bold whitespace-nowrap" data-translate="btn-other">
-                            Otro / Escribir
-                        </button>
-                    </div>
-                    <div id="custom-name-box" class="hidden pt-1">
-                        <input type="text" id="wizard-custom-name" placeholder="Escribe tu nombre exacto aquí..." data-translate-placeholder="custom-name-placeholder" class="w-full bg-[#090d0a] border border-yellow-600/60 rounded-xl px-4 py-3 text-sm text-stone-100 focus:border-yellow-500 outline-none">
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-xs text-yellow-400 font-cinzel uppercase block tracking-wider" data-translate="wizard-step4-label">4. Selecciona tu Rol:</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button type="button" onclick="wizardSelectRole('Titular')" id="wizard-role-titular" class="touch-btn role-option-btn py-3.5 rounded-xl font-cinzel text-xs font-bold flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-shield-halved"></i>
-                            <span data-translate="role-titular">TITULAR</span>
-                        </button>
-                        <button type="button" onclick="wizardSelectRole('Suplente')" id="wizard-role-suplente" class="touch-btn role-option-btn py-3.5 rounded-xl font-cinzel text-xs font-bold flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-user-clock"></i>
-                            <span data-translate="role-suplente">SUPLENTE</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pt-3">
-                    <button onclick="submitWizardRegistration()" class="w-full py-4 bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-600 hover:to-yellow-500 text-stone-100 rounded-xl font-cinzel text-xs font-bold border border-yellow-400/50 shadow-lg">
-                        <i class="fa-solid fa-check mr-2"></i> <span data-translate="btn-confirm-reg">CONFIRMAR E INSCRIBIRSE</span>
-                    </button>
-                </div>
+    <!-- MODAL PASSWORD (SOLICITUD DE CLAVE SI NO ES ADMIN) -->
+    <div id="admin-password-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="card-glass p-6 rounded-xl w-full max-w-sm space-y-4 text-xs sm:text-sm border border-yellow-700/50">
+            <h3 class="font-cinzel font-bold text-base text-yellow-500">Autorización Requerida</h3>
+            <p class="text-xs text-stone-300">Introduce la contraseña de administración:</p>
+            <input type="password" id="admin-password" placeholder="Contraseña..." onkeypress="if(event.key === 'Enter') verifyAdminPassword()" class="w-full bg-[#090d0a] border border-green-900/60 rounded-lg px-3 py-2 text-stone-200 outline-none">
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeAdminPasswordModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
+                <button onclick="verifyAdminPassword()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Autorizar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE SOPORTE / RECLAMO -->
-    <div id="support-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="card-glass p-6 rounded-2xl w-full max-w-md space-y-4 border border-amber-600/50">
-            <div class="flex justify-between items-center border-b border-green-900/40 pb-2">
-                <h3 class="font-cinzel font-bold text-lg text-amber-400"><i class="fa-solid fa-triangle-exclamation mr-2"></i><span data-translate="support-modal-title">Reportar Problema / Reclamo</span></h3>
-                <button onclick="closeSupportModal()" class="text-stone-400 hover:text-stone-200"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="space-y-4 text-xs">
-                <div>
-                    <label class="text-[10px] text-stone-400 font-cinzel uppercase block mb-1" data-translate="support-step1">1. Tu Nombre</label>
-                    <div class="flex gap-2">
-                        <select id="support-member-select" onchange="handleSupportMemberChange()" class="flex-1 bg-[#090d0a] border border-green-900 rounded-xl px-3 py-2.5 text-sm text-stone-200 focus:border-amber-600 outline-none">
-                            <option value="" data-translate="select-ally-opt">-- Selecciona de la Alianza --</option>
-                        </select>
-                        <button type="button" onclick="toggleSupportCustomName()" class="px-3 py-2 bg-stone-800 hover:bg-stone-700 text-amber-400 border border-amber-600/40 rounded-xl font-cinzel font-bold whitespace-nowrap" data-translate="btn-other">
-                            Otro
-                        </button>
-                    </div>
-                    <div id="support-custom-name-box" class="hidden pt-1">
-                        <input type="text" id="support-custom-name" placeholder="Escribe tu nombre..." data-translate-placeholder="support-custom-name-placeholder" class="w-full bg-[#090d0a] border border-amber-600/60 rounded-xl px-3 py-2.5 text-sm text-stone-100 outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-[10px] text-stone-400 font-cinzel uppercase block mb-1" data-translate="support-step2">2. ¿El reclamo es por CS o DS?</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" onclick="selectSupportMode('Cañón Storm (CS)')" id="btn-mode-cs" class="touch-btn py-2.5 bg-[#090d0a] border border-green-900 rounded-xl font-cinzel font-bold text-stone-300">Cañón Storm (CS)</button>
-                        <button type="button" onclick="selectSupportMode('Desert Storm (DS)')" id="btn-mode-ds" class="touch-btn py-2.5 bg-[#090d0a] border border-green-900 rounded-xl font-cinzel font-bold text-stone-300">Desert Storm (DS)</button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-[10px] text-stone-400 font-cinzel uppercase block mb-1" data-translate="support-step3">3. Motivo del Reclamo</label>
-                    <select id="support-reason-select" onchange="handleSupportReasonChange()" class="w-full bg-[#090d0a] border border-green-900 rounded-xl px-3 py-2.5 text-stone-200 outline-none">
-                        <option value="" data-translate="support-opt-default">-- Selecciona una opción --</option>
-                        <option value="No me deja inscribirme" data-translate="support-opt-1">No me deja inscribirme</option>
-                        <option value="Me equivoqué de turno / rol" data-translate="support-opt-2">Me equivoqué de turno / rol</option>
-                        <option value="Quiero cancelar mi inscripción" data-translate="support-opt-3">Quiero cancelar mi inscripción</option>
-                        <option value="Otro (Escribir detalle)" data-translate="support-opt-4">Otro (Escribir detalle)</option>
-                    </select>
-                </div>
-
-                <div id="support-details-box" class="hidden">
-                    <label class="text-[10px] text-stone-400 font-cinzel uppercase block mb-1" data-translate="support-details-label">Detalles del Reclamo</label>
-                    <textarea id="support-custom-message" rows="3" placeholder="Escribe aquí los detalles de tu problema..." data-translate-placeholder="support-details-placeholder" class="w-full bg-[#090d0a] border border-amber-600/60 rounded-xl p-3 text-stone-200 outline-none resize-none"></textarea>
-                </div>
-            </div>
-
-            <div class="flex space-x-3 pt-2">
-                <button onclick="closeSupportModal()" class="touch-btn flex-1 py-3 bg-stone-800 text-stone-300 rounded-xl font-cinzel text-xs font-bold" data-translate="btn-cancel">Cancelar</button>
-                <button onclick="submitSupportTicket()" class="touch-btn flex-1 py-3 bg-amber-700 hover:bg-amber-600 text-stone-100 rounded-xl font-cinzel text-xs font-bold border border-amber-500/50 shadow-lg" data-translate="btn-send-admin">Enviar a Admins</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL BANDEJA DE ENTRADA DE ADMINISTRADORES -->
-    <div id="admin-inbox-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
-        <div class="card-glass p-6 rounded-xl w-full max-w-lg space-y-4 border border-yellow-600/50">
-            <div class="flex justify-between items-center border-b border-green-900/40 pb-2">
-                <h3 class="font-cinzel font-bold text-lg text-yellow-500"><i class="fa-solid fa-inbox mr-2"></i><span data-translate="inbox-title">Bandeja de Soporte - Admins</span></h3>
-                <button onclick="closeAdminInboxModal()" class="text-stone-400 hover:text-stone-200"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div id="tickets-container" class="max-h-64 overflow-y-auto space-y-3 text-xs pr-1">
-            </div>
-
-            <div class="flex justify-end pt-2">
-                <button onclick="clearTickets()" class="touch-btn px-4 py-2 bg-red-900/40 border border-red-700/50 text-red-300 rounded-xl font-cinzel text-xs font-bold" data-translate="btn-clear-inbox">Vaciar Bandeja</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL ADMINISTRADOR -->
-    <div id="admin-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="card-glass p-8 rounded-xl w-full max-w-md text-center border border-yellow-700/50 shadow-[0_0_30px_rgba(202,138,4,0.15)] bg-[#0c120e]">
-            <h2 class="font-cinzel font-bold text-2xl text-yellow-500 mb-1" data-translate="admin-modal-title">Acceso Requerido</h2>
-            <p class="text-xs text-stone-400 mb-6" data-translate="admin-modal-desc">Ingresa la contraseña para realizar esta acción.</p>
-            
-            <div class="space-y-4 text-left">
-                <div>
-                    <input type="password" id="admin-password" placeholder="Contraseña..." data-translate-placeholder="admin-pass-placeholder" onkeypress="if(event.key === 'Enter') verifyAdmin()" class="w-full bg-[#090d0a] border border-green-900/60 rounded-lg px-4 py-3 text-sm text-stone-200 focus:border-yellow-600 outline-none">
-                </div>
-                <button onclick="verifyAdmin()" class="w-full py-3 bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-600 hover:to-yellow-500 text-stone-100 font-bold rounded-lg font-cinzel text-sm border border-yellow-400/40 transition-all" data-translate="btn-authorize">
-                    AUTORIZAR
-                </button>
-                <button onclick="closeAdminModal()" class="w-full py-2 text-sm text-stone-400 hover:text-white transition-colors font-cinzel" data-translate="btn-cancel">
-                    Cancelar
-                </button>
-                <p id="admin-error" class="text-xs text-red-400 text-center hidden" data-translate="admin-error-msg">Contraseña incorrecta.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- EDIT RECORD MODAL -->
-    <div id="edit-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-md shadow-[0_0_30px_rgba(202,138,4,0.15)]">
-            <h3 class="text-xl font-cinzel text-yellow-500 mb-4" data-translate="edit-record-title">Editar Registro</h3>
-            <input type="hidden" id="edit-index">
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-translate="table-col-day">Día</label>
-                    <input type="date" id="edit-date" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-translate="table-col-driver">Caballero (Driver)</label>
-                    <input type="text" id="edit-driver" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs text-stone-400 font-cinzel uppercase" data-translate="table-col-vip">Lord (VIP)</label>
-                    <input type="text" id="edit-vip" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none">
-                </div>
-            </div>
-            <div class="flex justify-end space-x-3 mt-6">
-                <button onclick="closeEditModal()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-lg hover:bg-stone-700 font-cinzel text-sm" data-translate="btn-cancel">Cancelar</button>
-                <button onclick="saveEdit()" class="px-4 py-2 bg-yellow-700 text-stone-100 rounded-lg hover:bg-yellow-600 font-cinzel text-sm border border-yellow-500/50 shadow-[0_0_10px_rgba(202,138,4,0.3)]" data-translate="btn-save">Guardar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- EDIT MVP MODAL -->
-    <div id="mvp-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-[#0c120e] border border-yellow-700/50 rounded-xl p-6 w-full max-w-lg shadow-[0_0_30px_rgba(202,138,4,0.15)]">
-            <h3 class="text-xl font-cinzel text-yellow-500 mb-4" data-translate="mvp-modal-title">Actualizar MVPs y Campeones</h3>
+    <!-- MODAL EDITAR TREN -->
+    <div id="edit-train-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
+            <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Estado del Tren</h3>
             <div class="space-y-3">
                 <div>
-                    <label class="text-[10px] text-stone-400 font-cinzel uppercase" data-translate="mvp-week-title">MVP de la Semana</label>
-                    <input type="text" id="input-mvp-week" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Conductor (Driver)</label>
+                    <input type="text" id="adm-driver" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-stone-400 font-cinzel uppercase" data-translate="champion-title">Campeón de Alianza</label>
-                    <input type="text" id="input-champion" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Lord VIP</label>
+                    <input type="text" id="adm-vip" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-[10px] text-stone-400 font-cinzel uppercase" data-translate="mvp-ds-1">MVP Desert 1</label>
-                        <input type="text" id="input-mvp-desert-1" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-stone-400 font-cinzel uppercase" data-translate="mvp-ds-2">MVP Desert 2</label>
-                        <input type="text" id="input-mvp-desert-2" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-[10px] text-stone-400 font-cinzel uppercase" data-translate="mvp-cs-1">MVP Cañón 1</label>
-                        <input type="text" id="input-mvp-canon-1" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-stone-400 font-cinzel uppercase" data-translate="mvp-cs-2">MVP Cañón 2</label>
-                        <input type="text" id="input-mvp-canon-2" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg px-3 py-2 text-stone-200 focus:border-yellow-600 outline-none text-sm">
-                    </div>
+                <div>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Hora de llegada a la estación</label>
+                    <input type="text" id="adm-arrival" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none" placeholder="Ej: 21:30 hs">
                 </div>
             </div>
-            <div class="flex justify-end space-x-3 mt-6">
-                <button onclick="closeMvpModal()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-lg hover:bg-stone-700 font-cinzel text-sm" data-translate="btn-cancel">Cancelar</button>
-                <button onclick="saveMvps()" class="px-4 py-2 bg-yellow-700 text-stone-100 rounded-lg hover:bg-yellow-600 font-cinzel text-sm border border-yellow-500/50 shadow-[0_0_10px_rgba(202,138,4,0.3)]" data-translate="btn-save">Guardar</button>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeEditTrainModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
+                <button onclick="saveTrainChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR DISCORD -->
+    <div id="edit-discord-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
+            <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Enlace de Discord</h3>
+            <div>
+                <label class="text-[10px] text-yellow-400 uppercase block mb-1">Enlace de Discord</label>
+                <input type="text" id="adm-discord" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeEditDiscordModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
+                <button onclick="saveDiscordChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AGREGAR PARTICIPANTE -->
+    <div id="add-member-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="card-glass p-5 rounded-xl w-full max-w-sm space-y-3 text-xs sm:text-sm border border-yellow-600/50">
+            <h3 class="font-cinzel font-bold text-base text-yellow-500">Agregar Nuevo Integrante</h3>
+            <input type="text" id="new-member-name" placeholder="Nombre del guerrero..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeAddMemberModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
+                <button onclick="confirmAddMember()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Agregar</button>
             </div>
         </div>
     </div>
@@ -724,1224 +410,612 @@
     <script>
         const BIN_URL = "https://api.jsonbin.io/v3/b/6ae46b59ac6210605a5e6c27";
         const API_KEY = "$2a$10$f1Gcp8STx7CBF9TOWIsWveT/ykIgJWOkoIZ0Ke9QJHhYk347U4GRq"; 
-        
-        const ADMIN_PASSWORD = "knni"; 
-        let pendingAction = null;
+        const ADMIN_PASSWORD = "knni485"; 
 
-        // SISTEMA DE TRADUCCIÓN ES / EN
-        let currentLang = localStorage.getItem('knni_lang') || 'es';
+        let allianceNames = [
+            "Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AspeřMaster23", "AxiE",
+            "B1G BOSS", "BADA Lodu", "Bahrok", "Bales117", "Betty1010", "BobB53", "BobGio밥지오", "boom boy", "Borvey", "Brokeback Hooty", "B3ngel",
+            "Captain Zverman", "chhota lodu", "Cokeafgano", "Countryguy", "CP6964", "Cristophoros", "CSH SKYBLUE555",
+            "Danos SR", "Darkina", "DarkZeru", "Darth Grizzly", "DaveyCrocket44", "DaViS", "DBrad11", "Defiant One", "Deroga da Grinch", "Destinuke", "DF66", "Drsimibelico",
+            "Geovane rech", "Getting by", "Giobob2", "gossipGirl", "Góòse", "GUNNER39", "Gensis",
+            "HackChop", "Hexina", "HUEVO FIGHTER",
+            "Inflightpro44", "itsmeJJ",
+            "Jack meHoff", "Jamesson45891", "JeanPierre08", "JestFatality", "JOAT79", "JP AH", "JP1351", "Jungle20",
+            "KillB", "KillïnPïxîeDuśt", "KnNi Mert", "Kopa 빨간색",
+            "LightIna", "LuckStrayker",
+            "MADHOG 1856", "MelRose", "Mia2424", "MKMKMKMKMK", "MPK Buff", "Musky78",
+            "ottotank",
+            "Pepperspray69", "Phlyn",
+            "Ricknick", "RimMER", "RLP castle", "RTAlejandro", "RuLëz", "Runtz", "RW 1Too345",
+            "San Guillermo", "SaRgeReApEr", "shoo merito", "spal4", "spirit xx",
+            "낭만용사Maquina", "TartanTerror", "tavo20", "TheEnforcer77", "TheRealBetty", "Th3 Lil Effin Go4t", "tornillo90", "Turbonovtec", "TwannaJ",
+            "WillDW", "WilliamDOTJames", "XLeo26"
+        ];
+
+        let trainConfig = { driver: "---", vip: "---", arrival: "21:30 hs", discord: "https://discord.gg/TU_ENLACE_DE_DISCORD" };
+        let historyData = [];
+        let registrations = {};
+        let powersData = {};
+        let manualSuspend = false; // Estado para suspensión manual de inscripciones
+        let currentLang = 'ES';
+        let pendingAction = null;
+        let currentSortField = null;
+        let sortDirection = 'desc';
 
         const translations = {
-            es: {
-                "sub-title": "Inscripciones CS & DS y Sorteos",
-                "nav-realm": "Reino",
-                "nav-regs": "Inscripciones CS & DS",
-                "nav-draw": "Sorteo Divino",
-                "nav-chronicles": "Crónicas",
-                "nav-battalion": "Batallón",
-                "era-title": "Era / Horarios",
-                "convocatoria-badge": "CONVOCATORIA ABIERTA",
-                "convocatoria-title": "Inscripciones Cañón Storm & Desert Storm",
-                "convocatoria-desc": "Anota tu nombre, elige tu rol táctico (Titular o Suplente) y verifica tu horario local.",
-                "btn-go-regs": "IR A INSCRIPCIONES →",
-                "stat-alliance": "Fuerza Aliada (Miembros)",
-                "view-battalion-link": "Ver listado en Batallón →",
-                "mvp-section-title": "Salón de MVPs y Campeones",
-                "mvp-section-desc": "Reconocimientos especiales otorgados en combate y gestión.",
-                "btn-edit-mvps": "Editar MVPs",
-                "mvp-week-title": "MVP de la Semana",
-                "champion-title": "Campeón de Alianza",
-                "mvp-ds-title": "MVP Desert Storm",
-                "mvp-cs-title": "MVP Cañón Storm",
-                "hof-title": "Salón de la Fama (Caballeros)",
-                "hof-desc": "Guerreros con más campañas lideradas",
-                "recent-gestures-title": "Últimas Gestas",
-                "open-chronicles-link": "Abrir Crónicas →",
-                "table-col-day": "Día",
-                "table-col-driver": "Caballero (Driver)",
-                "table-col-vip": "Lord (VIP)",
-                "table-col-actions": "Acciones",
-                "regs-period-title": "Período Oficial de Inscripción (Domingo a Miércoles)",
-                "regs-open-server": "Apertura (Server UTC-2):",
-                "regs-open-time": "Domingo 00:00 hs",
-                "regs-close-server": "Cierre (Server UTC-2):",
-                "regs-close-time": "Miércoles 23:30 hs",
-                "your-time": "Tu hora",
-                "time-remaining": "Tiempo Restante",
-                "btn-wizard-regs": "¡REGISTRARSE AHORA (PASO A PASO)!",
-                "btn-support-report": "¿Problemas para registrarse? Avisar al Liderazgo",
-                "official-lists-title": "Listas Preoficiales de Convocatoria",
-                "admin-mode-active": "Modo Administrador Activo",
-                "convoke-title": "1. Convocar Tropa",
-                "convoke-desc": "Ingresa los nombres de los valientes. El sello mágico bloqueará a quienes hayan ganado en las últimas 14 gestas.",
-                "bulk-placeholder": "Nombres...",
-                "btn-seal-list": "SELLAR LISTA",
-                "apt-driver": "Aptos (Caballero)",
-                "apt-vip": "Aptos (Lord VIP)",
-                "chosen-label": "El Elegido",
-                "btn-pick-driver": "Elegir CABALLERO",
-                "btn-pick-vip": "Elegir LORD VIP",
-                "btn-save-chronicles": "Escribir en las Crónicas",
-                "battalion-status-title": "Estado del Batallón",
-                "battalion-empty": "Convoca la tropa en el pergamino izquierdo.",
-                "chronicles-title": "Las Crónicas (Historial)",
-                "chronicles-desc": "Los últimos 14 registros bloquean a los guerreros de nuevas campañas.",
-                "search-placeholder": "Buscar en los pergaminos...",
-                "alliance-roster-title": "Batallón de la Alianza KnNi",
-                "alliance-roster-desc": "Listado completo de la alianza (incluyendo miembros sin participación en sorteos).",
-                "search-ally-placeholder": "Buscar aliado...",
-                "table-col-rank": "Rango",
-                "table-col-warrior": "Nombre del Guerrero",
-                "table-col-total-campaigns": "Campañas Totales",
-                "footer-text": "FORJADO EN LA ALIANZA KnNi © 2026",
-                "wizard-title": "Asistente de Inscripción",
-                "wizard-step1-label": "1. Selecciona el evento al que deseas inscribirte:",
-                "wizard-change-event": "← Cambiar Evento",
-                "wizard-step2-label": "2. Selecciona el Turno:",
-                "turn-1": "TURNO 1",
-                "turn-2": "TURNO 2",
-                "wizard-change-turn": "← Cambiar Turno",
-                "wizard-step3-label": "3. Nombre del Guerrero:",
-                "select-ally-opt": "-- Selecciona de la Alianza --",
-                "btn-other": "Otro",
-                "custom-name-placeholder": "Escribe tu nombre exacto aquí...",
-                "wizard-step4-label": "4. Selecciona tu Rol:",
-                "role-titular": "TITULAR",
-                "role-suplente": "SUPLENTE",
-                "btn-confirm-reg": "CONFIRMAR E INSCRIBIRSE",
-                "support-modal-title": "Reportar Problema / Reclamo",
-                "support-step1": "1. Tu Nombre",
-                "support-custom-name-placeholder": "Escribe tu nombre...",
-                "support-step2": "2. ¿El reclamo es por CS o DS?",
-                "support-step3": "3. Motivo del Reclamo",
-                "support-opt-default": "-- Selecciona una opción --",
-                "support-opt-1": "No me deja inscribirme",
-                "support-opt-2": "Me equivoqué de turno / rol",
-                "support-opt-3": "Quiero cancelar mi inscripción",
-                "support-opt-4": "Otro (Escribir detalle)",
-                "support-details-label": "Detalles del Reclamo",
-                "support-details-placeholder": "Escribe aquí los detalles de tu problema...",
-                "btn-cancel": "Cancelar",
-                "btn-send-admin": "Enviar a Admins",
-                "inbox-title": "Bandeja de Soporte - Admins",
-                "btn-clear-inbox": "Vaciar Bandeja",
-                "admin-modal-title": "Acceso Requerido",
-                "admin-modal-desc": "Ingresa la contraseña para realizar esta acción.",
-                "admin-pass-placeholder": "Contraseña...",
-                "btn-authorize": "AUTORIZAR",
-                "admin-error-msg": "Contraseña incorrecta.",
-                "edit-record-title": "Editar Registro",
-                "mvp-modal-title": "Actualizar MVPs y Campeones",
-                "mvp-ds-1": "MVP Desert 1",
-                "mvp-ds-2": "MVP Desert 2",
-                "mvp-cs-1": "MVP Cañón 1",
-                "mvp-cs-2": "MVP Cañón 2",
-                "btn-save": "Guardar"
+            ES: {
+                menu: "Menú", badge_open: "CONVOCATORIA ABIERTA", "home-insc-title": "Inscripciones Cañón Storm & Desert Storm",
+                "home-insc-desc": "Anota tu nombre, elige tu rol táctico (Titular o Suplente).", "btn-go-insc": "IR A INSCRIPCIONES →",
+                "train-status-title": "Estado del Tren y Estación", "driver-lbl": "Conductor (Driver)", "vip-lbl": "Lord VIP",
+                "arrival-lbl": "Hora de llegada a la estación:", "discord-title": "Comunidad en Discord",
+                "discord-desc": "Únete al canal de voz y coordinación de batallas.", "discord-btn": "UNIRSE AL DISCORD",
+                "mvp-hall-title": "Salón de MVPs y Campeones", "mvp-week": "MVP de la Semana", "champ-week": "Campeón de la Semana",
+                "mvp-ds": "MVP Desert Storm", "mvp-cs": "MVP Cañón Storm", "insc-panel-title": "Módulo de Inscripciones (Domingo 12am - Miércoles 11pm Server)",
+                "step1-lbl": "1. Selecciona el Evento:", "step2-lbl": "2. Selecciona tu Rol:", "role-titular": "Titular",
+                "role-suplente": "Suplente", "step3-lbl": "3. Selecciona el Equipo:", "t1-name": "Equipo A", "t2-name": "Equipo B",
+                "step4-lbl": "4. Buscar tu Nombre (Escribe al menos 3 letras):", "btn-confirm-reg": "CONFIRMAR INSCRIPCIÓN",
+                "prelists-title": "Pre-Listas Oficiales", "draw-title": "Sorteo Divino de Trenes", "draw-desc": "Pega la lista de participantes y séllala.",
+                "btn-seal": "SELLAR PARTICIPANTES", "btn-draw-driver": "Elegir Conductor", "btn-draw-vip": "Elegir Lord VIP",
+                "btn-save-hist": "Guardar en Crónicas", "cronograma-title": "Cronograma y Crónicas de Trenes", "th-date": "Fecha",
+                "th-driver": "Conductor", "th-vip": "Lord VIP", "th-actions": "Acciones Admin", "powers-title": "Batallón KnNi y Poderes de Marcha",
+                "th-member": "Nombre del Guerrero", "th-m1": "1ª Marcha (M)", "th-m2": "2ª Marcha (M)", "th-m3": "3ª Marcha (M)",
+                "th-troop": "Tipo Tropa"
             },
-            en: {
-                "sub-title": "CS & DS Registrations & Giveaways",
-                "nav-realm": "Realm",
-                "nav-regs": "CS & DS Registrations",
-                "nav-draw": "Divine Giveaway",
-                "nav-chronicles": "Chronicles",
-                "nav-battalion": "Battalion",
-                "era-title": "Era / Schedules",
-                "convocatoria-badge": "OPEN CALL",
-                "convocatoria-title": "Cannon Storm & Desert Storm Registrations",
-                "convocatoria-desc": "Enter your name, choose your tactical role (Starter or Substitute), and check your local time.",
-                "btn-go-regs": "GO TO REGISTRATIONS →",
-                "stat-alliance": "Allied Force (Members)",
-                "view-battalion-link": "View roster in Battalion →",
-                "mvp-section-title": "Hall of MVPs and Champions",
-                "mvp-section-desc": "Special recognitions awarded in combat and management.",
-                "btn-edit-mvps": "Edit MVPs",
-                "mvp-week-title": "Weekly MVP",
-                "champion-title": "Alliance Champion",
-                "mvp-ds-title": "Desert Storm MVP",
-                "mvp-cs-title": "Cannon Storm MVP",
-                "hof-title": "Hall of Fame (Drivers)",
-                "hof-desc": "Warriors with the most campaigns led",
-                "recent-gestures-title": "Recent Gestures",
-                "open-chronicles-link": "Open Chronicles →",
-                "table-col-day": "Day",
-                "table-col-driver": "Driver",
-                "table-col-vip": "Lord (VIP)",
-                "table-col-actions": "Actions",
-                "regs-period-title": "Official Registration Period (Sunday to Wednesday)",
-                "regs-open-server": "Opening (Server UTC-2):",
-                "regs-open-time": "Sunday 00:00 hs",
-                "regs-close-server": "Closing (Server UTC-2):",
-                "regs-close-time": "Wednesday 23:30 hs",
-                "your-time": "Your time",
-                "time-remaining": "Time Remaining",
-                "btn-wizard-regs": "REGISTER NOW (STEP BY STEP)!",
-                "btn-support-report": "Registration issues? Notify Leadership",
-                "official-lists-title": "Pre-official Roster Lists",
-                "admin-mode-active": "Admin Mode Active",
-                "convoke-title": "1. Convoke Troops",
-                "convoke-desc": "Enter the names of the brave. The magic seal will block those who have won in the last 14 gestures.",
-                "bulk-placeholder": "Names...",
-                "btn-seal-list": "SEAL LIST",
-                "apt-driver": "Eligible (Driver)",
-                "apt-vip": "Eligible (Lord VIP)",
-                "chosen-label": "The Chosen",
-                "btn-pick-driver": "Pick DRIVER",
-                "btn-pick-vip": "Pick LORD VIP",
-                "btn-save-chronicles": "Write in the Chronicles",
-                "battalion-status-title": "Battalion Status",
-                "battalion-empty": "Convoke troops in the left scroll.",
-                "chronicles-title": "The Chronicles (History)",
-                "chronicles-desc": "The last 14 records block warriors from new campaigns.",
-                "search-placeholder": "Search chronicles...",
-                "alliance-roster-title": "KnNi Alliance Battalion",
-                "alliance-roster-desc": "Complete alliance roster (including members without giveaway participation).",
-                "search-ally-placeholder": "Search ally...",
-                "table-col-rank": "Rank",
-                "table-col-warrior": "Warrior Name",
-                "table-col-total-campaigns": "Total Campaigns",
-                "footer-text": "FORGED IN THE KnNi ALLIANCE © 2026",
-                "wizard-title": "Registration Wizard",
-                "wizard-step1-label": "1. Select the event you want to register for:",
-                "wizard-change-event": "← Change Event",
-                "wizard-step2-label": "2. Select the Turn:",
-                "turn-1": "TURN 1",
-                "turn-2": "TURN 2",
-                "wizard-change-turn": "← Change Turn",
-                "wizard-step3-label": "3. Warrior Name:",
-                "select-ally-opt": "-- Select from Alliance --",
-                "btn-other": "Other",
-                "custom-name-placeholder": "Type your exact name here...",
-                "wizard-step4-label": "4. Select your Role:",
-                "role-titular": "STARTER",
-                "role-suplente": "SUBSTITUTE",
-                "btn-confirm-reg": "CONFIRM AND REGISTER",
-                "support-modal-title": "Report Problem / Claim",
-                "support-step1": "1. Your Name",
-                "support-custom-name-placeholder": "Type your name...",
-                "support-step2": "2. Is the claim for CS or DS?",
-                "support-step3": "3. Claim Reason",
-                "support-opt-default": "-- Select an option --",
-                "support-opt-1": "Won't let me register",
-                "support-opt-2": "Wrong turn / role selected",
-                "support-opt-3": "I want to cancel my registration",
-                "support-opt-4": "Other (Write detail)",
-                "support-details-label": "Claim Details",
-                "support-details-placeholder": "Type your issue details here...",
-                "btn-cancel": "Cancel",
-                "btn-send-admin": "Send to Admins",
-                "inbox-title": "Support Inbox - Admins",
-                "btn-clear-inbox": "Clear Inbox",
-                "admin-modal-title": "Access Required",
-                "admin-modal-desc": "Enter password to perform this action.",
-                "admin-pass-placeholder": "Password...",
-                "btn-authorize": "AUTHORIZE",
-                "admin-error-msg": "Incorrect password.",
-                "edit-record-title": "Edit Record",
-                "mvp-modal-title": "Update MVPs & Champions",
-                "mvp-ds-1": "Desert MVP 1",
-                "mvp-ds-2": "Desert MVP 2",
-                "mvp-cs-1": "Cannon MVP 1",
-                "mvp-cs-2": "Cannon MVP 2",
-                "btn-save": "Save"
+            EN: {
+                menu: "Menu", badge_open: "OPEN CALL", "home-insc-title": "Canyon Storm & Desert Storm Registrations",
+                "home-insc-desc": "Write your name, choose your tactical role (Starter or Substitute).", "btn-go-insc": "GO TO REGISTRATIONS →",
+                "train-status-title": "Train Status & Station", "driver-lbl": "Driver", "vip-lbl": "Lord VIP",
+                "arrival-lbl": "Station arrival time:", "discord-title": "Discord Community",
+                "discord-desc": "Join the voice channel and battle coordination.", "discord-btn": "JOIN DISCORD",
+                "mvp-hall-title": "MVPs & Champions Hall", "mvp-week": "MVP of the Week", "champ-week": "Champion of the Week",
+                "mvp-ds": "Desert Storm MVP", "mvp-cs": "Canyon Storm MVP", "insc-panel-title": "Registration Module (Sunday 12am - Wednesday 11pm Server)",
+                "step1-lbl": "1. Select Event:", "step2-lbl": "2. Select your Role:", "role-titular": "Starter",
+                "role-suplente": "Substitute", "step3-lbl": "3. Select Team:", "t1-name": "Team A", "t2-name": "Team B",
+                "step4-lbl": "4. Search Name (Type at least 3 letters):", "btn-confirm-reg": "CONFIRM REGISTRATION",
+                "prelists-title": "Official Pre-Lists", "draw-title": "Divine Train Draw", "draw-desc": "Paste participants and seal them.",
+                "btn-seal": "SEAL PARTICIPANTS", "btn-draw-driver": "Pick Driver", "btn-draw-vip": "Pick Lord VIP",
+                "btn-save-hist": "Save to Chronicles", "cronograma-title": "Train Schedule & Chronicles", "th-date": "Date",
+                "th-driver": "Driver", "th-vip": "Lord VIP", "th-actions": "Admin Actions", "powers-title": "KnNi Battalion & March Powers",
+                "th-member": "Warrior Name", "th-m1": "1st March (M)", "th-m2": "2nd March (M)", "th-m3": "3rd March (M)",
+                "th-troop": "Troop Type"
             }
         };
 
         function toggleLang() {
-            currentLang = currentLang === 'es' ? 'en' : 'es';
-            localStorage.setItem('knni_lang', currentLang);
-            applyTranslations();
-            renderLists();
-        }
-
-        function applyTranslations() {
-            document.getElementById('lang-ind').textContent = currentLang.toUpperCase();
-            
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.getAttribute('data-translate');
-                if (translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
-                }
+            currentLang = currentLang === 'ES' ? 'EN' : 'ES';
+            document.getElementById('lang-lbl').textContent = currentLang;
+            document.querySelectorAll('[data-i]').forEach(el => {
+                const key = el.getAttribute('data-i');
+                if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
             });
-
-            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-translate-placeholder');
-                if (translations[currentLang][key]) {
-                    el.placeholder = translations[currentLang][key];
-                }
-            });
+            updateTurnHours();
         }
 
-        function checkAdmin(actionFn) {
-            if (sessionStorage.getItem('knni_admin') === 'true' || sessionStorage.getItem('knni_admin_unlocked') === 'true') {
-                actionFn();
-            } else {
-                pendingAction = actionFn;
-                document.getElementById('admin-password').value = '';
-                document.getElementById('admin-error').classList.add('hidden');
-                document.getElementById('admin-modal').classList.remove('hidden');
-            }
-        }
-
-        function verifyAdmin() {
-            const pass = document.getElementById('admin-password').value;
-            if (pass === ADMIN_PASSWORD) {
-                sessionStorage.setItem('knni_admin', 'true');
-                sessionStorage.setItem('knni_admin_unlocked', 'true');
-                closeAdminModal();
-                updateTimerAndStatus();
-                renderLists();
-                if (typeof pendingAction === 'function') {
-                    pendingAction();
-                    pendingAction = null;
-                }
-            } else {
-                document.getElementById('admin-error').classList.remove('hidden');
-            }
-        }
-
-        function closeAdminModal() {
-            document.getElementById('admin-modal').classList.add('hidden');
-            pendingAction = null;
-        }
+        function toggleDropdownMenu() { document.getElementById('dropdown-menu').classList.toggle('hidden'); }
 
         let isPlaying = false;
         function toggleMusic() {
             const audio = document.getElementById('bg-music');
             const icon = document.getElementById('music-icon');
-            if (isPlaying) {
-                audio.pause();
-                icon.className = "fa-solid fa-volume-xmark text-stone-400";
-                isPlaying = false;
-            } else {
-                audio.play().then(() => {
-                    icon.className = "fa-solid fa-volume-high text-yellow-500";
-                    isPlaying = true;
-                }).catch(e => console.log("Reproducción bloqueada por navegador:", e));
-            }
+            if (isPlaying) { audio.pause(); icon.className = "fa-solid fa-volume-xmark"; isPlaying = false; }
+            else { audio.play().then(() => { icon.className = "fa-solid fa-volume-high text-yellow-500"; isPlaying = true; }).catch(e => console.log(e)); }
         }
-
-        let historyData = [];
-        let allianceData = [];
-        let currentMvps = {};
-        
-        const allianceNames = ["Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AxiE", "B1G BOSS", "Bahrok", "Bales117", "bcabes", "Betty1010", "BobB53", "BobGio밥지오", "boom boy", "Borvey", "Brokeback Hooty", "Captain Zverman", "Cokeafgano", "Th3 Lil Effin Go4t", "Countryguy", "CP6964", "Cristophoros", "CSH SKYBLUE555", "Danos SR", "DarkZeru", "Darth Grizzly", "DaveyCrocket44", "DaViS", "DBrad11", "Defiant One", "Deroga da Grinch", "Destinuke", "DF66", "Drsimibelico", "Father McNulty", "Fighting Lawn Gnomes", "Gensis", "Geovane rech", "Getting by", "Góòse", "gosSipGirl", "GUNNER39", "HackChop", "Hexina", "HeyMarana", "HUEVO FIGHTER", "itsmeJJ", "Jack meHoff", "Jamesson45891", "JestFatality", "JOAT79", "JP1351", "juflash", "Jungle20", "KillB", "KillînPïxîeDuśt", "KnNi Mert", "Kopa 빨간색", "lauda lahsun", "LightIna", "lShadowKilll", "LuckStrayker", "Maddog 1856", "MCPicky", "MelRose", "Mia2424", "MKMKMKMKMK", "Mordally", "MPK Buff", "Musky78", "ottotank", "Pepperspray69", "PoO Bear", "Ricknick", "RiMMER", "RLP castle", "RTAlejandro", "RuLëz", "RUNTZ", "RW12345", "San Guillermo", "SaRgeReApEr", "shoo merito", "spal4", "spirit xx", "TartanTerror", "tavo20", "TheEnforcer77", "TheRealBetty", "Tomandante ajolotl", "tornillo90", "JP AH", "Turbonovtec", "TwannaJ", "VSSoldier", "WillDW", "WilliamDOTJames", "XLeo26", "낭만용사Maquina"];
 
         function createAshParticles() {
             const container = document.getElementById('ash-container');
             if(!container) return;
-            const particleCount = 25;
-            for (let i = 0; i < particleCount; i++) {
+            for (let i = 0; i < 15; i++) {
                 const p = document.createElement('div');
                 p.className = 'ash-particle';
-                const size = Math.random() * 4 + 2; 
-                p.style.width = `${size}px`;
-                p.style.height = `${size}px`;
+                p.style.width = `${Math.random() * 3 + 2}px`;
+                p.style.height = p.style.width;
                 p.style.left = `${Math.random() * 100}vw`;
-                p.style.animationDuration = `${Math.random() * 10 + 8}s`; 
-                p.style.animationDelay = `${Math.random() * 5}s`;
+                p.style.animationDuration = `${Math.random() * 10 + 8}s`;
                 container.appendChild(p);
             }
         }
 
-        const SERVER_TIMEZONE_OFFSET = -2;
-
-        function updateServerAndLocalClock() {
+        function checkRegistrationWindow() {
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const serverTime = new Date(utcTime + (3600000 * SERVER_TIMEZONE_OFFSET));
-            const serverStr = serverTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const localStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
-            const dateEl = document.getElementById('current-date');
-            if(dateEl) {
-                dateEl.innerHTML = `Servidor: <span class="text-yellow-400 font-mono">${serverStr}</span> | Local: <span class="text-emerald-400 font-mono">${localStr}</span>`;
+            const serverDate = new Date(utcTime - (2 * 3600000)); // Servidor UTC-2
+            const day = serverDate.getDay(); 
+            const hour = serverDate.getHours();
+
+            let isOpen = false;
+            if (day > 0 && day < 3) {
+                isOpen = true; 
+            } else if (day === 0) {
+                isOpen = true; 
+            } else if (day === 3 && hour < 23) {
+                isOpen = true; 
             }
-        }
 
-        function calculateLocalTimes() {
-            setServerBasedLocalTime('wizard-t1-time', 12, 0); 
-        }
-
-        function setServerBasedLocalTime(elementId, serverHour, serverMinute) {
-            let now = new Date();
-            let serverOffsetMinutes = SERVER_TIMEZONE_OFFSET * 60; 
-            let userOffsetMinutes = now.getTimezoneOffset(); 
-            let diffMinutes = userOffsetMinutes + serverOffsetMinutes; 
-            let calculatedTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), serverHour, serverMinute) - (diffMinutes * 60000);
+            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             
-            let finalDate = new Date(calculatedTime);
-            return finalDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
+            // Si el admin suspendió manualmente, se anula la apertura automática
+            if (manualSuspend && !isAdmin) {
+                isOpen = false;
+            }
 
-        function updateTimerAndStatus() {
-            let tickets = JSON.parse(localStorage.getItem('knni_support_tickets')) || [];
-            const ticketCountEl = document.getElementById('ticket-count');
-            if(ticketCountEl) ticketCountEl.textContent = tickets.length;
+            const banner = document.getElementById('inscripcion-status-banner');
+            const submitBtn = document.getElementById('btn-submit-reg');
 
-            let now = new Date();
-            let utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-            let serverNow = new Date(utcTime + (3600000 * SERVER_TIMEZONE_OFFSET));
-            
-            let day = serverNow.getDay(); 
-            let hour = serverNow.getHours();
-            let minutes = serverNow.getMinutes();
-            
-            let isOpen = (day >= 0 && day <= 2) || (day === 3 && (hour < 23 || (hour === 23 && minutes <= 30)));
-
-            const timerEl = document.getElementById('countdown-timer');
-            if(!timerEl) return;
-
-            let targetServerTime = new Date(serverNow);
-            if (isOpen) {
-                let daysUntilWed = (3 - day + 7) % 7;
-                targetServerTime.setDate(serverNow.getDate() + daysUntilWed);
-                targetServerTime.setHours(23, 30, 0, 0);
-                
-                let diffMs = targetServerTime - serverNow;
-                if (diffMs > 0) {
-                    let d = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                    let h = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    let m = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                    let s = Math.floor((diffMs % (1000 * 60)) / 1000);
-                    timerEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
-                } else {
-                    timerEl.textContent = currentLang === 'es' ? "Cerrando..." : "Closing...";
+            if (isOpen || isAdmin) {
+                if(banner) {
+                    banner.className = "p-3 rounded-lg text-center font-cinzel text-xs font-bold bg-green-950/60 text-green-400 border border-green-700/50";
+                    banner.innerHTML = manualSuspend ? `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Inscripciones Suspendidas por el Admin (Modo Admin activo para pruebas)` : `<i class="fa-solid fa-circle-check mr-1"></i> Inscripciones Abiertas (Horario Servidor)`;
                 }
-            } else {
-                timerEl.textContent = currentLang === 'es' ? "Cerrado" : "Closed";
-            }
-        }
-
-        // LÓGICA DEL SOPORTE / RECLAMO
-        let supportData = { mode: '' };
-
-        function openSupportModal() {
-            supportData = { mode: '' };
-            
-            const select = document.getElementById('support-member-select');
-            select.innerHTML = `<option value="">${translations[currentLang]["select-ally-opt"]}</option>`;
-            allianceNames.forEach(name => {
-                let opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
-
-            document.getElementById('support-custom-name').value = '';
-            document.getElementById('support-custom-name-box').classList.add('hidden');
-            select.classList.remove('opacity-50');
-
-            document.getElementById('btn-mode-cs').className = "touch-btn py-2.5 bg-[#090d0a] border border-green-900 rounded-xl font-cinzel font-bold text-stone-300";
-            document.getElementById('btn-mode-ds').className = "touch-btn py-2.5 bg-[#090d0a] border border-green-900 rounded-xl font-cinzel font-bold text-stone-300";
-
-            document.getElementById('support-reason-select').value = '';
-            document.getElementById('support-custom-message').value = '';
-            document.getElementById('support-details-box').classList.add('hidden');
-
-            document.getElementById('support-modal').classList.remove('hidden');
-        }
-
-        function closeSupportModal() {
-            document.getElementById('support-modal').classList.add('hidden');
-        }
-
-        function toggleSupportCustomName() {
-            const box = document.getElementById('support-custom-name-box');
-            const select = document.getElementById('support-member-select');
-            if (box.classList.contains('hidden')) {
-                box.classList.remove('hidden');
-                select.value = '';
-                select.classList.add('opacity-50');
-            } else {
-                box.classList.add('hidden');
-                select.classList.remove('opacity-50');
-            }
-        }
-
-        function handleSupportMemberChange() {
-            const select = document.getElementById('support-member-select');
-            if (select.value) {
-                document.getElementById('support-custom-name-box').classList.add('hidden');
-                document.getElementById('support-custom-name').value = '';
-                select.classList.remove('opacity-50');
-            }
-        }
-
-        function selectSupportMode(mode) {
-            supportData.mode = mode;
-            const btnCS = document.getElementById('btn-mode-cs');
-            const btnDS = document.getElementById('btn-mode-ds');
-
-            if (mode === 'Cañón Storm (CS)') {
-                btnCS.className = "touch-btn py-2.5 bg-red-950 border-2 border-red-600 rounded-xl font-cinzel font-bold text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.3)]";
-                btnDS.className = "touch-btn py-2.5 bg-[#090d0a] border border-green-900 rounded-xl font-cinzel font-bold text-stone-300";
-            } else {
-                btnCS.className = "touch-btn py-2.5 bg-[#090d0a] border border-green-900 rounded-xl font-cinzel font-bold text-stone-300";
-                btnDS.className = "touch-btn py-2.5 bg-amber-950 border-2 border-amber-600 rounded-xl font-cinzel font-bold text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.3)]";
-            }
-        }
-
-        function handleSupportReasonChange() {
-            const val = document.getElementById('support-reason-select').value;
-            const detailsBox = document.getElementById('support-details-box');
-            if (val.includes('Otro') || val.includes('Other') || val === '') {
-                detailsBox.classList.remove('hidden');
-            } else {
-                detailsBox.classList.add('hidden');
-            }
-        }
-
-        function submitSupportTicket() {
-            const selectVal = document.getElementById('support-member-select').value.trim();
-            const customVal = document.getElementById('support-custom-name').value.trim();
-            const name = customVal || selectVal;
-            const reason = document.getElementById('support-reason-select').value;
-            const customMsg = document.getElementById('support-custom-message').value.trim();
-
-            if (!name) { alert(currentLang === 'es' ? "⚠️ Debes seleccionar tu nombre de la alianza o escribirlo." : "⚠️ You must select your alliance name or type it."); return; }
-            if (!supportData.mode) { alert(currentLang === 'es' ? "⚠️ Debes seleccionar si el reclamo es por CS o DS." : "⚠️ You must select whether the claim is for CS or DS."); return; }
-            if (!reason) { alert(currentLang === 'es' ? "⚠️ Debes seleccionar el motivo del reclamo." : "⚠️ You must select the claim reason."); return; }
-
-            let finalMessage = `[${supportData.mode}] Motivo: ${reason}`;
-            if ((reason.includes('Otro') || reason.includes('Other')) && customMsg) {
-                finalMessage = `[${supportData.mode}] Detalle: ${customMsg}`;
-            } else if (customMsg) {
-                finalMessage += ` - Comentario: ${customMsg}`;
-            }
-
-            let tickets = JSON.parse(localStorage.getItem('knni_support_tickets')) || [];
-            tickets.push({ name, message: finalMessage, date: new Date().toLocaleString() });
-            localStorage.setItem('knni_support_tickets', JSON.stringify(tickets));
-
-            closeSupportModal();
-            alert(currentLang === 'es' ? "✅ ¡Reclamo enviado con éxito a la bandeja de los administradores!" : "✅ Claim sent successfully to the admin inbox!");
-            updateTimerAndStatus();
-        }
-
-        function openAdminInboxModal() {
-            let tickets = JSON.parse(localStorage.getItem('knni_support_tickets')) || [];
-            const container = document.getElementById('tickets-container');
-            if(!container) return;
-            container.innerHTML = '';
-
-            if (tickets.length === 0) {
-                container.innerHTML = `<p class="text-stone-500 italic text-center py-4">${currentLang === 'es' ? 'No hay reclamos en la bandeja.' : 'No claims in the inbox.'}</p>`;
-            } else {
-                tickets.forEach((t) => {
-                    container.innerHTML += `
-                        <div class="bg-[#090d0a] border border-green-900/40 p-3 rounded-xl space-y-1">
-                            <div class="flex justify-between items-center text-[10px] text-stone-400">
-                                <span class="text-yellow-500 font-bold">${t.name}</span>
-                                <span>${t.date}</span>
-                            </div>
-                            <p class="text-stone-200">${t.message}</p>
-                        </div>
-                    `;
-                });
-            }
-            document.getElementById('admin-inbox-modal').classList.remove('hidden');
-        }
-
-        function closeAdminInboxModal() {
-            document.getElementById('admin-inbox-modal').classList.add('hidden');
-        }
-
-        function clearTickets() {
-            if (confirm(currentLang === 'es' ? "¿Vaciar toda la bandeja de soporte?" : "Clear the entire support inbox?")) {
-                localStorage.removeItem('knni_support_tickets');
-                openAdminInboxModal();
-                updateTimerAndStatus();
-            }
-        }
-
-        let registrations = JSON.parse(localStorage.getItem('knni_event_regs')) || {
-            "CS - Turno 1": [],
-            "CS - Turno 2": [],
-            "DS - Turno 1": [],
-            "DS - Turno 2": []
-        };
-
-        let wizardData = { event: '', turn: '', role: '' };
-
-        function openRegisterWizardModal() {
-            wizardData = { event: '', turn: '', role: '' };
-            document.getElementById('wizard-step-1').classList.remove('hidden');
-            document.getElementById('wizard-step-2').classList.add('hidden');
-            document.getElementById('wizard-step-3').classList.add('hidden');
-            document.getElementById('register-wizard-modal').classList.remove('hidden');
-        }
-
-        function closeRegisterWizardModal() {
-            document.getElementById('register-wizard-modal').classList.add('hidden');
-        }
-
-        function wizardSelectEvent(event) {
-            wizardData.event = event;
-            document.getElementById('wizard-selected-event-badge').textContent = event === 'CS' ? 'Cañón Storm (Jueves)' : 'Desert Storm (Viernes)';
-            
-            if (event === 'CS') {
-                document.getElementById('wizard-t1-time').textContent = `12:00 Server ➔ ${setServerBasedLocalTime('', 12, 0)}`;
-                document.getElementById('wizard-t2-time').textContent = `23:00 Server ➔ ${setServerBasedLocalTime('', 23, 0)}`;
-            } else {
-                document.getElementById('wizard-t1-time').textContent = `18:00 Server ➔ ${setServerBasedLocalTime('', 18, 0)}`;
-                document.getElementById('wizard-t2-time').textContent = `23:00 Server ➔ ${setServerBasedLocalTime('', 23, 0)}`;
-            }
-
-            document.getElementById('wizard-step-1').classList.add('hidden');
-            document.getElementById('wizard-step-2').classList.remove('hidden');
-        }
-
-        function wizardBackToStep(step) {
-            if (step === 1) {
-                document.getElementById('wizard-step-2').classList.add('hidden');
-                document.getElementById('wizard-step-1').classList.remove('hidden');
-            } else if (step === 2) {
-                document.getElementById('wizard-step-3').classList.add('hidden');
-                document.getElementById('wizard-step-2').classList.remove('hidden');
-            }
-        }
-
-        function wizardSelectTurn(turn) {
-            wizardData.turn = turn;
-            document.getElementById('wizard-summary-badge').textContent = `${wizardData.event} - ${turn}`;
-            
-            const select = document.getElementById('wizard-member-select');
-            select.innerHTML = `<option value="">${translations[currentLang]["select-ally-opt"]}</option>`;
-            allianceNames.forEach(name => {
-                let opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
-
-            document.getElementById('wizard-custom-name').value = '';
-            document.getElementById('custom-name-box').classList.add('hidden');
-            select.classList.remove('opacity-50');
-
-            document.getElementById('wizard-step-2').classList.add('hidden');
-            document.getElementById('wizard-step-3').classList.remove('hidden');
-        }
-
-        function toggleCustomNameInput() {
-            const box = document.getElementById('custom-name-box');
-            const select = document.getElementById('wizard-member-select');
-            if (box.classList.contains('hidden')) {
-                box.classList.remove('hidden');
-                select.value = '';
-                select.classList.add('opacity-50');
-            } else {
-                box.classList.add('hidden');
-                select.classList.remove('opacity-50');
-            }
-        }
-
-        function handleMemberSelectChange() {
-            const select = document.getElementById('wizard-member-select');
-            if (select.value) {
-                document.getElementById('custom-name-box').classList.add('hidden');
-                document.getElementById('wizard-custom-name').value = '';
-                select.classList.remove('opacity-50');
-            }
-        }
-
-        function wizardSelectRole(role) {
-            wizardData.role = role;
-            const btnT = document.getElementById('wizard-role-titular');
-            const btnS = document.getElementById('wizard-role-suplente');
-
-            if (role === 'Titular') {
-                btnT.className = "touch-btn role-option-btn selected-titular py-3.5 rounded-xl font-cinzel text-xs font-bold flex items-center justify-center space-x-2";
-                btnS.className = "touch-btn role-option-btn py-3.5 rounded-xl font-cinzel text-xs font-bold flex items-center justify-center space-x-2";
-            } else {
-                btnT.className = "touch-btn role-option-btn py-3.5 rounded-xl font-cinzel text-xs font-bold flex items-center justify-center space-x-2";
-                btnS.className = "touch-btn role-option-btn selected-suplente py-3.5 rounded-xl font-cinzel text-xs font-bold flex items-center justify-center space-x-2";
-            }
-        }
-
-        function submitWizardRegistration() {
-            const selectVal = document.getElementById('wizard-member-select').value.trim();
-            const customVal = document.getElementById('wizard-custom-name').value.trim();
-            const name = customVal || selectVal;
-
-            if (!name) { alert(currentLang === 'es' ? "⚠️ Debes seleccionar tu nombre de la lista o escribirlo en el cuadro manual." : "⚠️ You must select your name from the list or type it."); return; }
-            if (!wizardData.role) { alert(currentLang === 'es' ? "⚠️ Debes seleccionar tu rol (Titular o Suplente)." : "⚠️ You must select your role."); return; }
-
-            for (const [key, list] of Object.entries(registrations)) {
-                if (list.some(item => item.name.toLowerCase() === name.toLowerCase())) {
-                    alert(currentLang === 'es' ? `⚠️ ¡${name} ya está inscripto en [${key}]!` : `⚠️ ${name} is already registered in [${key}]!`);
-                    return;
+                if(submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.className = "w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer";
                 }
-            }
-
-            const targetKey = `${wizardData.event} - ${wizardData.turn}`;
-            registrations[targetKey].push({ name, role: wizardData.role });
-            localStorage.setItem('knni_event_regs', JSON.stringify(registrations));
-
-            closeRegisterWizardModal();
-            renderLists();
-            alert(currentLang === 'es' ? `✅ ¡Inscripción exitosa para ${name}!` : `✅ Successful registration for ${name}!`);
-        }
-
-        function removeRegistration(key, index) {
-            let isAdmin = sessionStorage.getItem('knni_admin') === 'true' || sessionStorage.getItem('knni_admin_unlocked') === 'true';
-            if (!isAdmin) {
-                alert(currentLang === 'es' ? "🔒 Acción restringida." : "🔒 Restricted action.");
-                return;
-            }
-
-            if(confirm(currentLang === 'es' ? "¿Eliminar a este guerrero de la lista?" : "Remove this warrior from the list?")) {
-                registrations[key].splice(index, 1);
-                localStorage.setItem('knni_event_regs', JSON.stringify(registrations));
-                renderLists();
-            }
-        }
-
-        function renderLists() {
-            const container = document.getElementById('lists-container');
-            if(!container) return;
-            container.innerHTML = '';
-
-            let isAdmin = sessionStorage.getItem('knni_admin') === 'true' || sessionStorage.getItem('knni_admin_unlocked') === 'true';
-            const adminIndicator = document.getElementById('admin-mode-indicator');
-            if(adminIndicator) {
-                if(isAdmin) adminIndicator.classList.remove('hidden');
-                else adminIndicator.classList.add('hidden');
-            }
-
-            for (const [key, list] of Object.entries(registrations)) {
-                let titulares = list.filter(i => i.role === 'Titular');
-                let suplentes = list.filter(i => i.role === 'Suplente');
-
-                let roleTitularText = currentLang === 'es' ? 'Titulares' : 'Starters';
-                let roleSuplenteText = currentLang === 'es' ? 'Suplentes' : 'Substitutes';
-                let roleTagT = currentLang === 'es' ? '[Titular]' : '[Starter]';
-                let roleTagS = currentLang === 'es' ? '[Suplente]' : '[Sub]';
-
-                let html = `
-                    <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-4 space-y-3">
-                        <div class="flex justify-between items-center border-b border-green-900/40 pb-2">
-                            <h4 class="font-cinzel font-bold text-sm text-stone-200">${key}</h4>
-                            <span class="text-xs px-2.5 py-1 rounded-lg font-bold bg-green-900/40 text-green-400">Total: ${list.length}/30</span>
-                        </div>
-                        <div class="space-y-1.5">
-                            <div class="flex justify-between text-[10px] text-stone-400 font-cinzel">
-                                <span>${roleTitularText} (${titulares.length}/20)</span>
-                                <span>${roleSuplenteText} (${suplentes.length}/10)</span>
-                            </div>
-                            <div class="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden flex">
-                                <div class="bg-green-500 h-full" style="width: ${(titulares.length / 20) * 100}%"></div>
-                                <div class="bg-yellow-500 h-full" style="width: ${(suplentes.length / 10) * 100}%"></div>
-                            </div>
-                        </div>
-                        <div class="max-h-48 overflow-y-auto space-y-2 pr-1 text-xs">
-                `;
-
-                if (list.length === 0) {
-                    html += `<p class="text-stone-600 italic">${currentLang === 'es' ? 'Sin inscriptos aún.' : 'No registrations yet.'}</p>`;
-                } else {
-                    if (titulares.length > 0) {
-                        html += `<p class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">${roleTitularText}</p>`;
-                        list.forEach((item, idx) => {
-                            if (item.role === 'Titular') {
-                                let deleteBtn = isAdmin ? `<button onclick="removeRegistration('${key}', ${idx})" class="text-red-400 hover:text-red-300 p-1" title="Eliminar"><i class="fa-solid fa-trash-can text-xs"></i></button>` : '';
-                                html += `
-                                    <div class="flex justify-between items-center bg-[#101712] px-3 py-2.5 rounded-xl border border-green-900/20">
-                                        <div>
-                                            <span class="text-green-400 font-bold mr-1">${roleTagT}</span> 
-                                            <span class="text-stone-200 font-medium">${item.name}</span> 
-                                        </div>
-                                        ${deleteBtn}
-                                    </div>
-                                `;
-                            }
-                        });
-                    }
-
-                    if (suplentes.length > 0) {
-                        html += `<p class="text-[10px] text-stone-500 font-bold uppercase tracking-wider pt-2">${roleSuplenteText}</p>`;
-                        list.forEach((item, idx) => {
-                            if (item.role === 'Suplente') {
-                                let deleteBtn = isAdmin ? `<button onclick="removeRegistration('${key}', ${idx})" class="text-red-400 hover:text-red-300 p-1" title="Eliminar"><i class="fa-solid fa-trash-can text-xs"></i></button>` : '';
-                                html += `
-                                    <div class="flex justify-between items-center bg-[#101712] px-3 py-2.5 rounded-xl border border-green-900/20">
-                                        <div>
-                                            <span class="text-yellow-500 font-bold mr-1">${roleTagS}</span> 
-                                            <span class="text-stone-200 font-medium">${item.name}</span> 
-                                        </div>
-                                        ${deleteBtn}
-                                    </div>
-                                `;
-                            }
-                        });
-                    }
+                return true;
+            } else {
+                if(banner) {
+                    banner.className = "p-3 rounded-lg text-center font-cinzel text-xs font-bold bg-red-950/60 text-red-400 border border-red-700/50";
+                    banner.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Inscripciones Suspendidas / Cerradas`;
                 }
-
-                html += `</div></div>`;
-                container.innerHTML += html;
+                if(submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50";
+                }
+                return false;
             }
         }
 
-        function calculateAllianceParticipations() {
-            let counts = {};
-            allianceNames.forEach(name => counts[name] = 0);
-            historyData.forEach(item => {
-                [item.Driver, item.VIP].forEach(p => {
-                    const clean = p.trim();
-                    if (clean && clean !== '---') {
-                        const match = allianceNames.find(n => n.toLowerCase() === clean.toLowerCase());
-                        if (match) counts[match] = (counts[match] || 0) + 1;
-                    }
-                });
+        async function toggleGlobalSuspend() {
+            manualSuspend = !manualSuspend;
+            await saveDatabase();
+            updateAdminUI();
+            checkRegistrationWindow();
+            alert(manualSuspend ? "⛔ Inscripciones suspendidas manualmente." : "✅ Inscripciones reactivadas.");
+        }
+
+        function updateClocks() {
+            const now = new Date();
+            document.getElementById('local-time').textContent = "L: " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const serverDate = new Date(utcTime - (2 * 3600000));
+            document.getElementById('server-time').textContent = "S: " + serverDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            if(trainConfig.arrival) {
+                document.getElementById('station-arrival-time').textContent = trainConfig.arrival;
+            }
+            checkRegistrationWindow();
+        }
+
+        let selectedEvent = 'CS';
+        let selectedRole = 'Titular';
+        let selectedTurn = 'Equipo A';
+        let selectedMember = '';
+
+        function updateTurnHours() {
+            if(selectedEvent === 'CS') {
+                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Jueves | Server: 12:00 | Local: 11:00` : `Thursday | Server: 12:00 PM | Local: 11:00 AM`;
+                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Jueves | Server: 23:00 | Local: 22:00` : `Thursday | Server: 11:00 PM | Local: 10:00 PM`;
+            } else {
+                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Viernes | Server: 18:00 | Local: 17:00` : `Friday | Server: 6:00 PM | Local: 5:00 PM`;
+                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Viernes | Server: 23:00 | Local: 22:00` : `Friday | Server: 11:00 PM | Local: 10:00 PM`;
+            }
+        }
+
+        function switchTab(tabId) {
+            ['dashboard', 'inscripciones', 'giveaway', 'powers'].forEach(id => {
+                document.getElementById('tab-' + id).classList.add('hidden');
             });
-            allianceData = allianceNames.map(name => ({ "Alliance Members": name, "Participations": counts[name] || 0 }));
-            return allianceData;
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            if(tabId === 'powers') renderPowersTable();
+            if(tabId === 'inscripciones') checkRegistrationWindow();
         }
 
         async function loadDatabase() {
             try {
-                const response = await fetch(BIN_URL);
+                const response = await fetch(BIN_URL, { headers: { "X-Master-Key": API_KEY } });
+                if (!response.ok) throw new Error("Error al conectar con la nube");
                 const json = await response.json();
-                
                 if (json.record) {
                     historyData = json.record.historyData || [];
-                    currentMvps = json.record.currentMvps || {};
+                    trainConfig = json.record.trainConfig || trainConfig;
+                    allianceNames = json.record.allianceNames || allianceNames;
+                    powersData = json.record.powersData || {};
+                    registrations = json.record.registrations || {};
+                    manualSuspend = json.record.manualSuspend || false;
                 }
-                
-                calculateAllianceParticipations();
                 initDashboard();
                 renderHistory();
-                renderAllianceTable();
-                if(loadedPlayers.length > 0) loadParticipants(true);
-
+                renderPowersTable();
+                renderPreLists();
+                updateTurnHours();
+                checkRegistrationWindow();
             } catch (error) {
-                console.error("Error al cargar la base de datos:", error);
+                console.error("No se pudo cargar de la nube:", error);
             }
         }
 
         async function saveDatabase() {
             try {
-                const payload = {
-                    historyData: historyData,
-                    currentMvps: currentMvps
-                };
-
                 await fetch(BIN_URL, {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Master-Key": API_KEY
-                    },
-                    body: JSON.stringify(payload)
+                    headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
+                    body: JSON.stringify({ historyData, trainConfig, allianceNames, powersData, registrations, manualSuspend })
                 });
             } catch (error) {
                 console.error("Error al guardar en la nube:", error);
             }
         }
 
-        function switchTab(tabId) {
-            ['dashboard', 'inscripciones', 'giveaway', 'history', 'alliance'].forEach(id => {
-                const tabEl = document.getElementById('tab-' + id);
-                const btnEl = document.getElementById('btn-' + id);
-                if(tabEl) tabEl.classList.add('hidden');
-                if(btnEl) btnEl.classList.remove('active');
-            });
-            const activeTab = document.getElementById('tab-' + tabId);
-            const activeBtn = document.getElementById('btn-' + tabId);
-            if(activeTab) activeTab.classList.remove('hidden');
-            if(activeBtn) activeBtn.classList.add('active');
-            if (tabId === 'dashboard') initDashboard();
-            if (tabId === 'inscripciones') renderLists();
-        }
-
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
-
-        let chartInstance = null;
         function initDashboard() {
-            const totalAllianceEl = document.getElementById('stat-total-alliance');
-            if(totalAllianceEl) totalAllianceEl.textContent = allianceNames.length;
-
-            const mvpWeek = document.getElementById('display-mvp-week');
-            if(mvpWeek) mvpWeek.textContent = currentMvps.week || '---';
-            const champion = document.getElementById('display-champion');
-            if(champion) champion.textContent = currentMvps.champion || '---';
-            const mvpDesert1 = document.getElementById('display-mvp-desert-1');
-            if(mvpDesert1) mvpDesert1.textContent = currentMvps.desert1 || '---';
-            const mvpDesert2 = document.getElementById('display-mvp-desert-2');
-            if(mvpDesert2) mvpDesert2.textContent = currentMvps.desert2 || '---';
-            const mvpCanon1 = document.getElementById('display-mvp-canon-1');
-            if(mvpCanon1) mvpCanon1.textContent = currentMvps.canon1 || '---';
-            const mvpCanon2 = document.getElementById('display-mvp-canon-2');
-            if(mvpCanon2) mvpCanon2.textContent = currentMvps.canon2 || '---';
-
-            const driverCounts = {};
-            historyData.forEach(item => {
-                const d = item.Driver.trim();
-                if(d && d !== '---') driverCounts[d] = (driverCounts[d] || 0) + 1;
-            });
-
-            const sortedDrivers = Object.entries(driverCounts).sort((a,b) => b[1] - a[1]);
-
-            const tbody = document.getElementById('recent-history-tbody');
-            if(tbody) {
-                tbody.innerHTML = '';
-                [...historyData].reverse().slice(0,5).forEach(item => {
-                    tbody.innerHTML += `
-                        <tr class="transition-colors">
-                            <td class="px-4 py-3 font-medium text-stone-400 font-mono text-xs">${item.Date}</td>
-                            <td class="px-4 py-3 text-stone-200 font-semibold">${item.Driver}</td>
-                            <td class="px-4 py-3 text-yellow-500 font-semibold">${item.VIP}</td>
-                        </tr>`;
-                });
-            }
-
-            const canvasCtx = document.getElementById('topDriversChart');
-            if(canvasCtx) {
-                const ctx1 = canvasCtx.getContext('2d');
-                if(chartInstance) chartInstance.destroy();
-                const top10 = sortedDrivers.slice(0, 10);
-                
-                let gradient = ctx1.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(34, 197, 94, 0.8)');
-                gradient.addColorStop(1, 'rgba(21, 128, 61, 0.2)');
-                
-                chartInstance = new Chart(ctx1, {
-                    type: 'bar',
-                    data: {
-                        labels: top10.map(d => d[0]),
-                        datasets: [{
-                            data: top10.map(d => d[1]),
-                            backgroundColor: gradient,
-                            borderColor: 'rgba(74, 222, 128, 1)',
-                            borderWidth: 1, borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { color: 'rgba(63, 98, 56, 0.2)' }, ticks: { color: '#a8a29e', font: { family: 'Inter', size: 10 } } },
-                            y: { grid: { color: 'rgba(63, 98, 56, 0.2)' }, ticks: { color: '#a8a29e', precision: 0 } }
-                        }
-                    }
-                });
+            document.getElementById('display-train-driver').textContent = trainConfig.driver || '---';
+            document.getElementById('display-train-vip').textContent = trainConfig.vip || '---';
+            document.getElementById('discord-link-btn').href = trainConfig.discord || '#';
+            if(trainConfig.driver !== '---') {
+                document.getElementById('train-status-badge').textContent = "🚂 Tren Programado";
             }
         }
 
-        function openMvpModal() {
-            document.getElementById('input-mvp-week').value = currentMvps.week || '';
-            document.getElementById('input-champion').value = currentMvps.champion || '';
-            document.getElementById('input-mvp-desert-1').value = currentMvps.desert1 || '';
-            document.getElementById('input-mvp-desert-2').value = currentMvps.desert2 || '';
-            document.getElementById('input-mvp-canon-1').value = currentMvps.canon1 || '';
-            document.getElementById('input-mvp-canon-2').value = currentMvps.canon2 || '';
-            document.getElementById('mvp-modal').classList.remove('hidden');
-        }
-        function closeMvpModal() {
-            document.getElementById('mvp-modal').classList.add('hidden');
-        }
-        function saveMvps() {
-            currentMvps.week = document.getElementById('input-mvp-week').value.trim();
-            currentMvps.champion = document.getElementById('input-champion').value.trim();
-            currentMvps.desert1 = document.getElementById('input-mvp-desert-1').value.trim();
-            currentMvps.desert2 = document.getElementById('input-mvp-desert-2').value.trim();
-            currentMvps.canon1 = document.getElementById('input-mvp-canon-1').value.trim();
-            currentMvps.canon2 = document.getElementById('input-mvp-canon-2').value.trim();
-            closeMvpModal();
-            initDashboard();
-            saveDatabase();
+        function selectEvent(ev) {
+            selectedEvent = ev;
+            document.getElementById('btn-ev-cs').className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='CS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
+            document.getElementById('btn-ev-ds').className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='DS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
+            updateTurnHours();
         }
 
-        let loadedPlayers = [];
-        let eligibleForDriver = [];
-        let eligibleForVIP = [];
-        let currentDraw = { Driver: null, VIP: null };
-
-        function getRecentWinners() {
-            const recentHistory = historyData.slice(-14);
-            return {
-                drivers: recentHistory.map(h => h.Driver.trim().toLowerCase()),
-                vips: recentHistory.map(h => h.VIP.trim().toLowerCase())
-            };
+        function selectRole(role) {
+            selectedRole = role;
+            document.getElementById('btn-role-titular').className = `touch-btn p-3 bg-[#090d0a] border ${role==='Titular'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
+            document.getElementById('btn-role-suplente').className = `touch-btn p-3 bg-[#090d0a] border ${role==='Suplente'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
         }
 
-        function loadParticipants(isLangSwitch = false) {
-            if(!isLangSwitch) {
-                const rawText = document.getElementById('bulk-names').value;
-                const namesArray = rawText.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
-                loadedPlayers = [...new Set(namesArray)];
-            }
+        function selectTurn(turn) {
+            selectedTurn = turn;
+            document.getElementById('btn-turno-1').className = `touch-btn p-3 bg-[#090d0a] border ${turn==='Equipo A'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl text-xs text-stone-300`;
+            document.getElementById('btn-turno-2').className = `touch-btn p-3 bg-[#090d0a] border ${turn==='Equipo B'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl text-xs text-stone-300`;
+        }
+
+        function filterMemberSearch() {
+            const q = document.getElementById('member-search-input').value.trim().toLowerCase();
+            const resBox = document.getElementById('member-search-results');
+            resBox.innerHTML = '';
+            if(q.length < 3) { resBox.classList.add('hidden'); return; }
             
-            if (loadedPlayers.length === 0 && !isLangSwitch) {
-                alert(currentLang === 'es' ? "Debes escribir al menos un nombre en el pergamino." : "You must enter at least one name in the scroll.");
+            const matches = allianceNames.filter(n => n.toLowerCase().includes(q));
+            if(matches.length > 0) {
+                resBox.classList.remove('hidden');
+                matches.forEach(m => {
+                    resBox.innerHTML += `<div onclick="selectMember('${m}')" class="p-2 hover:bg-green-900/40 cursor-pointer rounded text-xs text-stone-200">${m}</div>`;
+                });
+            } else { resBox.classList.add('hidden'); }
+        }
+
+        function selectMember(name) {
+            selectedMember = name;
+            document.getElementById('member-search-input').value = name;
+            document.getElementById('member-search-results').classList.add('hidden');
+        }
+
+        async function submitRegistration() {
+            if(!checkRegistrationWindow()) {
+                alert("⛔ Las inscripciones se encuentran cerradas o suspendidas en este momento.");
                 return;
-            } else if (loadedPlayers.length === 0) return;
-
-            const { drivers, vips } = getRecentWinners();
-            eligibleForDriver = [];
-            eligibleForVIP = [];
-            const listContainer = document.getElementById('status-list');
-            if(!listContainer) return;
-            listContainer.innerHTML = '';
-            
-            loadedPlayers.sort((a, b) => a.localeCompare(b)).forEach(player => {
-                const lowerName = player.toLowerCase();
-                const isBlockedDriver = drivers.includes(lowerName);
-                const isBlockedVIP = vips.includes(lowerName);
-                
-                if (!isBlockedDriver) eligibleForDriver.push(player);
-                if (!isBlockedVIP) eligibleForVIP.push(player);
-                
-                const div = document.createElement('div');
-                div.className = 'bg-[#090d0a] border border-green-900/40 rounded-lg p-3 flex flex-col hover:border-yellow-600/50 transition-colors';
-                
-                let blockedText = currentLang === 'es' ? '🔒 Bloqueado' : '🔒 Blocked';
-                let readyTextC = currentLang === 'es' ? 'C: ⚔️ Listo' : 'C: ⚔️ Ready';
-                let readyTextV = currentLang === 'es' ? 'L: 👑 Listo' : 'L: 👑 Ready';
-
-                let dBadge = isBlockedDriver 
-                    ? `<span class="text-[10px] font-bold bg-red-900/30 text-red-400 border border-red-800/50 px-1.5 py-0.5 rounded">C: ${blockedText}</span>` 
-                    : `<span class="text-[10px] font-bold bg-green-900/40 text-green-400 border border-green-700/50 px-1.5 py-0.5 rounded">${readyTextC}</span>`;
-                    
-                let vBadge = isBlockedVIP 
-                    ? `<span class="text-[10px] font-bold bg-red-900/30 text-red-400 border border-red-800/50 px-1.5 py-0.5 rounded">L: ${blockedText}</span>` 
-                    : `<span class="text-[10px] font-bold bg-yellow-900/30 text-yellow-500 border border-yellow-700/50 px-1.5 py-0.5 rounded">${readyTextV}</span>`;
-                
-                div.innerHTML = `<span class="text-sm font-semibold text-stone-200 truncate mb-2" title="${player}">${player}</span><div class="flex flex-col gap-1">${dBadge}${vBadge}</div>`;
-                listContainer.appendChild(div);
-            });
-            
-            document.getElementById('valid-count').textContent = `${loadedPlayers.length}`;
-            document.getElementById('count-driver').textContent = eligibleForDriver.length;
-            document.getElementById('count-vip').textContent = eligibleForVIP.length;
-            
-            if(!isLangSwitch){
-                currentDraw = { Driver: null, VIP: null };
-                document.getElementById('btn-save').classList.add('hidden');
-                document.getElementById('draw-type-label').classList.add('hidden');
-                
-                const winDisp = document.getElementById('winner-display');
-                winDisp.innerHTML = currentLang === 'es' ? "Lista Sellada" : "List Sealed";
-                winDisp.className = "font-cinzel font-extrabold text-3xl sm:text-4xl text-stone-600 min-h-[4rem] flex items-center justify-center";
-                document.getElementById('roulette-box').className = "w-full max-w-lg py-10 px-6 rounded-2xl bg-[#070a08] border-2 border-yellow-600/40 relative my-4 z-10 transition-colors duration-300 shadow-[0_0_20px_rgba(202,138,4,0.15)]";
-
-                document.getElementById('btn-draw-driver').disabled = eligibleForDriver.length === 0;
-                document.getElementById('btn-draw-vip').disabled = eligibleForVIP.length === 0;
             }
+            if(!selectedMember) { alert("Selecciona un integrante."); return; }
+            const key = `${selectedEvent} - ${selectedTurn}`;
+            if(!registrations[key]) registrations[key] = [];
+            registrations[key].push({ name: selectedMember, role: selectedRole });
+            await saveDatabase();
+            alert("✅ ¡Inscripción registrada y sincronizada en la nube!");
+            document.getElementById('member-search-input').value = '';
+            selectedMember = '';
+            renderPreLists();
+        }
+
+        function renderPreLists() {
+            const container = document.getElementById('prelist-container');
+            if(!container) return;
+            container.innerHTML = '';
+            ['CS - Equipo A', 'CS - Equipo B', 'DS - Equipo A', 'DS - Equipo B'].forEach(k => {
+                const list = registrations[k] || [];
+                let html = `<div class="bg-[#090d0a] border border-green-900/50 p-3 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center"><strong class="font-cinzel text-yellow-500 text-xs">${k}</strong> <button onclick="copyPrelist('${k}')" class="text-[10px] text-stone-400 hover:text-white"><i class="fa-solid fa-copy"></i> Copiar</button></div>
+                    <ul class="text-xs space-y-1 text-stone-300 max-h-32 overflow-y-auto">`;
+                if(list.length === 0) html += `<li class="text-stone-500 italic">Sin inscritos.</li>`;
+                list.forEach((item, idx) => {
+                    html += `<li class="flex justify-between"><span>${item.name} (${item.role})</span>`;
+                    if(sessionStorage.getItem('knni_admin')==='true') html += `<span onclick="removeReg('${k}', ${idx})" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1" title="Suspender/Eliminar">×</span>`;
+                    html += `</li>`;
+                });
+                html += `</ul></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function copyPrelist(k) {
+            const list = registrations[k] || [];
+            const text = `--- PRE-LISTA ${k} ---\n` + list.map(i => `${i.name} (${i.role})`).join('\n');
+            navigator.clipboard.writeText(text);
+            alert("📋 ¡Lista copiada al portapapeles!");
+        }
+
+        async function removeReg(k, idx) {
+            registrations[k].splice(idx, 1);
+            await saveDatabase();
+            renderPreLists();
+        }
+
+        // --- ORDENAMIENTO DE PODERES ---
+        function sortPowersBy(field) {
+            if (currentSortField === field) {
+                sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+            } else {
+                currentSortField = field;
+                sortDirection = 'desc';
+            }
+
+            allianceNames.sort((a, b) => {
+                const valA = parseFloat(powersData[a]?.[field]) || 0;
+                const valB = parseFloat(powersData[b]?.[field]) || 0;
+                return sortDirection === 'desc' ? valB - valA : valA - valB;
+            });
+
+            renderPowersTable(document.getElementById('search-power').value);
+        }
+
+        function renderPowersTable(filter = '') {
+            const tbody = document.getElementById('powers-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            document.getElementById('stat-total-alliance').textContent = allianceNames.length;
+            
+            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
+            document.querySelectorAll('.admin-col').forEach(el => {
+                if(isAdmin) el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            });
+
+            const filteredNames = allianceNames.filter(n => n.toLowerCase().includes(filter.toLowerCase()));
+
+            if(filteredNames.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-stone-500 italic">No hay integrantes registrados.</td></tr>`;
+                return;
+            }
+
+            filteredNames.forEach((name, idx) => {
+                if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
+                const p = powersData[name];
+                let row = `<tr class="border-b border-green-900/35 hover:bg-green-950/20">
+                    <td class="px-3 py-2.5 font-mono text-xs text-stone-400">${idx + 1}</td>
+                    <td class="px-3 py-2.5 font-cinzel text-stone-200">${name}</td>
+                    <td class="px-3 py-2.5"><input type="text" value="${p.m1}" onchange="updatePower('${name}', 'm1', this.value)" placeholder="70.2M" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${p.m2}" onchange="updatePower('${name}', 'm2', this.value)" placeholder="58.2M" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${p.m3}" onchange="updatePower('${name}', 'm3', this.value)" placeholder="56.7M" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><select onchange="updatePower('${name}', 'troop', this.value)" class="bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none">
+                        <option value="Tank" ${p.troop==='Tank'?'selected':''}>Tank</option>
+                        <option value="Air" ${p.troop==='Air'?'selected':''}>Air</option>
+                        <option value="Missile" ${p.troop==='Missile'?'selected':''}>Missile</option>
+                    </select></td>`;
+                
+                if(isAdmin) {
+                    row += `<td class="px-3 py-2.5 text-center"><button onclick="deleteMember('${name}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>`;
+                }
+                row += `</tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function updatePower(name, field, val) {
+            if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
+            powersData[name][field] = val;
+            await saveDatabase();
+        }
+
+        function filterPowers() {
+            const q = document.getElementById('search-power').value;
+            renderPowersTable(q);
+        }
+
+        function openAddMemberModal() {
+            document.getElementById('new-member-name').value = '';
+            document.getElementById('add-member-modal').classList.remove('hidden');
+        }
+
+        function closeAddMemberModal() { document.getElementById('add-member-modal').classList.add('hidden'); }
+
+        async function confirmAddMember() {
+            const name = document.getElementById('new-member-name').value.trim();
+            if(!name) { alert("Ingresa un nombre."); return; }
+            if(allianceNames.includes(name)) { alert("El integrante ya existe."); return; }
+            allianceNames.push(name);
+            allianceNames.sort();
+            powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
+            await saveDatabase();
+            closeAddMemberModal();
+            renderPowersTable();
+            alert("✅ ¡Integrante agregado y sincronizado en la nube!");
+        }
+
+        async function deleteMember(name) {
+            if(confirm(`¿Estás seguro de eliminar a ${name}?`)) {
+                allianceNames = allianceNames.filter(n => n !== name);
+                delete powersData[name];
+                await saveDatabase();
+                renderPowersTable();
+            }
+        }
+
+        // --- SORTEO DIVINO ---
+        let loadedPlayers = [], eligibleForDriver = [], eligibleForVIP = [], currentDraw = { Driver: null, VIP: null };
+        function loadParticipants() {
+            const raw = document.getElementById('bulk-names').value;
+            loadedPlayers = [...new Set(raw.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0))];
+            if(loadedPlayers.length === 0) { alert("Ingresa nombres."); return; }
+            eligibleForDriver = [...loadedPlayers];
+            eligibleForVIP = [...loadedPlayers];
+            document.getElementById('btn-draw-driver').disabled = false;
+            document.getElementById('btn-draw-vip').disabled = false;
+            alert("✅ ¡Participantes sellados!");
         }
 
         function startDraw(role) {
             let pool = role === 'Driver' ? [...eligibleForDriver] : [...eligibleForVIP];
-            
-            if (role === 'VIP' && currentDraw.Driver) {
-                pool = pool.filter(p => p.toLowerCase() !== currentDraw.Driver.toLowerCase());
-            }
-
-            if (pool.length === 0) return;
-            
-            document.getElementById('btn-draw-driver').disabled = true;
-            document.getElementById('btn-draw-vip').disabled = true;
-            document.getElementById('btn-save').classList.add('hidden');
-
+            if(role === 'VIP' && currentDraw.Driver) pool = pool.filter(p => p !== currentDraw.Driver);
+            if(pool.length === 0) return;
             const winnerEl = document.getElementById('winner-display');
-            const labelEl = document.getElementById('draw-type-label');
-            const boxEl = document.getElementById('roulette-box');
-
-            labelEl.classList.remove('hidden');
-            labelEl.textContent = role === 'Driver' ? (currentLang === 'es' ? "Buscando Caballero..." : "Finding Driver...") : (currentLang === 'es' ? "Buscando Lord..." : "Finding Lord...");
-            
-            let colorClass = role === 'Driver' ? 'from-green-300 to-green-600' : 'from-yellow-200 to-yellow-600';
-            let borderColor = role === 'Driver' ? 'border-green-600/60 shadow-[0_0_25px_rgba(34,197,94,0.2)]' : 'border-yellow-500/60 shadow-[0_0_25px_rgba(234,179,8,0.2)]';
-            
-            winnerEl.className = `font-cinzel font-extrabold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-br ${colorClass} min-h-[4rem] flex items-center justify-center text-center break-words w-full px-4`;
-            boxEl.className = `w-full max-w-lg py-10 px-6 rounded-2xl bg-[#090d0a] border-2 ${borderColor} relative my-4 z-10 transition-all duration-300`;
-
             let counter = 0;
             const interval = setInterval(() => {
                 winnerEl.textContent = pool[Math.floor(Math.random() * pool.length)];
                 counter++;
-                if (counter >= 25) {
+                if(counter >= 15) {
                     clearInterval(interval);
                     const winner = pool[Math.floor(Math.random() * pool.length)];
-                    
-                    let icon = role === 'Driver' ? '⚔️' : '👑';
-                    winnerEl.innerHTML = `${icon} ${winner} ${icon}`;
-                    labelEl.textContent = role === 'Driver' ? (currentLang === 'es' ? "Elegido: Caballero (Driver)" : "Chosen: Driver") : (currentLang === 'es' ? "Elegido: Lord (VIP)" : "Chosen: Lord (VIP)");
-                    
+                    winnerEl.textContent = winner;
                     currentDraw[role] = winner;
-                    
-                    if (!currentDraw.Driver && eligibleForDriver.length > 0) document.getElementById('btn-draw-driver').disabled = false;
-                    if (!currentDraw.VIP && eligibleForVIP.length > 0) {
-                        const remainingVIPs = eligibleForVIP.filter(p => !currentDraw.Driver || p.toLowerCase() !== currentDraw.Driver.toLowerCase());
-                        document.getElementById('btn-draw-vip').disabled = remainingVIPs.length === 0;
-                    }
-                    
-                    if (currentDraw.Driver && currentDraw.VIP) {
-                        document.getElementById('btn-save').classList.remove('hidden');
-                    }
+                    if(currentDraw.Driver && currentDraw.VIP) document.getElementById('btn-save').classList.remove('hidden');
                 }
-            }, 75);
+            }, 60);
         }
 
-        function saveToHistory() {
-            if (!currentDraw.Driver || !currentDraw.VIP) return;
-            const dateObj = new Date();
-            const today = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
-            
-            historyData.push({
-                "Date": today,
-                "Driver": currentDraw.Driver,
-                "VIP": currentDraw.VIP
-            });
-            
-            calculateAllianceParticipations();
-            loadParticipants(); 
-            initDashboard(); 
+        async function saveToHistory() {
+            if(!currentDraw.Driver || !currentDraw.VIP) return;
+            historyData.push({ Date: new Date().toLocaleDateString(), Driver: currentDraw.Driver, VIP: currentDraw.VIP, Config: "Sorteo Divino" });
             renderHistory();
-            renderAllianceTable();
-            switchTab('history');
-            saveDatabase();
+            switchTab('giveaway');
+            await saveDatabase();
         }
 
-        function deleteRecord(idx) {
-            if(confirm(currentLang === 'es' ? "¿Estás seguro de eliminar esta gesta?" : "Are you sure to delete this record?")) {
-                historyData.splice(idx, 1);
-                calculateAllianceParticipations();
-                initDashboard();
-                if(loadedPlayers.length > 0) loadParticipants(true);
-                renderHistory();
-                renderAllianceTable();
-                saveDatabase();
-            }
+        function renderHistory() {
+            const tbody = document.getElementById('full-history-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(historyData.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-stone-500 italic">No hay registros.</td></tr>`; return; }
+            historyData.slice().reverse().forEach((item, idx) => {
+                tbody.innerHTML += `<tr class="border-b border-green-900/30">
+                    <td class="px-4 py-3">${item.Date}</td>
+                    <td class="px-4 py-3">${item.Driver}</td>
+                    <td class="px-4 py-3 text-yellow-500">${item.VIP}</td>
+                    <td class="px-4 py-3 text-center"><button onclick="checkAdmin(() => deleteHistory(${historyData.length - 1 - idx}))" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>`;
+            });
         }
-        function editRecord(idx) {
-            document.getElementById('edit-index').value = idx;
-            let dateStr = historyData[idx].Date;
-            let parts = dateStr.split('/');
-            if(parts.length === 3) {
-                 document.getElementById('edit-date').value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+        async function deleteHistory(idx) {
+            historyData.splice(idx, 1);
+            renderHistory();
+            await saveDatabase();
+        }
+
+        // --- ADMIN ---
+        function updateAdminUI() {
+            const btn = document.getElementById('admin-lock-btn');
+            const icon = document.getElementById('admin-icon');
+            const suspendContainer = document.getElementById('admin-suspend-container');
+            const suspendLbl = document.getElementById('suspend-lbl');
+            
+            if (sessionStorage.getItem('knni_admin') === 'true') {
+                btn.className = "touch-btn p-2 bg-yellow-950/80 border border-yellow-500 text-yellow-400 rounded-lg text-xs shadow-[0_0_10px_rgba(202,138,4,0.4)] transition-all";
+                icon.className = "fa-solid fa-lock-open text-sm";
+                if(suspendContainer) suspendContainer.classList.remove('hidden');
+                if(suspendLbl) suspendLbl.textContent = manualSuspend ? "Reactivar Inscripciones" : "Suspender Inscripciones";
             } else {
-                 document.getElementById('edit-date').value = dateStr;
+                btn.className = "touch-btn p-2 bg-stone-900 border border-stone-800 text-stone-400 rounded-lg text-xs transition-all";
+                icon.className = "fa-solid fa-lock text-sm";
+                if(suspendContainer) suspendContainer.classList.add('hidden');
             }
-            document.getElementById('edit-driver').value = historyData[idx].Driver;
-            document.getElementById('edit-vip').value = historyData[idx].VIP;
-            document.getElementById('edit-modal').classList.remove('hidden');
         }
-        function closeEditModal() {
-            document.getElementById('edit-modal').classList.add('hidden');
-        }
-        function saveEdit() {
-            const idx = document.getElementById('edit-index').value;
-            let dateStr = document.getElementById('edit-date').value;
-            let parts = dateStr.split('-');
-            let finalDate = dateStr;
-            if(parts.length === 3) {
-                finalDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+        function toggleAdminSession() {
+            if (sessionStorage.getItem('knni_admin') === 'true') {
+                sessionStorage.removeItem('knni_admin');
+                updateAdminUI();
+                renderPowersTable();
+                checkRegistrationWindow();
+                renderPreLists();
+                alert("🔒 Sesión de Administrador cerrada.");
+            } else {
+                pendingAction = () => {
+                    updateAdminUI();
+                    renderPowersTable();
+                    checkRegistrationWindow();
+                    renderPreLists();
+                    alert("🔓 ¡Acceso total de Administrador concedido!");
+                };
+                document.getElementById('admin-password').value = '';
+                document.getElementById('admin-password-modal').classList.remove('hidden');
             }
-            historyData[idx].Date = finalDate;
-            historyData[idx].Driver = document.getElementById('edit-driver').value;
-            historyData[idx].VIP = document.getElementById('edit-vip').value;
-            closeEditModal();
-            calculateAllianceParticipations();
+        }
+
+        function checkAdmin(actionFn) {
+            if (sessionStorage.getItem('knni_admin') === 'true') { 
+                actionFn(); 
+            } else { 
+                pendingAction = actionFn;
+                document.getElementById('admin-password').value = ''; 
+                document.getElementById('admin-password-modal').classList.add('hidden').remove('hidden'); 
+            }
+        }
+
+        function verifyAdminPassword() {
+            if (document.getElementById('admin-password').value === ADMIN_PASSWORD) {
+                sessionStorage.setItem('knni_admin', 'true');
+                closeAdminPasswordModal();
+                updateAdminUI();
+                renderPowersTable();
+                checkRegistrationWindow();
+                renderPreLists();
+                if (pendingAction) {
+                    pendingAction();
+                    pendingAction = null;
+                }
+            } else { 
+                alert("Contraseña incorrecta."); 
+            }
+        }
+
+        function closeAdminPasswordModal() { 
+            document.getElementById('admin-password-modal').classList.add('hidden'); 
+            pendingAction = null;
+        }
+
+        function openEditTrainModal() {
+            document.getElementById('adm-driver').value = trainConfig.driver;
+            document.getElementById('adm-vip').value = trainConfig.vip;
+            document.getElementById('adm-arrival').value = trainConfig.arrival;
+            document.getElementById('edit-train-modal').classList.remove('hidden');
+        }
+        function closeEditTrainModal() { document.getElementById('edit-train-modal').classList.add('hidden'); }
+
+        async function saveTrainChanges() {
+            trainConfig.driver = document.getElementById('adm-driver').value.trim();
+            trainConfig.vip = document.getElementById('adm-vip').value.trim();
+            trainConfig.arrival = document.getElementById('adm-arrival').value.trim();
+            closeEditTrainModal();
             initDashboard();
-            if(loadedPlayers.length > 0) loadParticipants(true);
-            renderHistory();
-            renderAllianceTable();
-            saveDatabase();
+            updateClocks();
+            await saveDatabase();
+            alert("✅ ¡Tren actualizado en la nube!");
         }
 
-        function renderHistory(data = historyData) {
-            const tbody = document.getElementById('full-history-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            
-            const dateObj = new Date();
-            const todayFormatted = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
-            
-            [...data].reverse().forEach((item, revIdx) => {
-                const isNew = item.Date === todayFormatted;
-                const originalIndex = data.length - 1 - revIdx;
-                
-                tbody.innerHTML += `
-                    <tr class="transition-colors border-b border-green-900/30 ${isNew ? 'bg-yellow-900/10' : ''}">
-                        <td class="px-6 py-4 font-mono text-stone-500 text-xs">#${data.length - revIdx}</td>
-                        <td class="px-6 py-4 font-medium ${isNew ? 'text-yellow-500' : 'text-stone-400'}">${item.Date}</td>
-                        <td class="px-6 py-4 font-semibold text-stone-200">${item.Driver}</td>
-                        <td class="px-6 py-4 font-semibold text-stone-200">${item.VIP}</td>
-                        <td class="px-6 py-4 text-center space-x-2">
-                            <button onclick="checkAdmin(() => editRecord(${originalIndex}))" class="text-stone-400 hover:text-yellow-500 transition-colors" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="checkAdmin(() => deleteRecord(${originalIndex}))" class="text-stone-400 hover:text-red-500 transition-colors" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>`;
-            });
+        function openEditDiscordModal() {
+            document.getElementById('adm-discord').value = trainConfig.discord;
+            document.getElementById('edit-discord-modal').classList.remove('hidden');
         }
+        function closeEditDiscordModal() { document.getElementById('edit-discord-modal').classList.add('hidden'); }
 
-        function filterHistory() {
-            const q = document.getElementById('search-history').value.toLowerCase();
-            const mappedData = historyData.map((item, idx) => ({item, idx}));
-            const filtered = mappedData.filter(d => d.item.Driver.toLowerCase().includes(q) || d.item.VIP.toLowerCase().includes(q) || d.item.Date.includes(q));
-            
-            const tbody = document.getElementById('full-history-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            
-            const dateObj = new Date();
-            const todayFormatted = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
-            
-            filtered.reverse().forEach((d) => {
-                const item = d.item;
-                const isNew = item.Date === todayFormatted;
-                tbody.innerHTML += `
-                    <tr class="transition-colors border-b border-green-900/30 ${isNew ? 'bg-yellow-900/10' : ''}">
-                        <td class="px-6 py-4 font-mono text-stone-500 text-xs">#${historyData.length - d.idx}</td>
-                        <td class="px-6 py-4 font-medium ${isNew ? 'text-yellow-500' : 'text-stone-400'}">${item.Date}</td>
-                        <td class="px-6 py-4 font-semibold text-stone-200">${item.Driver}</td>
-                        <td class="px-6 py-4 font-semibold text-stone-200">${item.VIP}</td>
-                        <td class="px-6 py-4 text-center space-x-2">
-                            <button onclick="checkAdmin(() => editRecord(${d.idx}))" class="text-stone-400 hover:text-yellow-500 transition-colors" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="checkAdmin(() => deleteRecord(${d.idx}))" class="text-stone-400 hover:text-red-500 transition-colors" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>`;
-            });
-            if(q === '') renderHistory();
-        }
-
-        function renderAllianceTable(data = allianceData) {
-            const tbody = document.getElementById('alliance-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            [...data].sort((a,b) => b.Participations - a.Participations).forEach((item, index) => {
-                tbody.innerHTML += `
-                    <tr class="transition-colors border-b border-green-900/30">
-                        <td class="px-6 py-4 font-cinzel text-stone-500 font-bold">${index + 1}</td>
-                        <td class="px-6 py-4 font-semibold text-stone-200">${item['Alliance Members']}</td>
-                        <td class="px-6 py-4 text-green-500 font-bold text-center">${item.Participations}</td>
-                    </tr>`;
-            });
-        }
-
-        function filterAlliance() {
-            const q = document.getElementById('search-alliance').value.toLowerCase();
-            renderAllianceTable(allianceData.filter(i => i['Alliance Members'].toLowerCase().includes(q)));
+        async function saveDiscordChanges() {
+            trainConfig.discord = document.getElementById('adm-discord').value.trim();
+            closeEditDiscordModal();
+            initDashboard();
+            await saveDatabase();
+            alert("✅ ¡Enlace de Discord actualizado en la nube!");
         }
 
         window.onload = async () => {
             createAshParticles();
-            calculateLocalTimes();
-            updateServerAndLocalClock();
-            setInterval(updateServerAndLocalClock, 1000);
-            updateTimerAndStatus();
-            setInterval(updateTimerAndStatus, 1000);
-            applyTranslations();
-            renderLists();
-
-            const winnerDisp = document.getElementById('winner-display');
-            if(winnerDisp) winnerDisp.textContent = currentLang === 'es' ? "Cargando Batallón..." : "Loading Battalion...";
-            
+            setInterval(updateClocks, 1000);
+            updateAdminUI();
             await loadDatabase();
-            
-            if(winnerDisp) winnerDisp.textContent = currentLang === 'es' ? "Esperando Tropa..." : "Waiting for Troops...";
+            updateTurnHours();
+            checkRegistrationWindow();
         };
     </script>
 </body>
