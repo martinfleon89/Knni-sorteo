@@ -17,7 +17,6 @@
             position: relative;
         }
         .font-cinzel { font-family: 'Cinzel', serif; }
-        
         .card-glass {
             background: linear-gradient(145deg, rgba(22, 33, 24, 0.85), rgba(12, 18, 14, 0.95));
             backdrop-filter: blur(12px);
@@ -26,11 +25,9 @@
             position: relative;
             z-index: 10;
         }
-        
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0c120e; }
         ::-webkit-scrollbar-thumb { background: #2f4532; border-radius: 4px; }
-        
         .ash-particle {
             position: fixed;
             background: rgba(214, 211, 209, 0.35);
@@ -45,6 +42,18 @@
             80% { opacity: 0.4; }
             100% { transform: translateY(-10vh) translateX(50px) scale(1.2); opacity: 0; }
         }
+        /* Bloqueo total cuando están cerradas las inscripciones */
+        .inscripcion-box.closed {
+            opacity: 0.35;
+            filter: grayscale(60%);
+            pointer-events: none !important;
+            cursor: not-allowed !important;
+        }
+        .inscripcion-box.open {
+            opacity: 1;
+            filter: none;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="flex flex-col selection:bg-green-800 selection:text-yellow-400 min-h-screen">
@@ -54,8 +63,6 @@
     <!-- TOP NAVIGATION BAR -->
     <header class="sticky top-0 z-50 border-b border-green-900/50 bg-[#0c120e]/95 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
-            
-            <!-- Logo y Nombre -->
             <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchTab('dashboard')">
                 <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-800 border border-yellow-500/50 flex items-center justify-center shadow-[0_0_15px_rgba(202,138,4,0.3)] text-stone-100 text-base sm:text-xl">
                     <i class="fa-solid fa-shield"></i>
@@ -65,7 +72,6 @@
                 </h1>
             </div>
 
-            <!-- Menú Desplegable Principal -->
             <div class="relative">
                 <button onclick="toggleDropdownMenu()" class="touch-btn px-2.5 py-1.5 bg-[#142217] border border-green-800/60 rounded-lg text-xs font-cinzel text-yellow-400 font-bold flex items-center space-x-1.5">
                     <i class="fa-solid fa-bars"></i>
@@ -79,9 +85,7 @@
                 </div>
             </div>
 
-            <!-- Controles Derecha -->
             <div class="flex items-center space-x-1 sm:space-x-2.5">
-                <!-- Música -->
                 <button onclick="toggleMusic()" id="music-btn" class="touch-btn p-2 bg-stone-900 border border-green-900/60 rounded-lg text-xs text-stone-400" title="Música de Guerra">
                     <i id="music-icon" class="fa-solid fa-volume-xmark"></i>
                 </button>
@@ -89,17 +93,14 @@
                     <source src="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=epic-battle-decisive-action-123475.mp3" type="audio/mpeg">
                 </audio>
 
-                <!-- Traductor ES/EN -->
                 <button onclick="toggleLang()" class="touch-btn px-2 py-1.5 bg-green-950 border border-green-800 text-yellow-400 font-cinzel text-xs font-bold rounded-lg">
                     <span id="lang-lbl">ES</span>
                 </button>
 
-                <!-- Admin (Candado con Acceso Total) -->
                 <button id="admin-lock-btn" onclick="toggleAdminSession()" class="touch-btn p-2 bg-stone-900 border border-stone-800 text-stone-400 rounded-lg text-xs transition-all" title="Modo Administrador">
                     <i id="admin-icon" class="fa-solid fa-lock text-sm"></i>
                 </button>
 
-                <!-- Horarios compactos para móvil vertical -->
                 <div class="flex flex-col px-1.5 py-0.5 bg-[#142217]/90 border border-green-800/50 rounded-lg text-[9px] sm:text-[10px] font-mono leading-tight">
                     <span id="server-time" class="text-yellow-400 font-bold whitespace-nowrap">S: --:--</span>
                     <span id="local-time" class="text-stone-300 whitespace-nowrap">L: --:--</span>
@@ -113,7 +114,6 @@
 
         <!-- TAB 1: HOME / DASHBOARD -->
         <div id="tab-dashboard" class="space-y-6">
-            
             <div class="card-glass p-5 rounded-2xl border-l-4 border-l-yellow-500 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-yellow-950/40 via-stone-900/60 to-emerald-950/40">
                 <div class="space-y-1 text-center sm:text-left">
                     <span id="convocatoria-badge" class="text-[10px] bg-yellow-900/60 text-yellow-300 px-2.5 py-1 rounded-full font-bold font-cinzel">CONVOCATORIA ABIERTA</span>
@@ -206,8 +206,7 @@
         <div id="tab-inscripciones" class="hidden space-y-6">
             <div class="card-glass p-5 rounded-xl space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
-                    <h3 class="font-cinzel font-bold text-lg text-yellow-500 text-center sm:text-left" data-i="insc-panel-title">Módulo de Inscripciones (Domingo 12am - Miércoles 11pm Server)</h3>
-                    <!-- Botones exclusivos Admin para suspender por separado CS o DS -->
+                    <h3 class="font-cinzel font-bold text-lg text-yellow-500 text-center sm:text-left" data-i="insc-panel-title">Módulo de Inscripciones</h3>
                     <div id="admin-suspend-container" class="hidden flex items-center space-x-2">
                         <button onclick="toggleSuspendEvent('CS')" id="btn-suspend-cs" class="px-2.5 py-1 bg-red-950 border border-red-600 text-red-400 rounded-lg text-[10px] font-cinzel font-bold">
                             <span id="lbl-suspend-cs">Suspender CS</span>
@@ -218,47 +217,50 @@
                     </div>
                 </div>
                 
-                <div id="inscripcion-status-banner" class="p-3 rounded-lg text-center font-cinzel text-xs font-bold"></div>
+                <div id="inscripcion-status-banner" class="p-3.5 rounded-xl text-center font-cinzel text-xs font-bold"></div>
 
-                <div class="space-y-2">
-                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
-                    <div class="grid grid-cols-2 gap-3" id="event-buttons-container">
-                        <button onclick="selectEvent('CS')" id="btn-ev-cs" class="touch-btn p-4 bg-[#090d0a] border-2 border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-sm font-bold text-stone-200">Cañón Storm (CS)</button>
-                        <button onclick="selectEvent('DS')" id="btn-ev-ds" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl font-cinzel text-sm font-bold text-stone-200">Desert Storm (DS)</button>
+                <!-- CONTENEDOR DE CONTROLES QUE SE BLOQUEA TOTALMENTE AL ESTAR CERRADO -->
+                <div id="inscription-controls-container" class="space-y-4 transition-all duration-300 inscripcion-box">
+                    <div class="space-y-2">
+                        <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
+                        <div class="grid grid-cols-2 gap-3" id="event-buttons-container">
+                            <button onclick="selectEvent('CS')" id="btn-ev-cs" class="touch-btn p-4 bg-[#090d0a] border-2 border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-sm font-bold text-stone-200">Cañón Storm (CS)</button>
+                            <button onclick="selectEvent('DS')" id="btn-ev-ds" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl font-cinzel text-sm font-bold text-stone-200">Desert Storm (DS)</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step2-lbl">2. Selecciona tu Rol:</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="selectRole('Titular')" id="btn-role-titular" class="touch-btn p-3 bg-[#090d0a] border border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-xs font-bold text-stone-300" data-i="role-titular">Titular</button>
-                        <button onclick="selectRole('Suplente')" id="btn-role-suplente" class="touch-btn p-3 bg-[#090d0a] border border-green-800 rounded-xl font-cinzel text-xs font-bold text-stone-300" data-i="role-suplente">Suplente</button>
+                    <div class="space-y-2">
+                        <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step2-lbl">2. Selecciona tu Rol:</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="selectRole('Titular')" id="btn-role-titular" class="touch-btn p-3 bg-[#090d0a] border border-yellow-500 bg-yellow-950/40 rounded-xl font-cinzel text-xs font-bold text-stone-300" data-i="role-titular">Titular</button>
+                            <button onclick="selectRole('Suplente')" id="btn-role-suplente" class="touch-btn p-3 bg-[#090d0a] border border-green-800 rounded-xl font-cinzel text-xs font-bold text-stone-300" data-i="role-suplente">Suplente</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step3-lbl">3. Selecciona el Equipo:</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="selectTurn('Equipo A')" id="btn-turno-1" class="touch-btn p-3 bg-[#090d0a] border border-yellow-500 bg-yellow-950/40 rounded-xl text-xs text-stone-300">
-                            <strong class="block text-yellow-400" data-i="t1-name">Equipo A</strong>
-                            <span id="t1-hours" class="text-[10px] text-stone-400 block leading-tight">---</span>
-                        </button>
-                        <button onclick="selectTurn('Equipo B')" id="btn-turno-2" class="touch-btn p-3 bg-[#090d0a] border border-green-800 rounded-xl text-xs text-stone-300">
-                            <strong class="block text-yellow-400" data-i="t2-name">Equipo B</strong>
-                            <span id="t2-hours" class="text-[10px] text-stone-400 block leading-tight">---</span>
-                        </button>
+                    <div class="space-y-2">
+                        <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step3-lbl">3. Selecciona el Equipo:</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="selectTurn('Equipo A')" id="btn-turno-1" class="touch-btn p-3 bg-[#090d0a] border border-yellow-500 bg-yellow-950/40 rounded-xl text-xs text-stone-300">
+                                <strong class="block text-yellow-400" data-i="t1-name">Equipo A</strong>
+                                <span id="t1-hours" class="text-[10px] text-stone-400 block leading-tight">---</span>
+                            </button>
+                            <button onclick="selectTurn('Equipo B')" id="btn-turno-2" class="touch-btn p-3 bg-[#090d0a] border border-green-800 rounded-xl text-xs text-stone-300">
+                                <strong class="block text-yellow-400" data-i="t2-name">Equipo B</strong>
+                                <span id="t2-hours" class="text-[10px] text-stone-400 block leading-tight">---</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step4-lbl">4. Buscar tu Nombre (Escribe al menos 3 letras):</label>
-                    <input type="text" id="member-search-input" oninput="filterMemberSearch()" placeholder="Escribe tu nick..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
-                    <div id="member-search-results" class="max-h-36 overflow-y-auto space-y-1 bg-[#070a08] p-2 rounded-lg border border-green-900/40 hidden"></div>
-                </div>
+                    <div class="space-y-2">
+                        <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step4-lbl">4. Buscar tu Nombre (Escribe al menos 3 letras):</label>
+                        <input type="text" id="member-search-input" oninput="filterMemberSearch()" placeholder="Escribe tu nick..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
+                        <div id="member-search-results" class="max-h-36 overflow-y-auto space-y-1 bg-[#070a08] p-2 rounded-lg border border-green-900/40 hidden"></div>
+                    </div>
 
-                <button id="btn-submit-reg" onclick="submitRegistration()" class="w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all">
-                    <span data-i="btn-confirm-reg">CONFIRMAR INSCRIPCIÓN</span>
-                </button>
+                    <button id="btn-submit-reg" onclick="submitRegistration()" class="w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all">
+                        <span data-i="btn-confirm-reg">CONFIRMAR INSCRIPCIÓN</span>
+                    </button>
+                </div>
             </div>
 
             <div class="card-glass p-5 rounded-xl space-y-4">
@@ -329,13 +331,13 @@
                 </div>
                 <div class="overflow-x-auto rounded-lg border border-green-900/40">
                     <table class="w-full text-left text-xs sm:text-sm text-stone-300">
-                        <thead class="text-[10px] uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel cursor-pointer">
+                        <thead class="text-[10px] uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel">
                             <tr>
                                 <th class="px-3 py-3">#</th>
                                 <th class="px-3 py-3" data-i="th-member">Nombre del Guerrero</th>
-                                <th class="px-3 py-3 hover:text-yellow-400" onclick="sortPowersBy('m1')"><span data-i="th-m1">1ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
-                                <th class="px-3 py-3 hover:text-yellow-400" onclick="sortPowersBy('m2')"><span data-i="th-m2">2ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
-                                <th class="px-3 py-3 hover:text-yellow-400" onclick="sortPowersBy('m3')"><span data-i="th-m3">3ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
+                                <th class="px-3 py-3 cursor-pointer hover:text-yellow-400" onclick="sortPowersBy('m1')"><span data-i="th-m1">1ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
+                                <th class="px-3 py-3 cursor-pointer hover:text-yellow-400" onclick="sortPowersBy('m2')"><span data-i="th-m2">2ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
+                                <th class="px-3 py-3 cursor-pointer hover:text-yellow-400" onclick="sortPowersBy('m3')"><span data-i="th-m3">3ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
                                 <th class="px-3 py-3" data-i="th-troop">Tipo Tropa</th>
                                 <th class="px-3 py-3 text-center admin-col hidden">Admin</th>
                             </tr>
@@ -348,7 +350,7 @@
 
     </main>
 
-    <!-- MODAL PASSWORD (SOLICITUD DE CLAVE SI NO ES ADMIN) -->
+    <!-- MODAL PASSWORD -->
     <div id="admin-password-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-sm space-y-4 text-xs sm:text-sm border border-yellow-700/50">
             <h3 class="font-cinzel font-bold text-base text-yellow-500">Autorización Requerida</h3>
@@ -361,7 +363,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR TREN -->
+    <!-- MODAL EDITAR TREN CON SELECTOR DE HORA -->
     <div id="edit-train-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
             <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Estado del Tren</h3>
@@ -375,8 +377,8 @@
                     <input type="text" id="adm-vip" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Hora de llegada a la estación</label>
-                    <input type="text" id="adm-arrival" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none" placeholder="Ej: 21:30 hs">
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Hora de llegada a la estación (Hora Local)</label>
+                    <input type="time" id="adm-arrival" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none text-center font-mono text-sm">
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
@@ -401,7 +403,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR MVPs Y CAMPEONES -->
+    <!-- MODAL EDITAR MVPs -->
     <div id="edit-mvp-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
             <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Salón de MVPs y Campeones</h3>
@@ -466,10 +468,10 @@
             "Jack meHoff", "Jamesson45891", "JeanPierre08", "JestFatality", "JOAT79", "JP AH", "JP1351", "Jungle20",
             "KillB", "KillïnPïxîeDuśt", "KnNi Mert", "Kopa 빨간색",
             "LightIna", "LuckStrayker",
-            "MADHOG 1856", "MelRose", "Mia2424", "MKMKMKMKMK", "MPK Buff", "Musky78",
+            "MADDOG 1856", "MelRose", "Mia2424", "MPK Buff", "Musky78",
             "ottotank",
             "Pepperspray69", "Phlyn",
-            "Ricknick", "RimMER", "RLP castle", "RTAlejandro", "RuLëz", "Runtz", "RW 1Too345",
+            "Ricknick", "RimMER", "RLP castle", "RTAlejandro", "RUNTZ", "RW 1Too345",
             "San Guillermo", "SaRgeReApEr", "shoo merito", "spal4", "spirit xx",
             "낭만용사Maquina", "TartanTerror", "tavo20", "TheEnforcer77", "TheRealBetty", "Th3 Lil Effin Go4t", "tornillo90", "Turbonovtec", "TwannaJ",
             "WillDW", "WilliamDOTJames", "XLeo26"
@@ -494,7 +496,7 @@
                 "arrival-lbl": "Hora de llegada a la estación:", "discord-title": "Comunidad en Discord",
                 "discord-desc": "Únete al canal de voz y coordinación de batallas.", "discord-btn": "UNIRSE AL DISCORD",
                 "mvp-hall-title": "Salón de MVPs y Campeones", "mvp-week": "MVP de la Semana", "champ-week": "Campeón de la Semana",
-                "mvp-ds": "MVP Desert Storm", "mvp-cs": "MVP Cañón Storm", "insc-panel-title": "Módulo de Inscripciones (Domingo 12am - Miércoles 11pm Server)",
+                "mvp-ds": "MVP Desert Storm", "mvp-cs": "MVP Cañón Storm", "insc-panel-title": "Módulo de Inscripciones",
                 "step1-lbl": "1. Selecciona el Evento:", "step2-lbl": "2. Selecciona tu Rol:", "role-titular": "Titular",
                 "role-suplente": "Suplente", "step3-lbl": "3. Selecciona el Equipo:", "t1-name": "Equipo A", "t2-name": "Equipo B",
                 "step4-lbl": "4. Buscar tu Nombre (Escribe al menos 3 letras):", "btn-confirm-reg": "CONFIRMAR INSCRIPCIÓN",
@@ -512,7 +514,7 @@
                 "arrival-lbl": "Station arrival time:", "discord-title": "Discord Community",
                 "discord-desc": "Join the voice channel and battle coordination.", "discord-btn": "JOIN DISCORD",
                 "mvp-hall-title": "MVPs & Champions Hall", "mvp-week": "MVP of the Week", "champ-week": "Champion of the Week",
-                "mvp-ds": "Desert Storm MVP", "mvp-cs": "Canyon Storm MVP", "insc-panel-title": "Registration Module (Sunday 12am - Wednesday 11pm Server)",
+                "mvp-ds": "Desert Storm MVP", "mvp-cs": "Canyon Storm MVP", "insc-panel-title": "Registration Module",
                 "step1-lbl": "1. Select Event:", "step2-lbl": "2. Select your Role:", "role-titular": "Starter",
                 "role-suplente": "Substitute", "step3-lbl": "3. Select Team:", "t1-name": "Team A", "t2-name": "Team B",
                 "step4-lbl": "4. Search Name (Type at least 3 letters):", "btn-confirm-reg": "CONFIRM REGISTRATION",
@@ -566,20 +568,18 @@
 
             if (suspendedEvents.CS && !isAdmin) {
                 btnCS.classList.add('hidden');
-                if (selectedEvent === 'CS') { selectEvent('DS'); }
+                if (selectedEvent === 'CS') selectEvent('DS');
             } else {
                 btnCS.classList.remove('hidden');
-                if (suspendedEvents.CS) btnCS.style.opacity = "0.4";
-                else btnCS.style.opacity = "1";
+                btnCS.style.opacity = suspendedEvents.CS ? "0.4" : "1";
             }
 
             if (suspendedEvents.DS && !isAdmin) {
                 btnDS.classList.add('hidden');
-                if (selectedEvent === 'DS') { selectEvent('CS'); }
+                if (selectedEvent === 'DS') selectEvent('CS');
             } else {
                 btnDS.classList.remove('hidden');
-                if (suspendedEvents.DS) btnDS.style.opacity = "0.4";
-                else btnDS.style.opacity = "1";
+                btnDS.style.opacity = suspendedEvents.DS ? "0.4" : "1";
             }
         }
 
@@ -587,33 +587,41 @@
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
             const serverDate = new Date(utcTime - (2 * 3600000)); 
-            const day = serverDate.getDay(); 
+            const day = serverDate.getDay(); // 0: Dom, 1: Lun, 2: Mar, 3: Mié, 4: Jue, 5: Vie, 6: Sáb
             const hour = serverDate.getHours();
 
             let isOpen = false;
-            if (day > 0 && day < 3) {
-                isOpen = true; 
-            } else if (day === 0) {
-                isOpen = true; 
-            } else if (day === 3 && hour < 23) {
-                isOpen = true; 
+
+            // REGLAS INDEPENDIENTES POR EVENTO:
+            if (selectedEvent === 'CS') {
+                // Cañón Storm (CS): Viernes 00:00 hs hasta Lunes 11:00 hs servidor
+                // Días: Viernes (5), Sábado (6), Domingo (0), Lunes (1 y hora < 11)
+                isOpen = (day === 5) || (day === 6) || (day === 0) || (day === 1 && hour < 11);
+            } else {
+                // Desert Storm (DS): Sábado 00:00 hs hasta Miércoles 11:00 hs servidor
+                // Días: Sábado (6), Domingo (0), Lunes (1), Martes (2), Miércoles (3 y hora < 11)
+                isOpen = (day === 6) || (day === 0) || (day === 1) || (day === 2) || (day === 3 && hour < 11);
             }
 
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             
-            if (suspendedEvents[selectedEvent] && !isAdmin) {
-                isOpen = false;
-            }
-
+            if (suspendedEvents[selectedEvent] && !isAdmin) isOpen = false;
             updateEventVisibility();
 
             const banner = document.getElementById('inscripcion-status-banner');
             const submitBtn = document.getElementById('btn-submit-reg');
+            const controlsContainer = document.getElementById('inscription-controls-container');
 
             if ((isOpen && !suspendedEvents[selectedEvent]) || isAdmin) {
                 if(banner) {
-                    banner.className = "p-3 rounded-lg text-center font-cinzel text-xs font-bold bg-green-950/60 text-green-400 border border-green-700/50";
-                    banner.innerHTML = suspendedEvents[selectedEvent] ? `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${selectedEvent} Suspendido (Modo Admin activo para pruebas)` : `<i class="fa-solid fa-circle-check mr-1"></i> Inscripciones Abiertas para ${selectedEvent} (Servidor)`;
+                    banner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-green-950/80 text-green-400 border border-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
+                    banner.innerHTML = suspendedEvents[selectedEvent] ? 
+                        `<i class="fa-solid fa-triangle-exclamation mr-2 text-yellow-400"></i> Atención: El evento ${selectedEvent} se encuentra SUSPENDIDO por el liderazgo (Modo Admin activo).` : 
+                        `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ¡INSCRIPCIONES ABIERTAS para ${selectedEvent}! Anótate con tu rol y equipo.`;
+                }
+                if(controlsContainer) {
+                    controlsContainer.classList.remove('closed');
+                    controlsContainer.classList.add('open');
                 }
                 if(submitBtn) {
                     submitBtn.disabled = false;
@@ -622,8 +630,13 @@
                 return true;
             } else {
                 if(banner) {
-                    banner.className = "p-3 rounded-lg text-center font-cinzel text-xs font-bold bg-red-950/60 text-red-400 border border-red-700/50";
-                    banner.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Inscripciones para ${selectedEvent} Suspendidas / Cerradas`;
+                    banner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-red-950/80 text-red-400 border border-red-500/60 shadow-[0_0_15px_rgba(239,68,68,0.2)]";
+                    let aperturaTxt = selectedEvent === 'CS' ? "Viernes a las 00:00 hs (Servidor)" : "Sábado a las 00:00 hs (Servidor)";
+                    banner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> INSCRIPCIONES CERRADAS para ${selectedEvent}. Abren el ${aperturaTxt}.`;
+                }
+                if(controlsContainer) {
+                    controlsContainer.classList.remove('open');
+                    controlsContainer.classList.add('closed');
                 }
                 if(submitBtn) {
                     submitBtn.disabled = true;
@@ -648,9 +661,7 @@
             const serverDate = new Date(utcTime - (2 * 3600000));
             document.getElementById('server-time').textContent = "S: " + serverDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-            if(trainConfig.arrival) {
-                document.getElementById('station-arrival-time').textContent = trainConfig.arrival;
-            }
+            if(trainConfig.arrival) document.getElementById('station-arrival-time').textContent = trainConfig.arrival;
             checkRegistrationWindow();
         }
 
@@ -660,12 +671,23 @@
         let selectedMember = '';
 
         function updateTurnHours() {
+            const formatLocal = (serverHour, serverMinute) => {
+                let d = new Date();
+                d.setUTCHours(serverHour + 2); 
+                d.setUTCMinutes(serverMinute);
+                return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            };
+
             if(selectedEvent === 'CS') {
-                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Jueves | Server: 12:00 | Local: 11:00` : `Thursday | Server: 12:00 PM | Local: 11:00 AM`;
-                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Jueves | Server: 23:00 | Local: 22:00` : `Thursday | Server: 11:00 PM | Local: 10:00 PM`;
+                const locA = formatLocal(12, 0);
+                const locB = formatLocal(23, 0);
+                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Jueves | Servidor: 12:00 | Tu hora: ${locA}` : `Thursday | Server: 12:00 | Local: ${locA}`;
+                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Jueves | Servidor: 23:00 | Tu hora: ${locB}` : `Thursday | Server: 23:00 | Local: ${locB}`;
             } else {
-                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Viernes | Server: 18:00 | Local: 17:00` : `Friday | Server: 6:00 PM | Local: 5:00 PM`;
-                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Viernes | Server: 23:00 | Local: 22:00` : `Friday | Server: 11:00 PM | Local: 10:00 PM`;
+                const locA = formatLocal(18, 0);
+                const locB = formatLocal(23, 0);
+                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Viernes | Servidor: 18:00 | Tu hora: ${locA}` : `Friday | Server: 18:00 | Local: ${locA}`;
+                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Viernes | Servidor: 23:00 | Tu hora: ${locB}` : `Friday | Server: 23:00 | Local: ${locB}`;
             }
         }
 
@@ -687,7 +709,11 @@
                     historyData = json.record.historyData || [];
                     trainConfig = json.record.trainConfig || trainConfig;
                     mvpConfig = json.record.mvpConfig || mvpConfig;
-                    allianceNames = json.record.allianceNames || allianceNames;
+                    
+                    if (json.record.allianceNames && json.record.allianceNames.length > 0) {
+                        allianceNames = json.record.allianceNames;
+                    }
+                    
                     powersData = json.record.powersData || {};
                     registrations = json.record.registrations || {};
                     suspendedEvents = json.record.suspendedEvents || { CS: false, DS: false };
@@ -805,7 +831,7 @@
                 if(list.length === 0) html += `<li class="text-stone-500 italic">Sin inscritos.</li>`;
                 list.forEach((item, idx) => {
                     html += `<li class="flex justify-between"><span>${item.name} (${item.role})</span>`;
-                    if(sessionStorage.getItem('knni_admin')==='true') html += `<span onclick="removeReg('${k}', ${idx})" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1" title="Suspender/Eliminar">×</span>`;
+                    if(sessionStorage.getItem('knni_admin')==='true') html += `<span onclick="removeReg('${k}', ${idx})" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1">×</span>`;
                     html += `</li>`;
                 });
                 html += `</ul></div>`;
@@ -826,7 +852,6 @@
             renderPreLists();
         }
 
-        // --- ORDENAMIENTO DE PODERES ---
         function sortPowersBy(field) {
             if (currentSortField === field) {
                 sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
@@ -898,8 +923,7 @@
         }
 
         function filterPowers() {
-            const q = document.getElementById('search-power').value;
-            renderPowersTable(q);
+            renderPowersTable(document.getElementById('search-power').value);
         }
 
         function openAddMemberModal() {
@@ -931,7 +955,6 @@
             }
         }
 
-        // --- SORTEO DIVINO ---
         let loadedPlayers = [], eligibleForDriver = [], eligibleForVIP = [], currentDraw = { Driver: null, VIP: null };
         function loadParticipants() {
             const raw = document.getElementById('bulk-names').value;
@@ -992,7 +1015,6 @@
             await saveDatabase();
         }
 
-        // --- ADMIN ---
         function updateAdminUI() {
             const btn = document.getElementById('admin-lock-btn');
             const icon = document.getElementById('admin-icon');
@@ -1069,7 +1091,7 @@
         function openEditTrainModal() {
             document.getElementById('adm-driver').value = trainConfig.driver;
             document.getElementById('adm-vip').value = trainConfig.vip;
-            document.getElementById('adm-arrival').value = trainConfig.arrival;
+            document.getElementById('adm-arrival').value = trainConfig.arrival ? trainConfig.arrival.replace(' hs', '') : "21:30";
             document.getElementById('edit-train-modal').classList.remove('hidden');
         }
         function closeEditTrainModal() { document.getElementById('edit-train-modal').classList.add('hidden'); }
@@ -1077,12 +1099,14 @@
         async function saveTrainChanges() {
             trainConfig.driver = document.getElementById('adm-driver').value.trim();
             trainConfig.vip = document.getElementById('adm-vip').value.trim();
-            trainConfig.arrival = document.getElementById('adm-arrival').value.trim();
+            const rawTime = document.getElementById('adm-arrival').value;
+            trainConfig.arrival = rawTime ? `${rawTime} hs` : "21:30 hs";
+            
             closeEditTrainModal();
             initDashboard();
             updateClocks();
             await saveDatabase();
-            alert("✅ ¡Tren actualizado en la nube!");
+            alert("✅ ¡Tren actualizado en la nube con hora local!");
         }
 
         function openEditDiscordModal() {
@@ -1109,9 +1133,7 @@
             document.getElementById('edit-mvp-modal').classList.remove('hidden');
         }
 
-        function closeEditMvpModal() {
-            document.getElementById('edit-mvp-modal').classList.add('hidden');
-        }
+        function closeEditMvpModal() { document.getElementById('edit-mvp-modal').classList.add('hidden'); }
 
         async function saveMvpChanges() {
             mvpConfig.week = document.getElementById('adm-mvp-week').value.trim();
@@ -1124,7 +1146,7 @@
             closeEditMvpModal();
             renderMvpUI();
             await saveDatabase();
-            alert("✅ ¡Salón de MVPs y Campeones actualizado en la nube!");
+            alert("✅ ¡Salón de MVPs actualizado en la nube!");
         }
 
         window.onload = async () => {
