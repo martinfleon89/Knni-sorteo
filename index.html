@@ -436,7 +436,7 @@
         let historyData = [];
         let registrations = {};
         let powersData = {};
-        let manualSuspend = false; // Estado para suspensión manual de inscripciones
+        let manualSuspend = false; 
         let currentLang = 'ES';
         let pendingAction = null;
         let currentSortField = null;
@@ -518,7 +518,7 @@
         function checkRegistrationWindow() {
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const serverDate = new Date(utcTime - (2 * 3600000)); // Servidor UTC-2
+            const serverDate = new Date(utcTime - (2 * 3600000)); 
             const day = serverDate.getDay(); 
             const hour = serverDate.getHours();
 
@@ -533,7 +533,6 @@
 
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             
-            // Si el admin suspendió manualmente, se anula la apertura automática
             if (manualSuspend && !isAdmin) {
                 isOpen = false;
             }
@@ -783,12 +782,18 @@
             filteredNames.forEach((name, idx) => {
                 if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
                 const p = powersData[name];
+                
+                // Si están vacías o no definidas, por defecto asignamos '0.00'
+                const valM1 = (p.m1 !== undefined && p.m1 !== '') ? p.m1 : '0.00';
+                const valM2 = (p.m2 !== undefined && p.m2 !== '') ? p.m2 : '0.00';
+                const valM3 = (p.m3 !== undefined && p.m3 !== '') ? p.m3 : '0.00';
+
                 let row = `<tr class="border-b border-green-900/35 hover:bg-green-950/20">
                     <td class="px-3 py-2.5 font-mono text-xs text-stone-400">${idx + 1}</td>
                     <td class="px-3 py-2.5 font-cinzel text-stone-200">${name}</td>
-                    <td class="px-3 py-2.5"><input type="text" value="${p.m1}" onchange="updatePower('${name}', 'm1', this.value)" placeholder="70.2M" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
-                    <td class="px-3 py-2.5"><input type="text" value="${p.m2}" onchange="updatePower('${name}', 'm2', this.value)" placeholder="58.2M" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
-                    <td class="px-3 py-2.5"><input type="text" value="${p.m3}" onchange="updatePower('${name}', 'm3', this.value)" placeholder="56.7M" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${valM1}" onchange="updatePower('${name}', 'm1', this.value)" placeholder="0.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${valM2}" onchange="updatePower('${name}', 'm2', this.value)" placeholder="0.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
+                    <td class="px-3 py-2.5"><input type="text" value="${valM3}" onchange="updatePower('${name}', 'm3', this.value)" placeholder="0.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
                     <td class="px-3 py-2.5"><select onchange="updatePower('${name}', 'troop', this.value)" class="bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none">
                         <option value="Tank" ${p.troop==='Tank'?'selected':''}>Tank</option>
                         <option value="Air" ${p.troop==='Air'?'selected':''}>Air</option>
@@ -805,7 +810,8 @@
 
         async function updatePower(name, field, val) {
             if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
-            powersData[name][field] = val;
+            // Si el campo queda vacío al escribir, lo guardamos como '0.00'
+            powersData[name][field] = (val.trim() === '') ? '0.00' : val;
             await saveDatabase();
         }
 
@@ -827,7 +833,7 @@
             if(allianceNames.includes(name)) { alert("El integrante ya existe."); return; }
             allianceNames.push(name);
             allianceNames.sort();
-            powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
+            powersData[name] = { m1: '0.00', m2: '0.00', m3: '0.00', troop: 'Tank' };
             await saveDatabase();
             closeAddMemberModal();
             renderPowersTable();
@@ -950,7 +956,7 @@
             } else { 
                 pendingAction = actionFn;
                 document.getElementById('admin-password').value = ''; 
-                document.getElementById('admin-password-modal').classList.add('hidden').remove('hidden'); 
+                document.getElementById('admin-password-modal').classList.remove('hidden'); 
             }
         }
 
