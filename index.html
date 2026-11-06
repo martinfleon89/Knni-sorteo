@@ -451,8 +451,8 @@
     </div>
 
     <script>
-        const BIN_URL = "https://api.jsonbin.io/v3/b/6ae46b59ac6210605a5e6c27";
-        const API_KEY = "$2a$10$f1Gcp8STx7CBF9TOWIsWveT/ykIgJWOkoIZ0Ke9QJHhYk347U4GRq"; 
+        const BIN_URL = "https://api.jsonbin.io/v3/b/6aed9aa3ac6210605a71b12b";
+        const API_KEY = "$2a$10$29KScQrlJ1Wb/oQ.agjE4OMsWREodoHu.rhGyV9b.Yeus0PJaFZY6"; 
         const ADMIN_PASSWORD = "knni485"; 
 
         let allianceNames = [
@@ -706,11 +706,12 @@
 
         async function saveDatabase() {
             try {
-                await fetch(BIN_URL, {
+                const response = await fetch(BIN_URL, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
                     body: JSON.stringify({ historyData, trainConfig, mvpConfig, allianceNames, powersData, registrations, suspendedEvents })
                 });
+                if (!response.ok) throw new Error("Error al guardar en el servidor");
             } catch (error) {
                 console.error("Error al guardar en la nube:", error);
             }
