@@ -532,7 +532,7 @@
             const audio = document.getElementById('bg-music');
             const icon = document.getElementById('music-icon');
             if (isPlaying) { audio.pause(); icon.className = "fa-solid fa-volume-xmark"; isPlaying = false; }
-            else { audio.play().then(() => { icon.className = "fa-solid fa-volume-high text-yellow-500"; icon.className = "fa-solid fa-volume-high text-yellow-500"; isPlaying = true; }).catch(e => console.log(e)); }
+            else { audio.play().then(() => { icon.className = "fa-solid fa-volume-high text-yellow-500"; isPlaying = true; }).catch(e => console.log(e)); }
         }
 
         function createAshParticles() {
