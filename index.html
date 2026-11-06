@@ -66,10 +66,10 @@
                     <span data-i="menu" class="hidden sm:inline">Menú</span>
                 </button>
                 <div id="dropdown-menu" class="hidden absolute left-0 mt-2 w-56 bg-[#0c120e] border border-green-800 rounded-xl shadow-2xl py-2 z-50 text-xs font-cinzel">
-                    <button onclick="switchTab('dashboard'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-house mr-2 text-yellow-500"></i>Home</button>
-                    <button onclick="switchTab('inscripciones'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-flag-checkered mr-2 text-yellow-500"></i>Inscripción DS & CS</button>
-                    <button onclick="switchTab('giveaway'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-dice-d20 mr-2 text-yellow-500"></i>Sorteo Divino</button>
-                    <button onclick="switchTab('powers'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-users-rectangle mr-2 text-yellow-500"></i>Batallón & Poderes</button>
+                    <button onclick="switchTab('dashboard'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-house mr-2 text-yellow-500"></i><span data-i="menu-home">Home</span></button>
+                    <button onclick="switchTab('inscripciones'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-flag-checkered mr-2 text-yellow-500"></i><span data-i="menu-insc">Inscripción DS & CS</span></button>
+                    <button onclick="switchTab('giveaway'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-dice-d20 mr-2 text-yellow-500"></i><span data-i="menu-sorteo">Sorteo Divino</span></button>
+                    <button onclick="switchTab('powers'); toggleDropdownMenu();" class="w-full text-left px-4 py-2.5 hover:bg-green-950/50 text-stone-200"><i class="fa-solid fa-users-rectangle mr-2 text-yellow-500"></i><span data-i="menu-powers">Batallón & Poderes</span></button>
                 </div>
             </div>
 
@@ -84,6 +84,13 @@
                 <button onclick="toggleLang()" class="touch-btn px-2 py-1.5 bg-green-950 border border-green-800 text-yellow-400 font-cinzel text-xs font-bold rounded-lg">
                     <span id="lang-lbl">ES</span>
                 </button>
+
+                <div class="relative">
+                    <button id="admin-inbox-btn" onclick="openInboxModal()" class="hidden touch-btn p-2 bg-red-950/80 border border-red-500 text-red-400 rounded-lg text-xs shadow-[0_0_10px_rgba(239,68,68,0.4)] transition-all" title="Buzón de Reclamos">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span id="inbox-badge" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </button>
+                </div>
 
                 <button id="admin-lock-btn" onclick="toggleAdminSession()" class="touch-btn p-2 bg-stone-900 border border-stone-800 text-stone-400 rounded-lg text-xs transition-all" title="Modo Administrador">
                     <i id="admin-icon" class="fa-solid fa-lock text-sm"></i>
@@ -104,7 +111,7 @@
         <div id="tab-dashboard" class="space-y-6">
             <div class="card-glass p-5 rounded-2xl border-l-4 border-l-yellow-500 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-yellow-950/40 via-stone-900/60 to-emerald-950/40">
                 <div class="space-y-1 text-center sm:text-left">
-                    <span id="convocatoria-badge" class="text-[10px] bg-yellow-900/60 text-yellow-300 px-2.5 py-1 rounded-full font-bold font-cinzel">CONVOCATORIA ABIERTA</span>
+                    <span id="convocatoria-badge" data-i="badge-open" class="text-[10px] bg-yellow-900/60 text-yellow-300 px-2.5 py-1 rounded-full font-bold font-cinzel">CONVOCATORIA ABIERTA</span>
                     <h2 class="font-cinzel font-bold text-lg sm:text-xl text-yellow-400" data-i="home-insc-title">Inscripciones Cañón Storm & Desert Storm</h2>
                     <p class="text-xs text-stone-300" data-i="home-insc-desc">Anota tu nombre, elige tu rol táctico (Titular o Suplente).</p>
                 </div>
@@ -115,9 +122,8 @@
 
             <!-- Bloque Tren -->
             <div class="card-glass p-5 sm:p-6 rounded-2xl border-2 border-yellow-600/50 bg-gradient-to-br from-yellow-950/30 via-[#0c120e]/80 to-stone-900 relative">
-                <!-- Botón oculto por defecto para usuarios normales -->
                 <button id="btn-edit-train" onclick="checkAdmin(() => openEditTrainModal())" class="hidden absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
-                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar Tren</span>
+                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline" data-i="btn-edit-train">Editar Tren</span>
                 </button>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
@@ -148,9 +154,8 @@
 
             <!-- Discord -->
             <div class="card-glass p-5 rounded-2xl border-2 border-[#5865F2]/50 bg-gradient-to-br from-[#5865F2]/20 via-[#0c120e]/80 to-stone-900 relative">
-                <!-- Botón oculto por defecto -->
                 <button id="btn-edit-discord" onclick="checkAdmin(() => openEditDiscordModal())" class="hidden absolute top-4 right-4 text-xs bg-[#5865F2]/40 border border-[#5865F2] text-white px-2 py-1 rounded hover:bg-[#5865F2]/60 transition-all flex items-center space-x-1">
-                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar Enlace</span>
+                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline" data-i="btn-edit-discord">Editar Enlace</span>
                 </button>
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="space-y-1 text-center sm:text-left">
@@ -165,9 +170,8 @@
 
             <!-- MVPs -->
             <div class="card-glass p-5 sm:p-6 rounded-xl border-t-2 border-t-yellow-600 space-y-4 relative">
-                <!-- Botón oculto por defecto -->
                 <button id="btn-edit-mvp" onclick="checkAdmin(() => openEditMvpModal())" class="hidden absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
-                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar MVPs</span>
+                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline" data-i="btn-edit-mvp">Editar MVPs</span>
                 </button>
                 <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="mvp-hall-title">Salón de MVPs y Campeones</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -209,21 +213,19 @@
                 </div>
                 
                 <div id="inscripcion-status-banner" class="p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-stone-900 border border-stone-800 text-stone-400">
-                    <i class="fa-solid fa-hand-pointer mr-2 text-yellow-400"></i> Selecciona un evento disponible para continuar.
+                    <i class="fa-solid fa-hand-pointer mr-2 text-yellow-400"></i> <span id="banner-text">Selecciona un evento disponible para continuar.</span>
                 </div>
 
-                <!-- 1. EVENTOS (SIEMPRE VISIBLES Y EN VIVO) -->
+                <!-- 1. EVENTOS -->
                 <div class="space-y-2">
                     <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="event-buttons-container">
-                        <!-- Botón CS -->
                         <button onclick="selectEvent('CS')" id="btn-ev-cs" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl text-left transition-all relative overflow-hidden group disabled:opacity-40 disabled:cursor-not-allowed">
                             <div class="relative z-10 flex flex-col space-y-2">
                                 <span class="font-cinzel text-sm font-bold text-stone-200 transition-colors" id="title-ev-cs">Cañón Storm (CS)</span>
                                 <span id="timer-cs" class="text-[10px] font-mono bg-stone-900 px-2 py-1 rounded text-stone-400 w-max border border-stone-700/50">Calculando...</span>
                             </div>
                         </button>
-                        <!-- Botón DS -->
                         <button onclick="selectEvent('DS')" id="btn-ev-ds" class="touch-btn p-4 bg-[#090d0a] border-2 border-stone-800 rounded-xl text-left transition-all relative overflow-hidden group disabled:opacity-40 disabled:cursor-not-allowed">
                             <div class="relative z-10 flex flex-col space-y-2">
                                 <span class="font-cinzel text-sm font-bold text-stone-200 transition-colors" id="title-ev-ds">Desert Storm (DS)</span>
@@ -233,7 +235,7 @@
                     </div>
                 </div>
 
-                <!-- SUB MÓDULO (SE DESBLOQUEA SOLO AL ELEGIR UN EVENTO ABIERTO) -->
+                <!-- SUB MÓDULO -->
                 <div id="sub-registration-module" class="space-y-4 opacity-40 pointer-events-none transition-all duration-300">
                     <div class="space-y-2">
                         <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step2-lbl">2. Selecciona tu Rol:</label>
@@ -259,13 +261,37 @@
 
                     <div class="space-y-2">
                         <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step4-lbl">4. Buscar tu Nombre (Escribe al menos 3 letras):</label>
-                        <input type="text" id="member-search-input" oninput="filterMemberSearch()" placeholder="Escribe tu nick..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
+                        <input type="text" id="member-search-input" oninput="filterMemberSearch()" data-i-ph="ph-search-nick" placeholder="Escribe tu nick..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
                         <div id="member-search-results" class="max-h-36 overflow-y-auto space-y-1 bg-[#070a08] p-2 rounded-lg border border-green-900/40 hidden"></div>
                     </div>
 
                     <button id="btn-submit-reg" onclick="submitRegistration()" disabled class="w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all">
                         <span data-i="btn-confirm-reg">CONFIRMAR INSCRIPCIÓN</span>
                     </button>
+                </div>
+
+                <!-- RECLAMOS / SOPORTE -->
+                <div class="mt-6 border-t border-green-900/50 pt-5">
+                    <button onclick="toggleClaimForm()" class="w-full text-center text-[11px] text-stone-400 hover:text-yellow-400 transition-colors font-cinzel underline" data-i="claim-prompt">
+                        ¿Tuviste un problema para inscribirte? Abre un Ticket de Soporte aquí.
+                    </button>
+                    <div id="claim-form-container" class="hidden mt-4 space-y-3 bg-red-950/20 p-4 rounded-xl border border-red-900/30">
+                        <h4 class="font-cinzel text-xs text-red-400 font-bold mb-2"><i class="fa-solid fa-headset mr-1"></i> <span data-i="claim-title">Reportar Inconveniente</span></h4>
+                        <input type="text" id="claim-name" data-i-ph="ph-claim-name" placeholder="Tu Nombre en el juego..." class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
+                        
+                        <select id="claim-event" class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
+                            <option value="" disabled selected data-i="claim-ev-sel">Selecciona el evento con problemas...</option>
+                            <option value="CS">Cañón Storm (CS)</option>
+                            <option value="DS">Desert Storm (DS)</option>
+                            <option value="Both" data-i="claim-ev-both">Ambos / Otro problema</option>
+                        </select>
+                        
+                        <textarea id="claim-reason" rows="2" data-i-ph="ph-claim-reason" placeholder="Describe brevemente (ej: No me deja clickear, estoy anotado en el equipo equivocado...)" class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none resize-none"></textarea>
+                        
+                        <button onclick="submitClaim()" class="w-full py-2.5 bg-red-950 hover:bg-red-900 text-red-400 border border-red-700/50 font-cinzel text-xs font-bold rounded-lg transition-all" data-i="claim-btn">
+                            ENVIAR REPORTE A LOS LÍDERES
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -281,7 +307,7 @@
                 <div class="card-glass p-5 rounded-xl lg:col-span-4 space-y-3">
                     <h2 class="font-cinzel font-bold text-lg text-yellow-500" data-i="draw-title">Sorteo Divino de Trenes</h2>
                     <p class="text-xs text-stone-400" data-i="draw-desc">Pega la lista de participantes y séllala.</p>
-                    <textarea id="bulk-names" rows="6" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg p-3 text-xs text-stone-200 outline-none resize-none" placeholder="Nombres..."></textarea>
+                    <textarea id="bulk-names" rows="6" data-i-ph="ph-bulk-names" class="w-full bg-[#090d0a] border border-green-900/50 rounded-lg p-3 text-xs text-stone-200 outline-none resize-none" placeholder="Nombres..."></textarea>
                     <button onclick="loadParticipants()" class="touch-btn w-full py-3 bg-green-900/80 text-yellow-500 font-bold rounded-lg font-cinzel text-xs" data-i="btn-seal">
                         SELLAR PARTICIPANTES
                     </button>
@@ -313,7 +339,7 @@
                             </tr>
                         </thead>
                         <tbody id="full-history-tbody" class="divide-y divide-green-900/30">
-                            <tr><td colspan="4" class="text-center py-6 text-stone-500 italic">No hay registros.</td></tr>
+                            <!-- Inyectado por JS -->
                         </tbody>
                     </table>
                 </div>
@@ -326,12 +352,12 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
                         <h2 class="font-cinzel font-bold text-lg text-yellow-500" data-i="powers-title">Batallón KnNi y Poderes de Marcha</h2>
-                        <p class="text-xs text-stone-400">Total de guerreros: <span id="stat-total-alliance" class="font-bold text-yellow-400">0</span></p>
+                        <p class="text-xs text-stone-400"><span data-i="total-warriors">Total de guerreros:</span> <span id="stat-total-alliance" class="font-bold text-yellow-400">0</span></p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <input type="text" id="search-power" onkeyup="filterPowers()" placeholder="Buscar aliado..." class="w-full sm:w-48 px-3 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-xs text-stone-200 outline-none">
+                        <input type="text" id="search-power" onkeyup="filterPowers()" data-i-ph="ph-search-ally" placeholder="Buscar aliado..." class="w-full sm:w-48 px-3 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-xs text-stone-200 outline-none">
                         <button onclick="checkAdmin(() => openAddMemberModal())" class="touch-btn px-3 py-2 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-lg font-cinzel text-xs font-bold whitespace-nowrap">
-                            <i class="fa-solid fa-user-plus mr-1"></i> Agregar
+                            <i class="fa-solid fa-user-plus mr-1"></i> <span data-i="btn-add-member">Agregar</span>
                         </button>
                     </div>
                 </div>
@@ -345,7 +371,7 @@
                                 <th class="px-3 py-3 cursor-pointer hover:text-yellow-400" onclick="sortPowersBy('m2')"><span data-i="th-m2">2ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
                                 <th class="px-3 py-3 cursor-pointer hover:text-yellow-400" onclick="sortPowersBy('m3')"><span data-i="th-m3">3ª Marcha (M)</span> <i class="fa-solid fa-sort text-[9px]"></i></th>
                                 <th class="px-3 py-3" data-i="th-troop">Tipo Tropa</th>
-                                <th class="px-3 py-3 text-center admin-col hidden">Admin</th>
+                                <th class="px-3 py-3 text-center admin-col hidden" data-i="th-actions">Admin</th>
                             </tr>
                         </thead>
                         <tbody id="powers-tbody" class="divide-y divide-green-900/30"></tbody>
@@ -356,15 +382,28 @@
 
     </main>
 
+    <!-- MODAL BUZÓN DE RECLAMOS (ADMIN) -->
+    <div id="inbox-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="card-glass p-6 rounded-xl w-full max-w-2xl space-y-4 text-xs sm:text-sm border border-red-700/50 flex flex-col max-h-[80vh]">
+            <div class="flex justify-between items-center border-b border-red-900/50 pb-3">
+                <h3 class="font-cinzel font-bold text-lg text-red-400"><i class="fa-solid fa-inbox mr-2"></i><span data-i="modal-inbox-title">Buzón de Reclamos / Soporte</span></h3>
+                <button onclick="closeInboxModal()" class="text-stone-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="inbox-content" class="overflow-y-auto space-y-3 pr-2 flex-1">
+                <!-- Se inyectan los reclamos aquí -->
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL PASSWORD -->
     <div id="admin-password-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-sm space-y-4 text-xs sm:text-sm border border-yellow-700/50">
-            <h3 class="font-cinzel font-bold text-base text-yellow-500">Autorización Requerida</h3>
-            <p class="text-xs text-stone-300">Introduce la contraseña de administración:</p>
-            <input type="password" id="admin-password" placeholder="Contraseña..." onkeypress="if(event.key === 'Enter') verifyAdminPassword()" class="w-full bg-[#090d0a] border border-green-900/60 rounded-lg px-3 py-2 text-stone-200 outline-none">
+            <h3 class="font-cinzel font-bold text-base text-yellow-500" data-i="modal-auth-title">Autorización Requerida</h3>
+            <p class="text-xs text-stone-300" data-i="modal-auth-desc">Introduce la contraseña de administración:</p>
+            <input type="password" id="admin-password" data-i-ph="ph-auth" placeholder="Contraseña..." onkeypress="if(event.key === 'Enter') verifyAdminPassword()" class="w-full bg-[#090d0a] border border-green-900/60 rounded-lg px-3 py-2 text-stone-200 outline-none">
             <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeAdminPasswordModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
-                <button onclick="verifyAdminPassword()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Autorizar</button>
+                <button onclick="closeAdminPasswordModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
+                <button onclick="verifyAdminPassword()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-auth">Autorizar</button>
             </div>
         </div>
     </div>
@@ -372,24 +411,24 @@
     <!-- MODAL EDITAR TREN -->
     <div id="edit-train-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
-            <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Estado del Tren</h3>
+            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="modal-train-title">Configurar Estado del Tren</h3>
             <div class="space-y-3">
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Conductor (Driver)</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="driver-lbl">Conductor (Driver)</label>
                     <input type="text" id="adm-driver" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Lord VIP</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="vip-lbl">Lord VIP</label>
                     <input type="text" id="adm-vip" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Hora de llegada a la estación (Hora Local)</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="modal-arrival-lbl">Hora de llegada a la estación (Hora Local)</label>
                     <input type="time" id="adm-arrival" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none text-center font-mono text-sm">
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeEditTrainModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
-                <button onclick="saveTrainChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Guardar</button>
+                <button onclick="closeEditTrainModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
+                <button onclick="saveTrainChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-save">Guardar</button>
             </div>
         </div>
     </div>
@@ -397,14 +436,14 @@
     <!-- MODAL EDITAR DISCORD -->
     <div id="edit-discord-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
-            <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Enlace de Discord</h3>
+            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="modal-discord-title">Configurar Enlace de Discord</h3>
             <div>
                 <label class="text-[10px] text-yellow-400 uppercase block mb-1">Enlace de Discord</label>
                 <input type="text" id="adm-discord" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
             </div>
             <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeEditDiscordModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
-                <button onclick="saveDiscordChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Guardar</button>
+                <button onclick="closeEditDiscordModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
+                <button onclick="saveDiscordChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-save">Guardar</button>
             </div>
         </div>
     </div>
@@ -412,36 +451,36 @@
     <!-- MODAL EDITAR MVPs -->
     <div id="edit-mvp-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
-            <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Salón de MVPs y Campeones</h3>
+            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="modal-mvp-title">Configurar Salón de MVPs y Campeones</h3>
             <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP de la Semana</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="mvp-week">MVP de la Semana</label>
                     <input type="text" id="adm-mvp-week" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Campeón de la Semana</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="champ-week">Campeón de la Semana</label>
                     <input type="text" id="adm-champion" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Desert Storm (T1)</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="mvp-ds1">MVP Desert Storm (T1)</label>
                     <input type="text" id="adm-mvp-ds-1" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Desert Storm (T2)</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="mvp-ds2">MVP Desert Storm (T2)</label>
                     <input type="text" id="adm-mvp-ds-2" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Cañón Storm (T1)</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="mvp-cs1">MVP Cañón Storm (T1)</label>
                     <input type="text" id="adm-mvp-cs-1" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Cañón Storm (T2)</label>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="mvp-cs2">MVP Cañón Storm (T2)</label>
                     <input type="text" id="adm-mvp-cs-2" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeEditMvpModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
-                <button onclick="saveMvpChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Guardar</button>
+                <button onclick="closeEditMvpModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
+                <button onclick="saveMvpChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-save">Guardar</button>
             </div>
         </div>
     </div>
@@ -449,11 +488,11 @@
     <!-- MODAL AGREGAR PARTICIPANTE -->
     <div id="add-member-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-5 rounded-xl w-full max-w-sm space-y-3 text-xs sm:text-sm border border-yellow-600/50">
-            <h3 class="font-cinzel font-bold text-base text-yellow-500">Agregar Nuevo Integrante</h3>
-            <input type="text" id="new-member-name" placeholder="Nombre del guerrero..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+            <h3 class="font-cinzel font-bold text-base text-yellow-500" data-i="modal-add-title">Agregar Nuevo Integrante</h3>
+            <input type="text" id="new-member-name" data-i-ph="ph-add-member" placeholder="Nombre del guerrero..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
             <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeAddMemberModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
-                <button onclick="confirmAddMember()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Agregar</button>
+                <button onclick="closeAddMemberModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
+                <button onclick="confirmAddMember()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-add-member">Agregar</button>
             </div>
         </div>
     </div>
@@ -489,12 +528,12 @@
         let registrations = {};
         let powersData = {};
         let suspendedEvents = { CS: false, DS: false }; 
+        let claimsData = [];
+        
         let currentLang = 'ES';
         let pendingAction = null;
         let currentSortField = null;
         let sortDirection = 'desc';
-
-        // Evento seleccionado por defecto NULO para el nuevo sistema
         let selectedEvent = null;
         let selectedRole = 'Titular';
         let selectedTurn = 'Equipo A';
@@ -502,34 +541,121 @@
 
         const translations = {
             ES: {
-                menu: "Menú", badge_open: "CONVOCATORIA ABIERTA", "home-insc-title": "Inscripciones Cañón Storm & Desert Storm",
+                "menu": "Menú", "menu-home": "Home", "menu-insc": "Inscripción DS & CS", "menu-sorteo": "Sorteo Divino", "menu-powers": "Batallón & Poderes",
+                "badge-open": "CONVOCATORIA ABIERTA", "home-insc-title": "Inscripciones Cañón Storm & Desert Storm",
                 "home-insc-desc": "Anota tu nombre, elige tu rol táctico (Titular o Suplente).", "btn-go-insc": "IR A INSCRIPCIONES →",
-                "train-status-title": "Estado del Tren y Estación", "driver-lbl": "Conductor (Driver)", "vip-lbl": "Lord VIP",
-                "arrival-lbl": "Hora de llegada a la estación:", "discord-title": "Comunidad en Discord",
+                "btn-edit-train": "Editar Tren", "train-status-title": "Estado del Tren y Estación",
+                "driver-lbl": "Conductor (Driver)", "vip-lbl": "Lord VIP", "arrival-lbl": "Hora de llegada a la estación:",
+                "btn-edit-discord": "Editar Enlace", "discord-title": "Comunidad en Discord",
                 "discord-desc": "Únete al canal de voz y coordinación de batallas.", "discord-btn": "UNIRSE AL DISCORD",
-                "mvp-hall-title": "Salón de MVPs y Campeones", "mvp-week": "MVP de la Semana", "champ-week": "Campeón de la Semana",
-                "mvp-ds": "MVP Desert Storm", "mvp-cs": "MVP Cañón Storm", "insc-panel-title": "Módulo de Inscripciones",
-                "step1-lbl": "1. Selecciona el Evento:", "step2-lbl": "2. Selecciona tu Rol:", "role-titular": "Titular",
-                "role-suplente": "Suplente", "step3-lbl": "3. Selecciona el Equipo:", "t1-name": "Equipo A", "t2-name": "Equipo B",
-                "step4-lbl": "4. Buscar tu Nombre (Escribe al menos 3 letras):", "btn-confirm-reg": "CONFIRMAR INSCRIPCIÓN",
-                "prelists-title": "Pre-Listas Oficiales", "draw-title": "Sorteo Divino de Trenes", "draw-desc": "Pega la lista de participantes y séllala.",
-                "btn-seal": "SELLAR PARTICIPANTES", "btn-draw-driver": "Elegir Conductor", "btn-draw-vip": "Elegir Lord VIP",
-                "btn-save-hist": "Guardar en Crónicas", "cronograma-title": "Cronograma y Crónicas de Trenes", "th-date": "Fecha",
-                "th-driver": "Conductor", "th-vip": "Lord VIP", "th-actions": "Acciones Admin", "powers-title": "Batallón KnNi y Poderes de Marcha",
-                "th-member": "Nombre del Guerrero", "th-m1": "1ª Marcha (M)", "th-m2": "2ª Marcha (M)", "th-m3": "3ª Marcha (M)",
-                "th-troop": "Tipo Tropa"
+                "btn-edit-mvp": "Editar MVPs", "mvp-hall-title": "Salón de MVPs y Campeones",
+                "mvp-week": "MVP de la Semana", "champ-week": "Campeón de la Semana", "mvp-ds": "MVP Desert Storm", "mvp-cs": "MVP Cañón Storm",
+                "insc-panel-title": "Módulo de Inscripciones", "step1-lbl": "1. Selecciona el Evento:", "step2-lbl": "2. Selecciona tu Rol:",
+                "role-titular": "Titular", "role-suplente": "Suplente", "step3-lbl": "3. Selecciona el Equipo:",
+                "t1-name": "Equipo A", "t2-name": "Equipo B", "step4-lbl": "4. Buscar tu Nombre (Escribe al menos 3 letras):",
+                "btn-confirm-reg": "CONFIRMAR INSCRIPCIÓN", "claim-prompt": "¿Tuviste un problema para inscribirte? Abre un Ticket de Soporte aquí.",
+                "claim-title": "Reportar Inconveniente", "claim-ev-sel": "Selecciona el evento con problemas...", "claim-ev-both": "Ambos / Otro problema",
+                "claim-btn": "ENVIAR REPORTE A LOS LÍDERES", "prelists-title": "Pre-Listas Oficiales",
+                "draw-title": "Sorteo Divino de Trenes", "draw-desc": "Pega la lista de participantes y séllala.", "btn-seal": "SELLAR PARTICIPANTES",
+                "btn-draw-driver": "Elegir Conductor", "btn-draw-vip": "Elegir Lord VIP", "btn-save-hist": "Guardar en Crónicas",
+                "cronograma-title": "Cronograma y Crónicas de Trenes", "th-date": "Fecha", "th-driver": "Conductor", "th-vip": "Lord VIP",
+                "th-actions": "Acciones Admin", "powers-title": "Batallón KnNi y Poderes de Marcha", "total-warriors": "Total de guerreros:",
+                "btn-add-member": "Agregar", "th-member": "Nombre del Guerrero", "th-m1": "1ª Marcha (M)", "th-m2": "2ª Marcha (M)",
+                "th-m3": "3ª Marcha (M)", "th-troop": "Tipo Tropa", "modal-inbox-title": "Buzón de Reclamos / Soporte",
+                "modal-auth-title": "Autorización Requerida", "modal-auth-desc": "Introduce la contraseña de administración:",
+                "btn-cancel": "Cancelar", "btn-auth": "Autorizar", "modal-train-title": "Configurar Estado del Tren",
+                "modal-arrival-lbl": "Hora de llegada a la estación (Hora Local)", "btn-save": "Guardar",
+                "modal-discord-title": "Configurar Enlace de Discord", "modal-mvp-title": "Configurar Salón de MVPs y Campeones",
+                "modal-add-title": "Agregar Nuevo Integrante", "mvp-ds1": "MVP Desert Storm (T1)", "mvp-ds2": "MVP Desert Storm (T2)",
+                "mvp-cs1": "MVP Cañón Storm (T1)", "mvp-cs2": "MVP Cañón Storm (T2)",
+                "t_suspended": "Suspendido", "t_closes_in": "Cierra en:", "t_opens_in": "Abre en:", "t_calculating": "Calculando...",
+                "t_select_event": "Selecciona un evento disponible para continuar.", "t_inscriptions_open": "¡INSCRIPCIONES ABIERTAS para",
+                "t_complete_form": "! Completa tu ficha.", "t_event_closed": "EL EVENTO", "t_is_closed": "ESTÁ CERRADO O SUSPENDIDO.",
+                "t_thursday": "Jueves", "t_friday": "Viernes", "t_server": "Servidor", "t_local": "Tu hora",
+                "t_no_inscribed": "Sin inscritos.", "t_empty_inbox": "Bandeja vacía. No hay reclamos.", "t_btn_resolve": "Resolver",
+                "t_event": "Evento:", "t_btn_copy": "Copiar", "t_no_members": "No hay integrantes registrados.", "t_no_records": "No hay registros.",
+                "ph-search-nick": "Escribe tu nick...", "ph-claim-name": "Tu Nombre en el juego...",
+                "ph-claim-reason": "Describe brevemente (ej: No me deja clickear...)", "ph-bulk-names": "Nombres...",
+                "ph-search-ally": "Buscar aliado...", "ph-auth": "Contraseña...", "ph-add-member": "Nombre del guerrero...",
+                "alert_ev_mem": "Selecciona un evento y un integrante.", "alert_reg_dup": "⛔ ¡El integrante ya se encuentra inscrito en este evento dentro del",
+                "alert_reg_dup2": "!\nSolo se permite una inscripción por evento.", "alert_reg_ok": "✅ ¡Inscripción registrada en la nube!",
+                "alert_copied": "📋 ¡Lista copiada!", "alert_fill_all": "⚠️ Por favor completa todos los campos (Nombre, Evento y Motivo).",
+                "alert_claim_ok": "✅ ¡Tu reporte fue enviado con éxito a los líderes!", "alert_enter_name": "Ingresa un nombre.",
+                "alert_exists": "El integrante ya existe.", "alert_added": "✅ ¡Integrante agregado!", "alert_delete": "¿Estás seguro de eliminar a",
+                "alert_names": "Ingresa nombres.", "alert_sealed": "✅ ¡Participantes sellados!", "alert_admin_closed": "🔒 Sesión de Administrador cerrada.",
+                "alert_admin_open": "🔓 ¡Acceso total de Administrador concedido!", "alert_pwd_err": "Contraseña incorrecta.",
+                "alert_train_ok": "✅ ¡Tren actualizado!", "alert_dc_ok": "✅ ¡Discord actualizado!", "alert_mvp_ok": "✅ ¡Salón actualizado!"
             },
-            EN: { /* Mismos tags en inglés... */ }
+            EN: {
+                "menu": "Menu", "menu-home": "Home", "menu-insc": "DS & CS Registration", "menu-sorteo": "Divine Draw", "menu-powers": "Battalion & Powers",
+                "badge-open": "OPEN CALL", "home-insc-title": "Canyon Storm & Desert Storm Registrations",
+                "home-insc-desc": "Write your name, choose your tactical role (Starter or Substitute).", "btn-go-insc": "GO TO REGISTRATIONS →",
+                "btn-edit-train": "Edit Train", "train-status-title": "Train Status & Station",
+                "driver-lbl": "Driver", "vip-lbl": "Lord VIP", "arrival-lbl": "Station arrival time:",
+                "btn-edit-discord": "Edit Link", "discord-title": "Discord Community",
+                "discord-desc": "Join the voice channel and battle coordination.", "discord-btn": "JOIN DISCORD",
+                "btn-edit-mvp": "Edit MVPs", "mvp-hall-title": "MVPs & Champions Hall",
+                "mvp-week": "MVP of the Week", "champ-week": "Champion of the Week", "mvp-ds": "Desert Storm MVP", "mvp-cs": "Canyon Storm MVP",
+                "insc-panel-title": "Registration Module", "step1-lbl": "1. Select Event:", "step2-lbl": "2. Select your Role:",
+                "role-titular": "Starter", "role-suplente": "Substitute", "step3-lbl": "3. Select Team:",
+                "t1-name": "Team A", "t2-name": "Team B", "step4-lbl": "4. Search Name (Type at least 3 letters):",
+                "btn-confirm-reg": "CONFIRM REGISTRATION", "claim-prompt": "Had a problem registering? Open a Support Ticket here.",
+                "claim-title": "Report Issue", "claim-ev-sel": "Select the event with issues...", "claim-ev-both": "Both / Other problem",
+                "claim-btn": "SEND REPORT TO LEADERS", "prelists-title": "Official Pre-Lists",
+                "draw-title": "Divine Train Draw", "draw-desc": "Paste the list of participants and seal it.", "btn-seal": "SEAL PARTICIPANTS",
+                "btn-draw-driver": "Pick Driver", "btn-draw-vip": "Pick Lord VIP", "btn-save-hist": "Save to Chronicles",
+                "cronograma-title": "Train Schedule & Chronicles", "th-date": "Date", "th-driver": "Driver", "th-vip": "Lord VIP",
+                "th-actions": "Admin Actions", "powers-title": "KnNi Battalion & March Powers", "total-warriors": "Total warriors:",
+                "btn-add-member": "Add", "th-member": "Warrior Name", "th-m1": "1st March (M)", "th-m2": "2nd March (M)",
+                "th-m3": "3rd March (M)", "th-troop": "Troop Type", "modal-inbox-title": "Claims / Support Inbox",
+                "modal-auth-title": "Authorization Required", "modal-auth-desc": "Enter the administration password:",
+                "btn-cancel": "Cancel", "btn-auth": "Authorize", "modal-train-title": "Configure Train Status",
+                "modal-arrival-lbl": "Station arrival time (Local Time)", "btn-save": "Save",
+                "modal-discord-title": "Configure Discord Link", "modal-mvp-title": "Configure MVPs & Champions Hall",
+                "modal-add-title": "Add New Member", "mvp-ds1": "Desert Storm MVP (T1)", "mvp-ds2": "Desert Storm MVP (T2)",
+                "mvp-cs1": "Canyon Storm MVP (T1)", "mvp-cs2": "Canyon Storm MVP (T2)",
+                "t_suspended": "Suspended", "t_closes_in": "Closes in:", "t_opens_in": "Opens in:", "t_calculating": "Calculating...",
+                "t_select_event": "Select an available event to continue.", "t_inscriptions_open": "REGISTRATIONS OPEN for",
+                "t_complete_form": "! Complete your form.", "t_event_closed": "THE EVENT", "t_is_closed": "IS CLOSED OR SUSPENDED.",
+                "t_thursday": "Thursday", "t_friday": "Friday", "t_server": "Server", "t_local": "Local",
+                "t_no_inscribed": "No registered users.", "t_empty_inbox": "Empty inbox. No claims.", "t_btn_resolve": "Resolve",
+                "t_event": "Event:", "t_btn_copy": "Copy", "t_no_members": "No members registered.", "t_no_records": "No records.",
+                "ph-search-nick": "Type your nick...", "ph-claim-name": "Your in-game name...",
+                "ph-claim-reason": "Briefly describe (e.g. Can't click...)", "ph-bulk-names": "Names...",
+                "ph-search-ally": "Search ally...", "ph-auth": "Password...", "ph-add-member": "Warrior name...",
+                "alert_ev_mem": "Select an event and a member.", "alert_reg_dup": "⛔ The member is already registered in this event in",
+                "alert_reg_dup2": "!\nOnly one registration per event is allowed.", "alert_reg_ok": "✅ Registration saved to the cloud!",
+                "alert_copied": "📋 List copied!", "alert_fill_all": "⚠️ Please fill in all fields (Name, Event and Reason).",
+                "alert_claim_ok": "✅ Your report was successfully sent to the leaders!", "alert_enter_name": "Enter a name.",
+                "alert_exists": "Member already exists.", "alert_added": "✅ Member added!", "alert_delete": "Are you sure you want to delete",
+                "alert_names": "Enter names.", "alert_sealed": "✅ Participants sealed!", "alert_admin_closed": "🔒 Administrator session closed.",
+                "alert_admin_open": "🔓 Full Administrator access granted!", "alert_pwd_err": "Incorrect password.",
+                "alert_train_ok": "✅ Train updated!", "alert_dc_ok": "✅ Discord updated!", "alert_mvp_ok": "✅ Hall updated!"
+            }
         };
+
+        function getT(key) { return translations[currentLang][key] || key; }
 
         function toggleLang() {
             currentLang = currentLang === 'ES' ? 'EN' : 'ES';
             document.getElementById('lang-lbl').textContent = currentLang;
+            
             document.querySelectorAll('[data-i]').forEach(el => {
                 const key = el.getAttribute('data-i');
-                if (translations[currentLang] && translations[currentLang][key]) el.textContent = translations[currentLang][key];
+                if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
             });
+
+            document.querySelectorAll('[data-i-ph]').forEach(el => {
+                const key = el.getAttribute('data-i-ph');
+                if (translations[currentLang][key]) el.setAttribute('placeholder', translations[currentLang][key]);
+            });
+
             updateTurnHours();
+            updateRegistrationState();
+            renderPreLists();
+            renderHistory();
+            renderPowersTable(document.getElementById('search-power').value);
+            renderInbox();
         }
 
         function toggleDropdownMenu() { document.getElementById('dropdown-menu').classList.toggle('hidden'); }
@@ -556,33 +682,14 @@
             }
         }
 
-        // ==========================================
-        // NUEVO SISTEMA DE TIEMPOS Y BLOQUEO FLUIDO
-        // ==========================================
-
         function getEventTimeline(ev, timeInHours) {
-            let isOpen = false;
-            let nextTransition = 0; 
-            
-            // CS: Fri 00:00 (120h) to Mon 11:00 (35h)
+            let isOpen = false; let nextTransition = 0; 
             if (ev === 'CS') {
-                if (timeInHours >= 120 || timeInHours < 35) {
-                    isOpen = true; 
-                    nextTransition = (timeInHours >= 120) ? (168 + 35) : 35; 
-                } else {
-                    isOpen = false; 
-                    nextTransition = 120; 
-                }
-            } 
-            // DS: Sat 00:00 (144h) to Wed 11:00 (83h)
-            else if (ev === 'DS') {
-                if (timeInHours >= 144 || timeInHours < 83) {
-                    isOpen = true; 
-                    nextTransition = (timeInHours >= 144) ? (168 + 83) : 83;
-                } else {
-                    isOpen = false; 
-                    nextTransition = 144;
-                }
+                if (timeInHours >= 120 || timeInHours < 35) { isOpen = true; nextTransition = (timeInHours >= 120) ? (168 + 35) : 35; } 
+                else { isOpen = false; nextTransition = 120; }
+            } else if (ev === 'DS') {
+                if (timeInHours >= 144 || timeInHours < 83) { isOpen = true; nextTransition = (timeInHours >= 144) ? (168 + 83) : 83; } 
+                else { isOpen = false; nextTransition = 144; }
             }
             return { isOpen, nextTransition };
         }
@@ -598,16 +705,9 @@
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
             const serverDate = new Date(utcTime - (2 * 3600000)); 
-            
-            const day = serverDate.getDay(); 
-            const hour = serverDate.getHours();
-            const minutes = serverDate.getMinutes();
-            const seconds = serverDate.getSeconds();
-            const timeInHours = day * 24 + hour + minutes/60 + seconds/3600;
-
+            const timeInHours = serverDate.getDay() * 24 + serverDate.getHours() + serverDate.getMinutes()/60 + serverDate.getSeconds()/3600;
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
 
-            // Actualizar los botones de cada evento en vivo
             ['CS', 'DS'].forEach(ev => {
                 const info = getEventTimeline(ev, timeInHours);
                 const isSuspended = suspendedEvents[ev];
@@ -618,26 +718,23 @@
                 const titleLbl = document.getElementById(`title-ev-${ev.toLowerCase()}`);
 
                 if(!btn) return;
-
                 let timeStr = formatTimeDiff(info.nextTransition - timeInHours);
 
                 if (isSuspended) {
-                    timerLbl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-1"></i> Suspendido`;
+                    timerLbl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-1"></i> ${getT('t_suspended')}`;
                     timerLbl.className = "text-[10px] font-mono bg-red-950/80 px-2 py-1 rounded text-red-400 w-max border border-red-800";
                     if(!isAdmin) btn.disabled = true;
                 } else if (literallyOpen) {
-                    timerLbl.innerHTML = `<i class="fa-solid fa-hourglass-half text-green-400 mr-1"></i> Cierra en: ${timeStr}`;
+                    timerLbl.innerHTML = `<i class="fa-solid fa-hourglass-half text-green-400 mr-1"></i> ${getT('t_closes_in')} ${timeStr}`;
                     timerLbl.className = "text-[10px] font-mono bg-green-950/60 px-2 py-1 rounded text-green-400 w-max border border-green-800";
                     btn.disabled = false;
                 } else {
-                    timerLbl.innerHTML = `<i class="fa-solid fa-lock text-red-400 mr-1"></i> Abre en: ${timeStr}`;
+                    timerLbl.innerHTML = `<i class="fa-solid fa-lock text-red-400 mr-1"></i> ${getT('t_opens_in')} ${timeStr}`;
                     timerLbl.className = "text-[10px] font-mono bg-red-950/60 px-2 py-1 rounded text-red-300 w-max border border-red-800/50";
                     if(!isAdmin) btn.disabled = true;
                 }
+                if(isAdmin) btn.disabled = false; 
 
-                if(isAdmin) btn.disabled = false; // El admin siempre puede clickear
-
-                // Estilos visuales del botón seleccionado
                 if (selectedEvent === ev) {
                     btn.classList.add('border-yellow-500', 'bg-yellow-950/40');
                     btn.classList.remove('border-stone-800', 'opacity-50');
@@ -648,22 +745,19 @@
                     btn.classList.add('border-stone-800');
                     titleLbl.classList.remove('text-yellow-400');
                     titleLbl.classList.add('text-stone-200');
-                    
                     if (!literallyOpen && !isAdmin) btn.classList.add('opacity-50', 'cursor-not-allowed');
                     else btn.classList.remove('opacity-50', 'cursor-not-allowed');
                 }
             });
 
-            // Actualizar Módulo Secundario (Roles, Equipos, Confirmar)
             const subModule = document.getElementById('sub-registration-module');
             const submitBtn = document.getElementById('btn-submit-reg');
             const statusBanner = document.getElementById('inscripcion-status-banner');
 
             if (!subModule || !statusBanner) return;
-
             if (!selectedEvent) {
                 subModule.classList.add('opacity-40', 'pointer-events-none');
-                statusBanner.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2 text-yellow-400"></i> Selecciona un evento disponible para continuar.`;
+                statusBanner.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2 text-yellow-400"></i> ${getT('t_select_event')}`;
                 statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-stone-900 border border-stone-800 text-stone-400";
                 return;
             }
@@ -675,16 +769,15 @@
                 subModule.classList.remove('opacity-40', 'pointer-events-none');
                 submitBtn.disabled = false;
                 submitBtn.className = "w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer border border-yellow-500/50";
-                statusBanner.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ¡INSCRIPCIONES ABIERTAS para ${selectedEvent}! Completa tu ficha.`;
+                statusBanner.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ${getT('t_inscriptions_open')} ${selectedEvent}${getT('t_complete_form')}`;
                 statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-green-950/80 text-green-400 border border-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
             } else {
                 subModule.classList.add('opacity-40', 'pointer-events-none');
                 submitBtn.disabled = true;
                 submitBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all";
-                statusBanner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> EL EVENTO ${selectedEvent} ESTÁ CERRADO O SUSPENDIDO.`;
+                statusBanner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> ${getT('t_event_closed')} ${selectedEvent} ${getT('t_is_closed')}`;
                 statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-red-950/80 text-red-400 border border-red-500/60";
-                
-                if (!isAdmin) selectedEvent = null; // Quita selección para obligar a ver la realidad
+                if (!isAdmin) selectedEvent = null; 
             }
         }
 
@@ -694,25 +787,17 @@
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
             const serverDate = new Date(utcTime - (2 * 3600000));
             document.getElementById('server-time').textContent = "S: " + serverDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
             if(trainConfig.arrival) document.getElementById('station-arrival-time').textContent = trainConfig.arrival;
-            
-            // Loop principal del reloj y la interfaz en vivo
             updateRegistrationState();
         }
 
-        function selectEvent(ev) {
-            selectedEvent = ev;
-            updateTurnHours();
-            updateRegistrationState();
-        }
+        function selectEvent(ev) { selectedEvent = ev; updateTurnHours(); updateRegistrationState(); }
 
         async function toggleSuspendEvent(ev) {
             suspendedEvents[ev] = !suspendedEvents[ev];
             await saveDatabase();
             updateAdminUI();
             updateRegistrationState();
-            alert(`⚠️ Evento ${ev} ${suspendedEvents[ev] ? 'suspendido' : 'reactivado'}.`);
         }
 
         function updateTurnHours() {
@@ -723,17 +808,12 @@
                 d.setUTCMinutes(serverMinute);
                 return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             };
-
             if(selectedEvent === 'CS') {
-                const locA = formatLocal(12, 0);
-                const locB = formatLocal(23, 0);
-                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Jueves | Servidor: 12:00 | Tu hora: ${locA}` : `Thursday | Server: 12:00 | Local: ${locA}`;
-                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Jueves | Servidor: 23:00 | Tu hora: ${locB}` : `Thursday | Server: 23:00 | Local: ${locB}`;
+                document.getElementById('t1-hours').textContent = `${getT('t_thursday')} | ${getT('t_server')}: 12:00 | ${getT('t_local')}: ${formatLocal(12, 0)}`;
+                document.getElementById('t2-hours').textContent = `${getT('t_thursday')} | ${getT('t_server')}: 23:00 | ${getT('t_local')}: ${formatLocal(23, 0)}`;
             } else {
-                const locA = formatLocal(18, 0);
-                const locB = formatLocal(23, 0);
-                document.getElementById('t1-hours').textContent = currentLang === 'ES' ? `Viernes | Servidor: 18:00 | Tu hora: ${locA}` : `Friday | Server: 18:00 | Local: ${locA}`;
-                document.getElementById('t2-hours').textContent = currentLang === 'ES' ? `Viernes | Servidor: 23:00 | Tu hora: ${locB}` : `Friday | Server: 23:00 | Local: ${locB}`;
+                document.getElementById('t1-hours').textContent = `${getT('t_friday')} | ${getT('t_server')}: 18:00 | ${getT('t_local')}: ${formatLocal(18, 0)}`;
+                document.getElementById('t2-hours').textContent = `${getT('t_friday')} | ${getT('t_server')}: 23:00 | ${getT('t_local')}: ${formatLocal(23, 0)}`;
             }
         }
 
@@ -742,14 +822,14 @@
                 document.getElementById('tab-' + id).classList.add('hidden');
             });
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-            if(tabId === 'powers') renderPowersTable();
+            if(tabId === 'powers') renderPowersTable(document.getElementById('search-power').value);
             if(tabId === 'inscripciones') updateRegistrationState();
         }
 
         async function loadDatabase() {
             try {
                 const response = await fetch(BIN_URL, { headers: { "X-Master-Key": API_KEY } });
-                if (!response.ok) throw new Error("Error al conectar con la nube");
+                if (!response.ok) throw new Error("Error de conexión");
                 const json = await response.json();
                 if (json.record) {
                     historyData = json.record.historyData || [];
@@ -759,6 +839,7 @@
                     powersData = json.record.powersData || {};
                     registrations = json.record.registrations || {};
                     suspendedEvents = json.record.suspendedEvents || { CS: false, DS: false };
+                    claimsData = json.record.claimsData || [];
                 }
                 initDashboard();
                 renderMvpUI();
@@ -766,9 +847,8 @@
                 renderPowersTable();
                 renderPreLists();
                 updateRegistrationState();
-            } catch (error) {
-                console.error("No se pudo cargar de la nube:", error);
-            }
+                updateAdminUI(); 
+            } catch (error) { console.error(error); }
         }
 
         async function saveDatabase() {
@@ -776,12 +856,10 @@
                 const response = await fetch(BIN_URL, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
-                    body: JSON.stringify({ historyData, trainConfig, mvpConfig, allianceNames, powersData, registrations, suspendedEvents })
+                    body: JSON.stringify({ historyData, trainConfig, mvpConfig, allianceNames, powersData, registrations, suspendedEvents, claimsData })
                 });
-                if (!response.ok) throw new Error("Error al guardar en el servidor");
-            } catch (error) {
-                console.error("Error al guardar en la nube:", error);
-            }
+                if (!response.ok) throw new Error("Error al guardar");
+            } catch (error) { console.error(error); }
         }
 
         function initDashboard() {
@@ -789,7 +867,9 @@
             document.getElementById('display-train-vip').textContent = trainConfig.vip || '---';
             document.getElementById('discord-link-btn').href = trainConfig.discord || '#';
             if(trainConfig.driver !== '---') {
-                document.getElementById('train-status-badge').textContent = "🚂 Tren Programado";
+                const badge = document.getElementById('train-status-badge');
+                if (currentLang === 'EN') badge.textContent = "🚂 Scheduled Train";
+                else badge.textContent = "🚂 Tren Programado";
             }
         }
 
@@ -807,7 +887,6 @@
             document.getElementById('btn-role-titular').className = `touch-btn p-3 bg-[#090d0a] border ${role==='Titular'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
             document.getElementById('btn-role-suplente').className = `touch-btn p-3 bg-[#090d0a] border ${role==='Suplente'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
         }
-
         function selectTurn(turn) {
             selectedTurn = turn;
             document.getElementById('btn-turno-1').className = `touch-btn p-3 bg-[#090d0a] border ${turn==='Equipo A'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl text-xs text-stone-300`;
@@ -819,14 +898,11 @@
             const resBox = document.getElementById('member-search-results');
             resBox.innerHTML = '';
             if(q.length < 3) { resBox.classList.add('hidden'); return; }
-            
             const matches = allianceNames.filter(n => n.toLowerCase().includes(q));
             if(matches.length > 0) {
                 resBox.classList.remove('hidden');
-                matches.forEach(m => {
-                    resBox.innerHTML += `<div onclick="selectMember('${m}')" class="p-2 hover:bg-green-900/40 cursor-pointer rounded text-xs text-stone-200">${m}</div>`;
-                });
-            } else { resBox.classList.add('hidden'); }
+                matches.forEach(m => { resBox.innerHTML += `<div onclick="selectMember('${m}')" class="p-2 hover:bg-green-900/40 cursor-pointer rounded text-xs text-stone-200">${m}</div>`; });
+            } else resBox.classList.add('hidden');
         }
 
         function selectMember(name) {
@@ -836,21 +912,19 @@
         }
 
         async function submitRegistration() {
-            if(!selectedEvent || !selectedMember) { alert("Selecciona un evento y un integrante."); return; }
-
+            if(!selectedEvent || !selectedMember) { alert(getT('alert_ev_mem')); return; }
             for (let t of ['Equipo A', 'Equipo B']) {
                 const kCheck = `${selectedEvent} - ${t}`;
                 if (registrations[kCheck] && registrations[kCheck].some(item => item.name.toLowerCase() === selectedMember.toLowerCase())) {
-                    alert(`⛔ ¡${selectedMember} ya se encuentra inscrito en este evento (${selectedEvent}) dentro del ${t}!\nSolo se permite una inscripción por evento.`);
+                    alert(`${getT('alert_reg_dup')} ${t}${getT('alert_reg_dup2')}`);
                     return;
                 }
             }
-
             const key = `${selectedEvent} - ${selectedTurn}`;
             if(!registrations[key]) registrations[key] = [];
-            registrations[key].push({ name: selectedMember, role: selectedRole });
+            registrations[key].push({ name: selectedMember, role: getT(selectedRole === 'Titular' ? 'role-titular' : 'role-suplente') });
             await saveDatabase();
-            alert("✅ ¡Inscripción registrada y sincronizada en la nube!");
+            alert(getT('alert_reg_ok'));
             document.getElementById('member-search-input').value = '';
             selectedMember = '';
             renderPreLists();
@@ -863,9 +937,9 @@
             ['CS - Equipo A', 'CS - Equipo B', 'DS - Equipo A', 'DS - Equipo B'].forEach(k => {
                 const list = registrations[k] || [];
                 let html = `<div class="bg-[#090d0a] border border-green-900/50 p-3 rounded-xl space-y-2">
-                    <div class="flex justify-between items-center"><strong class="font-cinzel text-yellow-500 text-xs">${k}</strong> <button onclick="copyPrelist('${k}')" class="text-[10px] text-stone-400 hover:text-white"><i class="fa-solid fa-copy"></i> Copiar</button></div>
+                    <div class="flex justify-between items-center"><strong class="font-cinzel text-yellow-500 text-xs">${k}</strong> <button onclick="copyPrelist('${k}')" class="text-[10px] text-stone-400 hover:text-white"><i class="fa-solid fa-copy"></i> ${getT('t_btn_copy')}</button></div>
                     <ul class="text-xs space-y-1 text-stone-300 max-h-32 overflow-y-auto">`;
-                if(list.length === 0) html += `<li class="text-stone-500 italic">Sin inscritos.</li>`;
+                if(list.length === 0) html += `<li class="text-stone-500 italic">${getT('t_no_inscribed')}</li>`;
                 list.forEach((item, idx) => {
                     html += `<li class="flex justify-between"><span>${item.name} (${item.role})</span>`;
                     if(sessionStorage.getItem('knni_admin')==='true') html += `<span onclick="removeReg('${k}', ${idx})" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1">×</span>`;
@@ -875,30 +949,95 @@
                 container.innerHTML += html;
             });
         }
-
         function copyPrelist(k) {
             const list = registrations[k] || [];
             const text = `--- PRE-LISTA ${k} ---\n` + list.map(i => `${i.name} (${i.role})`).join('\n');
             navigator.clipboard.writeText(text);
-            alert("📋 ¡Lista copiada al portapapeles!");
+            alert(getT('alert_copied'));
         }
-
         async function removeReg(k, idx) {
             registrations[k].splice(idx, 1);
             await saveDatabase();
             renderPreLists();
         }
 
+        function toggleClaimForm() {
+            document.getElementById('claim-form-container').classList.toggle('hidden');
+        }
+
+        async function submitClaim() {
+            const name = document.getElementById('claim-name').value.trim();
+            const event = document.getElementById('claim-event').value;
+            const reason = document.getElementById('claim-reason').value.trim();
+
+            if(!name || !event || !reason) {
+                alert(getT('alert_fill_all'));
+                return;
+            }
+
+            const newClaim = {
+                id: Date.now(),
+                name: name,
+                event: event,
+                reason: reason,
+                date: new Date().toLocaleString()
+            };
+
+            claimsData.push(newClaim);
+            await saveDatabase();
+            
+            document.getElementById('claim-name').value = '';
+            document.getElementById('claim-event').value = '';
+            document.getElementById('claim-reason').value = '';
+            toggleClaimForm();
+            alert(getT('alert_claim_ok'));
+        }
+
+        function openInboxModal() {
+            renderInbox();
+            document.getElementById('inbox-modal').classList.remove('hidden');
+        }
+
+        function closeInboxModal() { document.getElementById('inbox-modal').classList.add('hidden'); }
+
+        function renderInbox() {
+            const container = document.getElementById('inbox-content');
+            if(!container) return;
+            
+            if(claimsData.length === 0) {
+                container.innerHTML = `<div class="text-center text-stone-500 py-10 italic">${getT('t_empty_inbox')}</div>`;
+            } else {
+                container.innerHTML = claimsData.slice().reverse().map((c) => `
+                    <div class="bg-[#090d0a] border border-red-900/40 p-3.5 rounded-lg flex flex-col space-y-2 relative">
+                        <div class="flex justify-between items-start pr-16">
+                            <div>
+                                <strong class="text-yellow-400 font-cinzel text-sm">${c.name}</strong>
+                                <span class="ml-2 text-[10px] text-stone-500 font-mono">${c.date}</span>
+                            </div>
+                        </div>
+                        <button onclick="deleteClaim(${c.id})" class="absolute top-3 right-3 text-red-500 hover:text-red-300 text-[10px] px-2 py-1 bg-red-950/50 rounded border border-red-900/50 transition font-bold"><i class="fa-solid fa-check mr-1"></i>${getT('t_btn_resolve')}</button>
+                        <div class="text-[11px] text-stone-400"><span class="text-red-300 font-bold uppercase">${getT('t_event')}</span> ${c.event}</div>
+                        <div class="text-xs text-stone-300 bg-[#070a08] p-2 rounded border border-stone-800 break-words">${c.reason}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function deleteClaim(id) {
+            claimsData = claimsData.filter(c => c.id !== id);
+            renderInbox();
+            updateAdminUI(); 
+            await saveDatabase();
+        }
+
         function sortPowersBy(field) {
             if (currentSortField === field) sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
             else { currentSortField = field; sortDirection = 'desc'; }
-
             allianceNames.sort((a, b) => {
                 const valA = parseFloat(powersData[a]?.[field]) || 0;
                 const valB = parseFloat(powersData[b]?.[field]) || 0;
                 return sortDirection === 'desc' ? valB - valA : valA - valB;
             });
-
             renderPowersTable(document.getElementById('search-power').value);
         }
 
@@ -907,28 +1046,18 @@
             if(!tbody) return;
             tbody.innerHTML = '';
             document.getElementById('stat-total-alliance').textContent = allianceNames.length;
-            
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             document.querySelectorAll('.admin-col').forEach(el => {
-                if(isAdmin) el.classList.remove('hidden');
-                else el.classList.add('hidden');
+                if(isAdmin) el.classList.remove('hidden'); else el.classList.add('hidden');
             });
-
             const filteredNames = allianceNames.filter(n => n.toLowerCase().includes(filter.toLowerCase()));
-
-            if(filteredNames.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-stone-500 italic">No hay integrantes registrados.</td></tr>`;
-                return;
-            }
-
+            if(filteredNames.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-stone-500 italic">${getT('t_no_members')}</td></tr>`; return; }
             filteredNames.forEach((name, idx) => {
                 if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
                 const p = powersData[name];
-                
                 const valM1 = (p.m1 !== undefined && p.m1 !== '') ? p.m1 : '00.00';
                 const valM2 = (p.m2 !== undefined && p.m2 !== '') ? p.m2 : '00.00';
                 const valM3 = (p.m3 !== undefined && p.m3 !== '') ? p.m3 : '00.00';
-
                 let row = `<tr class="border-b border-green-900/35 hover:bg-green-950/20">
                     <td class="px-3 py-2.5 font-mono text-xs text-stone-400">${idx + 1}</td>
                     <td class="px-3 py-2.5 font-cinzel text-stone-200">${name}</td>
@@ -940,48 +1069,32 @@
                         <option value="Air" ${p.troop==='Air'?'selected':''}>Air</option>
                         <option value="Missile" ${p.troop==='Missile'?'selected':''}>Missile</option>
                     </select></td>`;
-                
-                if(isAdmin) {
-                    row += `<td class="px-3 py-2.5 text-center"><button onclick="deleteMember('${name}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>`;
-                }
+                if(isAdmin) row += `<td class="px-3 py-2.5 text-center"><button onclick="deleteMember('${name}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>`;
                 row += `</tr>`;
                 tbody.innerHTML += row;
             });
         }
-
         async function updatePower(name, field, val) {
             if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
             powersData[name][field] = (val.trim() === '') ? '00.00' : val;
             await saveDatabase();
         }
-
         function filterPowers() { renderPowersTable(document.getElementById('search-power').value); }
-
-        function openAddMemberModal() {
-            document.getElementById('new-member-name').value = '';
-            document.getElementById('add-member-modal').classList.remove('hidden');
-        }
+        function openAddMemberModal() { document.getElementById('new-member-name').value = ''; document.getElementById('add-member-modal').classList.remove('hidden'); }
         function closeAddMemberModal() { document.getElementById('add-member-modal').classList.add('hidden'); }
-
         async function confirmAddMember() {
             const name = document.getElementById('new-member-name').value.trim();
-            if(!name) { alert("Ingresa un nombre."); return; }
-            if(allianceNames.includes(name)) { alert("El integrante ya existe."); return; }
-            allianceNames.push(name);
-            allianceNames.sort();
+            if(!name) { alert(getT('alert_enter_name')); return; }
+            if(allianceNames.includes(name)) { alert(getT('alert_exists')); return; }
+            allianceNames.push(name); allianceNames.sort();
             powersData[name] = { m1: '00.00', m2: '00.00', m3: '00.00', troop: 'Tank' };
             await saveDatabase();
-            closeAddMemberModal();
-            renderPowersTable();
-            alert("✅ ¡Integrante agregado y sincronizado en la nube!");
+            closeAddMemberModal(); renderPowersTable(document.getElementById('search-power').value); alert(getT('alert_added'));
         }
-
         async function deleteMember(name) {
-            if(confirm(`¿Estás seguro de eliminar a ${name}?`)) {
+            if(confirm(`${getT('alert_delete')} ${name}?`)) {
                 allianceNames = allianceNames.filter(n => n !== name);
-                delete powersData[name];
-                await saveDatabase();
-                renderPowersTable();
+                delete powersData[name]; await saveDatabase(); renderPowersTable(document.getElementById('search-power').value);
             }
         }
 
@@ -989,14 +1102,12 @@
         function loadParticipants() {
             const raw = document.getElementById('bulk-names').value;
             loadedPlayers = [...new Set(raw.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0))];
-            if(loadedPlayers.length === 0) { alert("Ingresa nombres."); return; }
-            eligibleForDriver = [...loadedPlayers];
-            eligibleForVIP = [...loadedPlayers];
+            if(loadedPlayers.length === 0) { alert(getT('alert_names')); return; }
+            eligibleForDriver = [...loadedPlayers]; eligibleForVIP = [...loadedPlayers];
             document.getElementById('btn-draw-driver').disabled = false;
             document.getElementById('btn-draw-vip').disabled = false;
-            alert("✅ ¡Participantes sellados!");
+            alert(getT('alert_sealed'));
         }
-
         function startDraw(role) {
             let pool = role === 'Driver' ? [...eligibleForDriver] : [...eligibleForVIP];
             if(role === 'VIP' && currentDraw.Driver) pool = pool.filter(p => p !== currentDraw.Driver);
@@ -1009,26 +1120,21 @@
                 if(counter >= 15) {
                     clearInterval(interval);
                     const winner = pool[Math.floor(Math.random() * pool.length)];
-                    winnerEl.textContent = winner;
-                    currentDraw[role] = winner;
+                    winnerEl.textContent = winner; currentDraw[role] = winner;
                     if(currentDraw.Driver && currentDraw.VIP) document.getElementById('btn-save').classList.remove('hidden');
                 }
             }, 60);
         }
-
         async function saveToHistory() {
             if(!currentDraw.Driver || !currentDraw.VIP) return;
             historyData.push({ Date: new Date().toLocaleDateString(), Driver: currentDraw.Driver, VIP: currentDraw.VIP, Config: "Sorteo Divino" });
-            renderHistory();
-            switchTab('giveaway');
-            await saveDatabase();
+            renderHistory(); switchTab('giveaway'); await saveDatabase();
         }
-
         function renderHistory() {
             const tbody = document.getElementById('full-history-tbody');
             if(!tbody) return;
             tbody.innerHTML = '';
-            if(historyData.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-stone-500 italic">No hay registros.</td></tr>`; return; }
+            if(historyData.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-stone-500 italic">${getT('t_no_records')}</td></tr>`; return; }
             historyData.slice().reverse().forEach((item, idx) => {
                 tbody.innerHTML += `<tr class="border-b border-green-900/30">
                     <td class="px-4 py-3">${item.Date}</td>
@@ -1038,58 +1144,50 @@
                 </tr>`;
             });
         }
-
-        async function deleteHistory(idx) {
-            historyData.splice(idx, 1);
-            renderHistory();
-            await saveDatabase();
-        }
+        async function deleteHistory(idx) { historyData.splice(idx, 1); renderHistory(); await saveDatabase(); }
 
         function updateAdminUI() {
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             const btn = document.getElementById('admin-lock-btn');
             const icon = document.getElementById('admin-icon');
             const suspendContainer = document.getElementById('admin-suspend-container');
-            const lblCS = document.getElementById('lbl-suspend-cs');
-            const lblDS = document.getElementById('lbl-suspend-ds');
+            const inboxBtn = document.getElementById('admin-inbox-btn');
+            const inboxBadge = document.getElementById('inbox-badge');
             
-            // Botones de edición ocultos para usuarios normales
             ['btn-edit-train', 'btn-edit-discord', 'btn-edit-mvp'].forEach(id => {
                 const el = document.getElementById(id);
-                if(el) {
-                    if(isAdmin) el.classList.remove('hidden');
-                    else el.classList.add('hidden');
-                }
+                if(el) { if(isAdmin) el.classList.remove('hidden'); else el.classList.add('hidden'); }
             });
 
             if (isAdmin) {
                 btn.className = "touch-btn p-2 bg-yellow-950/80 border border-yellow-500 text-yellow-400 rounded-lg text-xs shadow-[0_0_10px_rgba(202,138,4,0.4)] transition-all";
                 icon.className = "fa-solid fa-lock-open text-sm";
                 if(suspendContainer) suspendContainer.classList.remove('hidden');
-                if(lblCS) lblCS.textContent = suspendedEvents.CS ? "Reactivar CS" : "Suspender CS";
-                if(lblDS) lblDS.textContent = suspendedEvents.DS ? "Reactivar DS" : "Suspender DS";
+                if(inboxBtn) inboxBtn.classList.remove('hidden');
+                
+                if (claimsData.length > 0 && inboxBadge) {
+                    inboxBadge.textContent = claimsData.length;
+                    inboxBadge.classList.remove('hidden');
+                } else if(inboxBadge) {
+                    inboxBadge.classList.add('hidden');
+                }
             } else {
                 btn.className = "touch-btn p-2 bg-stone-900 border border-stone-800 text-stone-400 rounded-lg text-xs transition-all";
                 icon.className = "fa-solid fa-lock text-sm";
                 if(suspendContainer) suspendContainer.classList.add('hidden');
+                if(inboxBtn) inboxBtn.classList.add('hidden');
             }
         }
 
         function toggleAdminSession() {
             if (sessionStorage.getItem('knni_admin') === 'true') {
                 sessionStorage.removeItem('knni_admin');
-                updateAdminUI();
-                renderPowersTable();
-                updateRegistrationState();
-                renderPreLists();
-                alert("🔒 Sesión de Administrador cerrada.");
+                updateAdminUI(); renderPowersTable(); updateRegistrationState(); renderPreLists();
+                alert(getT('alert_admin_closed'));
             } else {
                 pendingAction = () => {
-                    updateAdminUI();
-                    renderPowersTable();
-                    updateRegistrationState();
-                    renderPreLists();
-                    alert("🔓 ¡Acceso total de Administrador concedido!");
+                    updateAdminUI(); renderPowersTable(); updateRegistrationState(); renderPreLists();
+                    alert(getT('alert_admin_open'));
                 };
                 document.getElementById('admin-password').value = '';
                 document.getElementById('admin-password-modal').classList.remove('hidden');
@@ -1097,36 +1195,17 @@
         }
 
         function checkAdmin(actionFn) {
-            if (sessionStorage.getItem('knni_admin') === 'true') { 
-                actionFn(); 
-            } else { 
-                pendingAction = actionFn;
-                document.getElementById('admin-password').value = ''; 
-                document.getElementById('admin-password-modal').classList.remove('hidden'); 
-            }
+            if (sessionStorage.getItem('knni_admin') === 'true') { actionFn(); } 
+            else { pendingAction = actionFn; document.getElementById('admin-password').value = ''; document.getElementById('admin-password-modal').classList.remove('hidden'); }
         }
-
         function verifyAdminPassword() {
             if (document.getElementById('admin-password').value === ADMIN_PASSWORD) {
                 sessionStorage.setItem('knni_admin', 'true');
-                closeAdminPasswordModal();
-                updateAdminUI();
-                renderPowersTable();
-                updateRegistrationState();
-                renderPreLists();
-                if (pendingAction) {
-                    pendingAction();
-                    pendingAction = null;
-                }
-            } else { 
-                alert("Contraseña incorrecta."); 
-            }
+                closeAdminPasswordModal(); updateAdminUI(); renderPowersTable(); updateRegistrationState(); renderPreLists();
+                if (pendingAction) { pendingAction(); pendingAction = null; }
+            } else { alert(getT('alert_pwd_err')); }
         }
-
-        function closeAdminPasswordModal() { 
-            document.getElementById('admin-password-modal').classList.add('hidden'); 
-            pendingAction = null;
-        }
+        function closeAdminPasswordModal() { document.getElementById('admin-password-modal').classList.add('hidden'); pendingAction = null; }
 
         function openEditTrainModal() {
             document.getElementById('adm-driver').value = trainConfig.driver;
@@ -1135,58 +1214,29 @@
             document.getElementById('edit-train-modal').classList.remove('hidden');
         }
         function closeEditTrainModal() { document.getElementById('edit-train-modal').classList.add('hidden'); }
-
         async function saveTrainChanges() {
             trainConfig.driver = document.getElementById('adm-driver').value.trim();
             trainConfig.vip = document.getElementById('adm-vip').value.trim();
             const rawTime = document.getElementById('adm-arrival').value;
             trainConfig.arrival = rawTime ? `${rawTime} hs` : "21:30 hs";
-            
-            closeEditTrainModal();
-            initDashboard();
-            updateClocks();
-            await saveDatabase();
-            alert("✅ ¡Tren actualizado en la nube con hora local!");
+            closeEditTrainModal(); initDashboard(); updateClocks(); await saveDatabase(); alert(getT('alert_train_ok'));
         }
-
-        function openEditDiscordModal() {
-            document.getElementById('adm-discord').value = trainConfig.discord;
-            document.getElementById('edit-discord-modal').classList.remove('hidden');
-        }
+        function openEditDiscordModal() { document.getElementById('adm-discord').value = trainConfig.discord; document.getElementById('edit-discord-modal').classList.remove('hidden'); }
         function closeEditDiscordModal() { document.getElementById('edit-discord-modal').classList.add('hidden'); }
-
-        async function saveDiscordChanges() {
-            trainConfig.discord = document.getElementById('adm-discord').value.trim();
-            closeEditDiscordModal();
-            initDashboard();
-            await saveDatabase();
-            alert("✅ ¡Enlace de Discord actualizado en la nube!");
-        }
+        async function saveDiscordChanges() { trainConfig.discord = document.getElementById('adm-discord').value.trim(); closeEditDiscordModal(); initDashboard(); await saveDatabase(); alert(getT('alert_dc_ok')); }
 
         function openEditMvpModal() {
-            document.getElementById('adm-mvp-week').value = mvpConfig.week;
-            document.getElementById('adm-champion').value = mvpConfig.champion;
-            document.getElementById('adm-mvp-ds-1').value = mvpConfig.ds1;
-            document.getElementById('adm-mvp-ds-2').value = mvpConfig.ds2;
-            document.getElementById('adm-mvp-cs-1').value = mvpConfig.cs1;
-            document.getElementById('adm-mvp-cs-2').value = mvpConfig.cs2;
+            document.getElementById('adm-mvp-week').value = mvpConfig.week; document.getElementById('adm-champion').value = mvpConfig.champion;
+            document.getElementById('adm-mvp-ds-1').value = mvpConfig.ds1; document.getElementById('adm-mvp-ds-2').value = mvpConfig.ds2;
+            document.getElementById('adm-mvp-cs-1').value = mvpConfig.cs1; document.getElementById('adm-mvp-cs-2').value = mvpConfig.cs2;
             document.getElementById('edit-mvp-modal').classList.remove('hidden');
         }
-
         function closeEditMvpModal() { document.getElementById('edit-mvp-modal').classList.add('hidden'); }
-
         async function saveMvpChanges() {
-            mvpConfig.week = document.getElementById('adm-mvp-week').value.trim();
-            mvpConfig.champion = document.getElementById('adm-champion').value.trim();
-            mvpConfig.ds1 = document.getElementById('adm-mvp-ds-1').value.trim();
-            mvpConfig.ds2 = document.getElementById('adm-mvp-ds-2').value.trim();
-            mvpConfig.cs1 = document.getElementById('adm-mvp-cs-1').value.trim();
-            mvpConfig.cs2 = document.getElementById('adm-mvp-cs-2').value.trim();
-            
-            closeEditMvpModal();
-            renderMvpUI();
-            await saveDatabase();
-            alert("✅ ¡Salón de MVPs actualizado en la nube!");
+            mvpConfig.week = document.getElementById('adm-mvp-week').value.trim(); mvpConfig.champion = document.getElementById('adm-champion').value.trim();
+            mvpConfig.ds1 = document.getElementById('adm-mvp-ds-1').value.trim(); mvpConfig.ds2 = document.getElementById('adm-mvp-ds-2').value.trim();
+            mvpConfig.cs1 = document.getElementById('adm-mvp-cs-1').value.trim(); mvpConfig.cs2 = document.getElementById('adm-mvp-cs-2').value.trim();
+            closeEditMvpModal(); renderMvpUI(); await saveDatabase(); alert(getT('alert_mvp_ok'));
         }
 
         window.onload = async () => {
@@ -1196,6 +1246,12 @@
             await loadDatabase();
             updateTurnHours();
             updateRegistrationState();
+            
+            // Forzar carga inicial de placeholders
+            document.querySelectorAll('[data-i-ph]').forEach(el => {
+                const key = el.getAttribute('data-i-ph');
+                if (translations[currentLang][key]) el.setAttribute('placeholder', translations[currentLang][key]);
+            });
         };
     </script>
 </body>
