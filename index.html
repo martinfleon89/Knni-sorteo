@@ -174,7 +174,10 @@
             </div>
 
             <!-- MVPs -->
-            <div class="card-glass p-5 sm:p-6 rounded-xl border-t-2 border-t-yellow-600 space-y-4">
+            <div class="card-glass p-5 sm:p-6 rounded-xl border-t-2 border-t-yellow-600 space-y-4 relative">
+                <button onclick="checkAdmin(() => openEditMvpModal())" class="absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
+                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">Editar MVPs</span>
+                </button>
                 <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="mvp-hall-title">Salón de MVPs y Campeones</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div class="bg-[#090d0a] border border-green-900/50 rounded-xl p-3.5 space-y-2">
@@ -398,6 +401,43 @@
         </div>
     </div>
 
+    <!-- MODAL EDITAR MVPs Y CAMPEONES -->
+    <div id="edit-mvp-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
+            <h3 class="font-cinzel font-bold text-lg text-yellow-500">Configurar Salón de MVPs y Campeones</h3>
+            <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                <div>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP de la Semana</label>
+                    <input type="text" id="adm-mvp-week" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">Campeón de la Semana</label>
+                    <input type="text" id="adm-champion" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Desert Storm (T1)</label>
+                    <input type="text" id="adm-mvp-ds-1" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Desert Storm (T2)</label>
+                    <input type="text" id="adm-mvp-ds-2" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Cañón Storm (T1)</label>
+                    <input type="text" id="adm-mvp-cs-1" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-yellow-400 uppercase block mb-1">MVP Cañón Storm (T2)</label>
+                    <input type="text" id="adm-mvp-cs-2" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeEditMvpModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg">Cancelar</button>
+                <button onclick="saveMvpChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold">Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL AGREGAR PARTICIPANTE -->
     <div id="add-member-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-5 rounded-xl w-full max-w-sm space-y-3 text-xs sm:text-sm border border-yellow-600/50">
@@ -436,10 +476,11 @@
         ];
 
         let trainConfig = { driver: "---", vip: "---", arrival: "21:30 hs", discord: "https://discord.gg/TU_ENLACE_DE_DISCORD" };
+        let mvpConfig = { week: "---", champion: "---", ds1: "---", ds2: "---", cs1: "---", cs2: "---" };
         let historyData = [];
         let registrations = {};
         let powersData = {};
-        let suspendedEvents = { CS: false, DS: false }; // Suspensión independiente por evento
+        let suspendedEvents = { CS: false, DS: false }; 
         let currentLang = 'ES';
         let pendingAction = null;
         let currentSortField = null;
@@ -523,7 +564,6 @@
             const btnCS = document.getElementById('btn-ev-cs');
             const btnDS = document.getElementById('btn-ev-ds');
 
-            // Si CS está suspendido y no es admin, se oculta; si es admin se muestra tenue
             if (suspendedEvents.CS && !isAdmin) {
                 btnCS.classList.add('hidden');
                 if (selectedEvent === 'CS') { selectEvent('DS'); }
@@ -533,7 +573,6 @@
                 else btnCS.style.opacity = "1";
             }
 
-            // Lo mismo para DS
             if (suspendedEvents.DS && !isAdmin) {
                 btnDS.classList.add('hidden');
                 if (selectedEvent === 'DS') { selectEvent('CS'); }
@@ -562,7 +601,6 @@
 
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             
-            // Si el evento seleccionado está suspendido manualmente
             if (suspendedEvents[selectedEvent] && !isAdmin) {
                 isOpen = false;
             }
@@ -648,12 +686,14 @@
                 if (json.record) {
                     historyData = json.record.historyData || [];
                     trainConfig = json.record.trainConfig || trainConfig;
+                    mvpConfig = json.record.mvpConfig || mvpConfig;
                     allianceNames = json.record.allianceNames || allianceNames;
                     powersData = json.record.powersData || {};
                     registrations = json.record.registrations || {};
                     suspendedEvents = json.record.suspendedEvents || { CS: false, DS: false };
                 }
                 initDashboard();
+                renderMvpUI();
                 renderHistory();
                 renderPowersTable();
                 renderPreLists();
@@ -669,7 +709,7 @@
                 await fetch(BIN_URL, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
-                    body: JSON.stringify({ historyData, trainConfig, allianceNames, powersData, registrations, suspendedEvents })
+                    body: JSON.stringify({ historyData, trainConfig, mvpConfig, allianceNames, powersData, registrations, suspendedEvents })
                 });
             } catch (error) {
                 console.error("Error al guardar en la nube:", error);
@@ -683,6 +723,15 @@
             if(trainConfig.driver !== '---') {
                 document.getElementById('train-status-badge').textContent = "🚂 Tren Programado";
             }
+        }
+
+        function renderMvpUI() {
+            document.getElementById('display-mvp-week').textContent = mvpConfig.week || '---';
+            document.getElementById('display-champion').textContent = mvpConfig.champion || '---';
+            document.getElementById('display-mvp-ds-1').textContent = mvpConfig.ds1 || '---';
+            document.getElementById('display-mvp-ds-2').textContent = mvpConfig.ds2 || '---';
+            document.getElementById('display-mvp-cs-1').textContent = mvpConfig.cs1 || '---';
+            document.getElementById('display-mvp-cs-2').textContent = mvpConfig.cs2 || '---';
         }
 
         function selectEvent(ev) {
@@ -817,7 +866,6 @@
                 if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
                 const p = powersData[name];
                 
-                // Si están vacías o no definidas, por defecto asignamos '00.00'
                 const valM1 = (p.m1 !== undefined && p.m1 !== '') ? p.m1 : '00.00';
                 const valM2 = (p.m2 !== undefined && p.m2 !== '') ? p.m2 : '00.00';
                 const valM3 = (p.m3 !== undefined && p.m3 !== '') ? p.m3 : '00.00';
@@ -1048,6 +1096,34 @@
             initDashboard();
             await saveDatabase();
             alert("✅ ¡Enlace de Discord actualizado en la nube!");
+        }
+
+        function openEditMvpModal() {
+            document.getElementById('adm-mvp-week').value = mvpConfig.week;
+            document.getElementById('adm-champion').value = mvpConfig.champion;
+            document.getElementById('adm-mvp-ds-1').value = mvpConfig.ds1;
+            document.getElementById('adm-mvp-ds-2').value = mvpConfig.ds2;
+            document.getElementById('adm-mvp-cs-1').value = mvpConfig.cs1;
+            document.getElementById('adm-mvp-cs-2').value = mvpConfig.cs2;
+            document.getElementById('edit-mvp-modal').classList.remove('hidden');
+        }
+
+        function closeEditMvpModal() {
+            document.getElementById('edit-mvp-modal').classList.add('hidden');
+        }
+
+        async function saveMvpChanges() {
+            mvpConfig.week = document.getElementById('adm-mvp-week').value.trim();
+            mvpConfig.champion = document.getElementById('adm-champion').value.trim();
+            mvpConfig.ds1 = document.getElementById('adm-mvp-ds-1').value.trim();
+            mvpConfig.ds2 = document.getElementById('adm-mvp-ds-2').value.trim();
+            mvpConfig.cs1 = document.getElementById('adm-mvp-cs-1').value.trim();
+            mvpConfig.cs2 = document.getElementById('adm-mvp-cs-2').value.trim();
+            
+            closeEditMvpModal();
+            renderMvpUI();
+            await saveDatabase();
+            alert("✅ ¡Salón de MVPs y Campeones actualizado en la nube!");
         }
 
         window.onload = async () => {
