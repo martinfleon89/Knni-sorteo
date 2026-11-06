@@ -550,41 +550,24 @@
         }
 
         function updateEventVisibility() {
-            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
             const btnCS = document.getElementById('btn-ev-cs');
             const btnDS = document.getElementById('btn-ev-ds');
-
-            if (suspendedEvents.CS && !isAdmin) {
-                btnCS.classList.add('hidden');
-                if (selectedEvent === 'CS') selectEvent('DS');
-            } else {
-                btnCS.classList.remove('hidden');
-                btnCS.style.opacity = suspendedEvents.CS ? "0.4" : "1";
-            }
-
-            if (suspendedEvents.DS && !isAdmin) {
-                btnDS.classList.add('hidden');
-                if (selectedEvent === 'DS') selectEvent('CS');
-            } else {
-                btnDS.classList.remove('hidden');
-                btnDS.style.opacity = suspendedEvents.DS ? "0.4" : "1";
-            }
+            if(btnCS) btnCS.style.opacity = suspendedEvents.CS ? "0.4" : "1";
+            if(btnDS) btnDS.style.opacity = suspendedEvents.DS ? "0.4" : "1";
         }
 
         function checkRegistrationWindow() {
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
             const serverDate = new Date(utcTime - (2 * 3600000)); 
-            const day = serverDate.getDay(); // 0: Dom, 1: Lun, 2: Mar, 3: Mié, 4: Jue, 5: Vie, 6: Sáb
+            const day = serverDate.getDay(); 
             const hour = serverDate.getHours();
 
             let isOpen = false;
 
             if (selectedEvent === 'CS') {
-                // CS: Viernes 00:00 hs hasta Lunes 11:00 hs servidor
                 isOpen = (day === 5) || (day === 6) || (day === 0) || (day === 1 && hour < 11);
             } else {
-                // DS: Sábado 00:00 hs hasta Miércoles 11:00 hs servidor
                 isOpen = (day === 6) || (day === 0) || (day === 1) || (day === 2) || (day === 3 && hour < 11);
             }
 
@@ -617,7 +600,7 @@
                 if(banner) {
                     banner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-red-950/80 text-red-400 border border-red-500/60 shadow-[0_0_15px_rgba(239,68,68,0.2)]";
                     let aperturaTxt = selectedEvent === 'CS' ? "Viernes a las 00:00 hs (Servidor)" : "Sábado a las 00:00 hs (Servidor)";
-                    banner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> INSCRIPCIONES CERRADAS para ${selectedEvent}. Abren el ${aperturaTxt}.`;
+                    banner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> INSCRIPCIONES CERRADAS para ${selectedEvent}. Abre el ${aperturaTxt}.`;
                 }
                 if(controlsContainer) {
                     controlsContainer.style.opacity = "0.45";
@@ -747,7 +730,6 @@
         }
 
         function selectEvent(ev) {
-            if(suspendedEvents[ev] && sessionStorage.getItem('knni_admin') !== 'true') return;
             selectedEvent = ev;
             
             const btnCS = document.getElementById('btn-ev-cs');
@@ -800,6 +782,16 @@
                 return;
             }
             if(!selectedMember) { alert("Selecciona un integrante."); return; }
+
+            // VALIDACIÓN: Verificar si el integrante ya está inscrito en CUALQUIER equipo de este evento (CS o DS)
+            for (let t of ['Equipo A', 'Equipo B']) {
+                const kCheck = `${selectedEvent} - ${t}`;
+                if (registrations[kCheck] && registrations[kCheck].some(item => item.name.toLowerCase() === selectedMember.toLowerCase())) {
+                    alert(`⛔ ¡${selectedMember} ya se encuentra inscrito en este evento (${selectedEvent}) dentro del ${t}!\nSolo se permite una inscripción por evento.`);
+                    return;
+                }
+            }
+
             const key = `${selectedEvent} - ${selectedTurn}`;
             if(!registrations[key]) registrations[key] = [];
             registrations[key].push({ name: selectedMember, role: selectedRole });
