@@ -42,18 +42,6 @@
             80% { opacity: 0.4; }
             100% { transform: translateY(-10vh) translateX(50px) scale(1.2); opacity: 0; }
         }
-        /* Bloqueo total cuando están cerradas las inscripciones */
-        .inscripcion-box.closed {
-            opacity: 0.35;
-            filter: grayscale(60%);
-            pointer-events: none !important;
-            cursor: not-allowed !important;
-        }
-        .inscripcion-box.open {
-            opacity: 1;
-            filter: none;
-            pointer-events: auto;
-        }
     </style>
 </head>
 <body class="flex flex-col selection:bg-green-800 selection:text-yellow-400 min-h-screen">
@@ -219,8 +207,8 @@
                 
                 <div id="inscripcion-status-banner" class="p-3.5 rounded-xl text-center font-cinzel text-xs font-bold"></div>
 
-                <!-- CONTENEDOR DE CONTROLES QUE SE BLOQUEA TOTALMENTE AL ESTAR CERRADO -->
-                <div id="inscription-controls-container" class="space-y-4 transition-all duration-300 inscripcion-box">
+                <!-- CONTENEDOR DE CONTROLES -->
+                <div id="inscription-controls-container" class="space-y-4 transition-all duration-300">
                     <div class="space-y-2">
                         <label class="text-xs text-yellow-400 font-cinzel uppercase block" data-i="step1-lbl">1. Selecciona el Evento:</label>
                         <div class="grid grid-cols-2 gap-3" id="event-buttons-container">
@@ -544,7 +532,7 @@
             const audio = document.getElementById('bg-music');
             const icon = document.getElementById('music-icon');
             if (isPlaying) { audio.pause(); icon.className = "fa-solid fa-volume-xmark"; isPlaying = false; }
-            else { audio.play().then(() => { icon.className = "fa-solid fa-volume-high text-yellow-500"; isPlaying = true; }).catch(e => console.log(e)); }
+            else { audio.play().then(() => { icon.className = "fa-solid fa-volume-high text-yellow-500"; icon.className = "fa-solid fa-volume-high text-yellow-500"; isPlaying = true; }).catch(e => console.log(e)); }
         }
 
         function createAshParticles() {
@@ -592,20 +580,17 @@
 
             let isOpen = false;
 
-            // REGLAS INDEPENDIENTES POR EVENTO:
             if (selectedEvent === 'CS') {
-                // Cañón Storm (CS): Viernes 00:00 hs hasta Lunes 11:00 hs servidor
-                // Días: Viernes (5), Sábado (6), Domingo (0), Lunes (1 y hora < 11)
+                // CS: Viernes 00:00 hs hasta Lunes 11:00 hs servidor
                 isOpen = (day === 5) || (day === 6) || (day === 0) || (day === 1 && hour < 11);
             } else {
-                // Desert Storm (DS): Sábado 00:00 hs hasta Miércoles 11:00 hs servidor
-                // Días: Sábado (6), Domingo (0), Lunes (1), Martes (2), Miércoles (3 y hora < 11)
+                // DS: Sábado 00:00 hs hasta Miércoles 11:00 hs servidor
                 isOpen = (day === 6) || (day === 0) || (day === 1) || (day === 2) || (day === 3 && hour < 11);
             }
 
             const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
-            
             if (suspendedEvents[selectedEvent] && !isAdmin) isOpen = false;
+            
             updateEventVisibility();
 
             const banner = document.getElementById('inscripcion-status-banner');
@@ -616,12 +601,12 @@
                 if(banner) {
                     banner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-green-950/80 text-green-400 border border-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
                     banner.innerHTML = suspendedEvents[selectedEvent] ? 
-                        `<i class="fa-solid fa-triangle-exclamation mr-2 text-yellow-400"></i> Atención: El evento ${selectedEvent} se encuentra SUSPENDIDO por el liderazgo (Modo Admin activo).` : 
+                        `<i class="fa-solid fa-triangle-exclamation mr-2 text-yellow-400"></i> Atención: El evento ${selectedEvent} se encuentra SUSPENDIDO por el liderazgo.` : 
                         `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ¡INSCRIPCIONES ABIERTAS para ${selectedEvent}! Anótate con tu rol y equipo.`;
                 }
                 if(controlsContainer) {
-                    controlsContainer.classList.remove('closed');
-                    controlsContainer.classList.add('open');
+                    controlsContainer.style.opacity = "1";
+                    controlsContainer.style.pointerEvents = "auto";
                 }
                 if(submitBtn) {
                     submitBtn.disabled = false;
@@ -635,8 +620,8 @@
                     banner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> INSCRIPCIONES CERRADAS para ${selectedEvent}. Abren el ${aperturaTxt}.`;
                 }
                 if(controlsContainer) {
-                    controlsContainer.classList.remove('open');
-                    controlsContainer.classList.add('closed');
+                    controlsContainer.style.opacity = "0.45";
+                    controlsContainer.style.pointerEvents = "none";
                 }
                 if(submitBtn) {
                     submitBtn.disabled = true;
@@ -764,8 +749,14 @@
         function selectEvent(ev) {
             if(suspendedEvents[ev] && sessionStorage.getItem('knni_admin') !== 'true') return;
             selectedEvent = ev;
-            document.getElementById('btn-ev-cs').className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='CS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
-            document.getElementById('btn-ev-ds').className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='DS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
+            
+            const btnCS = document.getElementById('btn-ev-cs');
+            const btnDS = document.getElementById('btn-ev-ds');
+            if(btnCS && btnDS) {
+                btnCS.className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='CS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
+                btnDS.className = `touch-btn p-4 bg-[#090d0a] border-2 ${ev==='DS'?'border-yellow-500 bg-yellow-950/40':'border-stone-800'} rounded-xl font-cinzel text-sm font-bold text-stone-200`;
+            }
+            
             updateTurnHours();
             checkRegistrationWindow();
         }
