@@ -1,0 +1,21 @@
+{
+  "name": "KnNi Alianza Oficial",
+  "short_name": "KnNi App",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0c120e",
+  "theme_color": "#ca8a04",
+  "description": "App oficial de la alianza KnNi",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
