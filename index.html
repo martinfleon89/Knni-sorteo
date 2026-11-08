@@ -120,7 +120,7 @@
                     <p class="text-xs text-stone-300" data-i="home-insc-desc">Anota tu nombre, elige tu rol táctico (Titular o Suplente).</p>
                 </div>
                 <button onclick="switchTab('inscripciones')" class="touch-btn px-6 py-3.5 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-xl font-cinzel text-xs font-bold border border-yellow-500/50 shadow-lg whitespace-nowrap">
-                    <span data-i="btn-go-insc">IR A INSCRIPCIONES &rarr;</span>
+                    <span data-i="btn-go-insc">IR A INSCRripciones &rarr;</span>
                 </button>
             </div>
 
@@ -898,11 +898,18 @@
         }
 
         function filterMemberSearch() {
-            const q = document.getElementById('member-search-input').value.trim().toLowerCase();
+            const rawQ = document.getElementById('member-search-input').value.trim();
+            const q = rawQ.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            
             const resBox = document.getElementById('member-search-results');
             resBox.innerHTML = '';
             if(q.length < 3) { resBox.classList.add('hidden'); return; }
-            const matches = allianceNames.filter(n => n.toLowerCase().includes(q));
+            
+            const matches = allianceNames.filter(n => {
+                const normalizedName = n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                return normalizedName.includes(q);
+            });
+            
             if(matches.length > 0) {
                 resBox.classList.remove('hidden');
                 matches.forEach(m => { resBox.innerHTML += `<div onclick="selectMember('${m}')" class="p-2 hover:bg-green-900/40 cursor-pointer rounded text-xs text-stone-200">${m}</div>`; });
@@ -938,27 +945,79 @@
             const container = document.getElementById('prelist-container');
             if(!container) return;
             container.innerHTML = '';
+            
+            const txtTitulares = getT('role-titular') + "s"; 
+            const txtSuplentes = getT('role-suplente') + "s"; 
+
             ['CS - Equipo A', 'CS - Equipo B', 'DS - Equipo A', 'DS - Equipo B'].forEach(k => {
                 const list = registrations[k] || [];
-                let html = `<div class="bg-[#090d0a] border border-green-900/50 p-3 rounded-xl space-y-2">
-                    <div class="flex justify-between items-center"><strong class="font-cinzel text-yellow-500 text-xs">${k}</strong> <button onclick="copyPrelist('${k}')" class="text-[10px] text-stone-400 hover:text-white"><i class="fa-solid fa-copy"></i> ${getT('t_btn_copy')}</button></div>
-                    <ul class="text-xs space-y-1 text-stone-300 max-h-32 overflow-y-auto">`;
-                if(list.length === 0) html += `<li class="text-stone-500 italic">${getT('t_no_inscribed')}</li>`;
+                
+                const titulares = [];
+                const suplentes = [];
                 list.forEach((item, idx) => {
-                    html += `<li class="flex justify-between"><span>${item.name} (${item.role})</span>`;
-                    if(sessionStorage.getItem('knni_admin')==='true') html += `<span onclick="removeReg('${k}', ${idx})" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1">×</span>`;
-                    html += `</li>`;
+                    if (item.role === 'Titular' || item.role === 'Starter') {
+                        titulares.push({ ...item, originalIdx: idx });
+                    } else {
+                        suplentes.push({ ...item, originalIdx: idx });
+                    }
                 });
-                html += `</ul></div>`;
+
+                let html = `<div class="bg-[#090d0a] border border-green-900/50 p-3 rounded-xl space-y-2 flex flex-col">
+                    <div class="flex justify-between items-center mb-1">
+                        <strong class="font-cinzel text-yellow-500 text-xs">${k}</strong> 
+                        <button onclick="copyPrelist('${k}')" class="text-[10px] text-stone-400 hover:text-white"><i class="fa-solid fa-copy"></i> ${getT('t_btn_copy')}</button>
+                    </div>
+                    <div class="text-xs space-y-2 text-stone-300 max-h-40 overflow-y-auto pr-1">`;
+                
+                if(list.length === 0) {
+                    html += `<div class="text-stone-500 italic">${getT('t_no_inscribed')}</div>`;
+                } else {
+                    const renderGroup = (title, groupList, colorClass) => {
+                        if (groupList.length === 0) return '';
+                        let groupHtml = `<div class="mb-2">
+                            <strong class="${colorClass} font-cinzel text-[10px] uppercase border-b border-green-900/50 pb-0.5 mb-1 block">${title} (${groupList.length})</strong>
+                            <ul class="space-y-1">`;
+                        groupList.forEach(item => {
+                            groupHtml += `<li class="flex justify-between items-center pl-1 border-l-2 border-green-900/30"><span>${item.name}</span>`;
+                            if(sessionStorage.getItem('knni_admin')==='true') {
+                                groupHtml += `<span onclick="removeReg('${k}', ${item.originalIdx})" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1 text-[14px] leading-none">×</span>`;
+                            }
+                            groupHtml += `</li>`;
+                        });
+                        groupHtml += `</ul></div>`;
+                        return groupHtml;
+                    };
+
+                    html += renderGroup(txtTitulares, titulares, "text-yellow-400");
+                    html += renderGroup(txtSuplentes, suplentes, "text-green-400");
+                }
+                
+                html += `</div></div>`;
                 container.innerHTML += html;
             });
         }
+
         function copyPrelist(k) {
             const list = registrations[k] || [];
-            const text = `--- PRE-LISTA ${k} ---\n` + list.map(i => `${i.name} (${i.role})`).join('\n');
+            const titulares = list.filter(i => i.role === 'Titular' || i.role === 'Starter');
+            const suplentes = list.filter(i => i.role !== 'Titular' && i.role !== 'Starter');
+            
+            let text = `--- PRE-LISTA ${k} ---\n`;
+            
+            if (titulares.length > 0) {
+                text += `\n[ TITULARES ]\n` + titulares.map(i => `- ${i.name}`).join('\n') + `\n`;
+            }
+            if (suplentes.length > 0) {
+                text += `\n[ SUPLENTES ]\n` + suplentes.map(i => `- ${i.name}`).join('\n') + `\n`;
+            }
+            if (list.length === 0) {
+                text += "Sin inscritos.\n";
+            }
+            
             navigator.clipboard.writeText(text);
             alert(getT('alert_copied'));
         }
+
         async function removeReg(k, idx) {
             registrations[k].splice(idx, 1);
             await saveDatabase();
@@ -1054,7 +1113,14 @@
             document.querySelectorAll('.admin-col').forEach(el => {
                 if(isAdmin) el.classList.remove('hidden'); else el.classList.add('hidden');
             });
-            const filteredNames = allianceNames.filter(n => n.toLowerCase().includes(filter.toLowerCase()));
+
+            const normalizedFilter = filter.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            
+            const filteredNames = allianceNames.filter(n => {
+                const normalizedName = n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                return normalizedName.includes(normalizedFilter);
+            });
+
             if(filteredNames.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-stone-500 italic">${getT('t_no_members')}</td></tr>`; return; }
             filteredNames.forEach((name, idx) => {
                 if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
