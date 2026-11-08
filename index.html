@@ -120,7 +120,7 @@
                     <p class="text-xs text-stone-300" data-i="home-insc-desc">Anota tu nombre, elige tu rol táctico (Titular o Suplente).</p>
                 </div>
                 <button onclick="switchTab('inscripciones')" class="touch-btn px-6 py-3.5 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-xl font-cinzel text-xs font-bold border border-yellow-500/50 shadow-lg whitespace-nowrap">
-                    <span data-i="btn-go-insc">IR A INSCRripciones &rarr;</span>
+                    <span data-i="btn-go-insc">IR A INSCRIPCIONES &rarr;</span>
                 </button>
             </div>
 
@@ -269,9 +269,14 @@
                         <div id="member-search-results" class="max-h-36 overflow-y-auto space-y-1 bg-[#070a08] p-2 rounded-lg border border-green-900/40 hidden"></div>
                     </div>
 
-                    <button id="btn-submit-reg" onclick="submitRegistration()" disabled class="w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all">
-                        <span data-i="btn-confirm-reg">CONFIRMAR INSCRIPCIÓN</span>
-                    </button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                        <button id="btn-submit-reg" onclick="submitRegistration()" disabled class="w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all">
+                            <span data-i="btn-confirm-reg">CONFIRMAR INSCRIPCIÓN</span>
+                        </button>
+                        <button id="btn-cancel-reg" onclick="cancelRegistration()" disabled class="w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all">
+                            <span data-i="btn-cancel-reg">ANULAR INSCRIPCIÓN</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- RECLAMOS / SOPORTE -->
@@ -557,7 +562,7 @@
                 "insc-panel-title": "Módulo de Inscripciones", "step1-lbl": "1. Selecciona el Evento:", "step2-lbl": "2. Selecciona tu Rol:",
                 "role-titular": "Titular", "role-suplente": "Suplente", "step3-lbl": "3. Selecciona el Equipo:",
                 "t1-name": "Equipo A", "t2-name": "Equipo B", "step4-lbl": "4. Buscar tu Nombre (Escribe al menos 3 letras):",
-                "btn-confirm-reg": "CONFIRMAR INSCRIPCIÓN", "claim-prompt": "¿Tuviste un problema para inscribirte? Abre un Ticket de Soporte aquí.",
+                "btn-confirm-reg": "CONFIRMAR INSCRIPCIÓN", "btn-cancel-reg": "ANULAR INSCRIPCIÓN", "claim-prompt": "¿Tuviste un problema para inscribirte? Abre un Ticket de Soporte aquí.",
                 "claim-title": "Reportar Inconveniente", "claim-ev-sel": "Selecciona el evento con problemas...", "claim-ev-both": "Ambos / Otro problema",
                 "claim-btn": "ENVIAR REPORTE A LOS LÍDERES", "prelists-title": "Pre-Listas Oficiales",
                 "draw-title": "Sorteo Divino de Trenes", "draw-desc": "Pega la lista de participantes y séllala.", "btn-seal": "SELLAR PARTICIPANTES",
@@ -603,7 +608,7 @@
                 "insc-panel-title": "Registration Module", "step1-lbl": "1. Select Event:", "step2-lbl": "2. Select your Role:",
                 "role-titular": "Starter", "role-suplente": "Substitute", "step3-lbl": "3. Select Team:",
                 "t1-name": "Team A", "t2-name": "Team B", "step4-lbl": "4. Search Name (Type at least 3 letters):",
-                "btn-confirm-reg": "CONFIRM REGISTRATION", "claim-prompt": "Had a problem registering? Open a Support Ticket here.",
+                "btn-confirm-reg": "CONFIRM REGISTRATION", "btn-cancel-reg": "CANCEL REGISTRATION", "claim-prompt": "Had a problem registering? Open a Support Ticket here.",
                 "claim-title": "Report Issue", "claim-ev-sel": "Select the event with issues...", "claim-ev-both": "Both / Other problem",
                 "claim-btn": "SEND REPORT TO LEADERS", "prelists-title": "Official Pre-Lists",
                 "draw-title": "Divine Train Draw", "draw-desc": "Paste the list of participants and seal it.", "btn-seal": "SEAL PARTICIPANTS",
@@ -756,6 +761,7 @@
 
             const subModule = document.getElementById('sub-registration-module');
             const submitBtn = document.getElementById('btn-submit-reg');
+            const cancelBtn = document.getElementById('btn-cancel-reg');
             const statusBanner = document.getElementById('inscripcion-status-banner');
 
             if (!subModule || !statusBanner) return;
@@ -773,12 +779,24 @@
                 subModule.classList.remove('opacity-40', 'pointer-events-none');
                 submitBtn.disabled = false;
                 submitBtn.className = "w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer border border-yellow-500/50";
+                
+                if(cancelBtn) {
+                    cancelBtn.disabled = false;
+                    cancelBtn.className = "w-full py-3 bg-red-950 hover:bg-red-900 text-red-400 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer border border-red-800/50";
+                }
+
                 statusBanner.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ${getT('t_inscriptions_open')} ${selectedEvent}${getT('t_complete_form')}`;
                 statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-green-950/80 text-green-400 border border-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
             } else {
                 subModule.classList.add('opacity-40', 'pointer-events-none');
                 submitBtn.disabled = true;
                 submitBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all";
+                
+                if(cancelBtn) {
+                    cancelBtn.disabled = true;
+                    cancelBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all";
+                }
+
                 statusBanner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> ${getT('t_event_closed')} ${selectedEvent} ${getT('t_is_closed')}`;
                 statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-red-950/80 text-red-400 border border-red-500/60";
                 if (!isAdmin) selectedEvent = null; 
@@ -939,6 +957,38 @@
             document.getElementById('member-search-input').value = '';
             selectedMember = '';
             renderPreLists();
+        }
+
+        async function cancelRegistration() {
+            if(!selectedEvent || !selectedMember) { 
+                alert(getT('alert_ev_mem')); 
+                return; 
+            }
+            
+            let foundAndRemoved = false;
+            // Buscar y eliminar solo en los equipos del evento seleccionado (ej. CS)
+            for (let t of ['Equipo A', 'Equipo B']) {
+                const kCheck = `${selectedEvent} - ${t}`;
+                if (registrations[kCheck]) {
+                    const initialLength = registrations[kCheck].length;
+                    registrations[kCheck] = registrations[kCheck].filter(
+                        item => item.name.toLowerCase() !== selectedMember.toLowerCase()
+                    );
+                    if (registrations[kCheck].length < initialLength) {
+                        foundAndRemoved = true;
+                    }
+                }
+            }
+            
+            if (foundAndRemoved) {
+                await saveDatabase();
+                alert("🗑️ ¡Tu inscripción en este evento fue anulada!");
+                document.getElementById('member-search-input').value = '';
+                selectedMember = '';
+                renderPreLists();
+            } else {
+                alert("No estás inscrito en este evento actualmente.");
+            }
         }
 
         function renderPreLists() {
@@ -1317,17 +1367,25 @@
             updateTurnHours();
             updateRegistrationState();
             
-            // Forzar carga inicial de placeholders
             document.querySelectorAll('[data-i-ph]').forEach(el => {
                 const key = el.getAttribute('data-i-ph');
                 if (translations[currentLang][key]) el.setAttribute('placeholder', translations[currentLang][key]);
             });
 
-            // IMPORTANTE: Registrar el Service Worker para que la app sea instalable
+            // Registro del Service Worker con actualización forzada
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker registrado correctamente.', reg))
-                .catch(err => console.log('Error al registrar el Service Worker:', err));
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js').then(reg => {
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    window.location.reload(); 
+                                }
+                            });
+                        });
+                    }).catch(err => console.log('Error al registrar Service Worker:', err));
+                });
             }
         };
     </script>
