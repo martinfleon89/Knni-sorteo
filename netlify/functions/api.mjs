@@ -4,7 +4,9 @@
 //
 // Variables de entorno (Netlify → Site configuration → Environment variables):
 //   ADMIN_PASSWORD      Contraseña de administrador
-//   TOKEN_SECRET        Texto largo y aleatorio para firmar las sesiones de admin
+//   TOKEN_SECRET        Texto largo y aleatorio para firmar las sesiones
+//   MEMBER_PASSWORD     (Opcional) Contraseña para que los miembros entren a la app.
+//                       Si no existe, la app queda abierta como antes.
 //
 // Solo para la migración (se pueden borrar después de la primera carga):
 //   JSONBIN_BIN_ID      ID del bin viejo de JSONBin
@@ -16,7 +18,8 @@ import { getStore } from '@netlify/blobs';
 
 export const config = { path: '/api' };
 
-const TOKEN_TTL_MS = 12 * 60 * 60 * 1000; // 12 horas
+// Duración de las sesiones: 'a' = admin, 'm' = miembro.
+const TOKEN_TTL_MS = { a: 12 * 60 * 60 * 1000, m: 30 * 24 * 60 * 60 * 1000 };
 const MAX_CLAIMS = 200;
 const EVENTS = ['CS', 'DS'];
 const TEAMS = ['Equipo A', 'Equipo B'];
@@ -159,27 +162,41 @@ function viewFor(state, admin) {
     return admin ? state : rest;
 }
 
-// ---------- Sesión de admin ----------
-function sign(value) {
-    return crypto.createHmac('sha256', env('TOKEN_SECRET', '')).update(value).digest('hex');
+// ---------- Sesiones (admin y miembros) ----------
+// Token = "rol.vencimiento.firma". La firma incluye la contraseña de ese rol:
+// si se cambia la contraseña en Netlify, todas las sesiones de ese rol dejan de valer.
+function passwordFor(role) {
+    return role === 'a' ? env('ADMIN_PASSWORD', '') : normalizeMemberPassword(env('MEMBER_PASSWORD', ''));
+}
+function sign(payload, role) {
+    return crypto.createHmac('sha256', env('TOKEN_SECRET', '')).update(`${payload}|${passwordFor(role)}`).digest('hex');
 }
 function safeEqual(a, b) {
     const ba = Buffer.from(String(a)), bb = Buffer.from(String(b));
     return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
 }
-function createToken() {
-    const exp = String(Date.now() + TOKEN_TTL_MS);
-    return `${exp}.${sign(exp)}`;
+function createToken(role) {
+    const payload = `${role}.${Date.now() + TOKEN_TTL_MS[role]}`;
+    return `${payload}.${sign(payload, role)}`;
 }
-function isValidToken(token) {
+function isValidToken(token, role) {
     if (!token || !env('TOKEN_SECRET')) return false;
-    const [exp, sig] = String(token).split('.');
-    if (!exp || !sig || !safeEqual(sig, sign(exp))) return false;
+    const parts = String(token).split('.');
+    if (parts.length !== 3 || parts[0] !== role) return false;
+    const [r, exp, sig] = parts;
+    if (!safeEqual(sig, sign(`${r}.${exp}`, r))) return false;
     return Number(exp) > Date.now();
 }
 function tokenFrom(req) {
     const h = req.headers.get('authorization') || '';
     return h.startsWith('Bearer ') ? h.slice(7) : '';
+}
+// Contraseña de miembros "fácil": no importan mayúsculas ni espacios al principio/final.
+function normalizeMemberPassword(s) {
+    return String(s ?? '').trim().toLowerCase();
+}
+function badPasswordDelay() {
+    return new Promise(r => setTimeout(r, 800)); // frena intentos por fuerza bruta
 }
 
 // ---------- Validación ----------
@@ -349,9 +366,12 @@ function json(body, status = 200) {
 export default async function handler(req, context) {
     deployContext = context?.deploy?.context || env('CONTEXT', 'production');
     try {
-        const admin = isValidToken(tokenFrom(req));
+        const admin = isValidToken(tokenFrom(req), 'a');
+        const memberGate = !!env('MEMBER_PASSWORD');
+        const member = !memberGate || admin || isValidToken(req.headers.get('x-member-token') || '', 'm');
 
         if (req.method === 'GET') {
+            if (!member) return json({ ok: false, error: 'member_required' }, 401);
             const { state } = await readState();
             return json({ ok: true, admin, state: viewFor(state, admin) });
         }
@@ -365,11 +385,23 @@ export default async function handler(req, context) {
             const expected = env('ADMIN_PASSWORD');
             if (!expected || !env('TOKEN_SECRET')) throw new ApiError('server_misconfigured', 500);
             if (typeof body.password !== 'string' || !safeEqual(body.password, expected)) {
-                await new Promise(r => setTimeout(r, 800)); // frena intentos por fuerza bruta
+                await badPasswordDelay();
                 return json({ ok: false, error: 'bad_password' }, 401);
             }
-            return json({ ok: true, token: createToken() });
+            return json({ ok: true, token: createToken('a') });
         }
+
+        if (action === 'memberLogin') {
+            if (!memberGate) return json({ ok: true, token: '' }); // la app está abierta
+            if (!env('TOKEN_SECRET')) throw new ApiError('server_misconfigured', 500);
+            if (typeof body.password !== 'string' || !safeEqual(normalizeMemberPassword(body.password), passwordFor('m'))) {
+                await badPasswordDelay();
+                return json({ ok: false, error: 'bad_password' }, 401);
+            }
+            return json({ ok: true, token: createToken('m') });
+        }
+
+        if (!member) return json({ ok: false, error: 'member_required' }, 401);
 
         const fn = publicActions[action] || adminActions[action];
         if (!fn) return json({ ok: false, error: 'unknown_action' }, 400);

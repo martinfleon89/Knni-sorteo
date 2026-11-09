@@ -18,12 +18,14 @@ En **Site configuration → Environment variables** del sitio, crea:
 | Variable | Valor |
 |---|---|
 | `ADMIN_PASSWORD` | Contraseña de administrador |
-| `TOKEN_SECRET` | Texto largo y aleatorio (40+ caracteres). Sirve para firmar las sesiones de admin |
+| `TOKEN_SECRET` | Texto largo y aleatorio (40+ caracteres). Sirve para firmar las sesiones |
+| `MEMBER_PASSWORD` | *(Opcional)* Contraseña de la alianza para entrar a la app. No distingue mayúsculas. Si no existe, la app queda abierta |
 
 Después de crear o cambiar variables, ve a **Deploys → Trigger deploy** para que se apliquen.
 
 - Para **cambiar la contraseña de admin**: cambia `ADMIN_PASSWORD` y vuelve a desplegar.
 - Para **cerrar todas las sesiones de admin**: cambia `TOKEN_SECRET` y vuelve a desplegar.
+- **Contraseña de miembros**: cada miembro la escribe una vez y el celular la recuerda 30 días. Si la cambias (y vuelves a desplegar), todos deben escribir la nueva.
 
 ### Migración desde JSONBin (solo una vez)
 
