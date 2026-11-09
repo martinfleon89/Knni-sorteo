@@ -150,7 +150,7 @@
                     </div>
 
                     <div class="bg-[#090d0a] p-3.5 rounded-xl border border-amber-600/40 flex justify-between items-center text-xs text-amber-400 font-cinzel font-bold">
-                        <span data-i="arrival-lbl"><i class="fa-solid fa-clock mr-1"></i> Hora de llegada a la estación:</span>
+                        <span><i class="fa-solid fa-clock mr-1"></i> <span data-i="arrival-lbl">Hora de llegada a la estación:</span></span>
                         <span id="station-arrival-time" class="font-mono text-white text-xs sm:text-sm">--:--</span>
                     </div>
                 </div>
@@ -286,7 +286,7 @@
                     </button>
                     <div id="claim-form-container" class="hidden mt-4 space-y-3 bg-red-950/20 p-4 rounded-xl border border-red-900/30">
                         <h4 class="font-cinzel text-xs text-red-400 font-bold mb-2"><i class="fa-solid fa-headset mr-1"></i> <span data-i="claim-title">Reportar Inconveniente</span></h4>
-                        <input type="text" id="claim-name" data-i-ph="ph-claim-name" placeholder="Tu Nombre en el juego..." class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
+                        <input type="text" id="claim-name" maxlength="40" data-i-ph="ph-claim-name" placeholder="Tu Nombre en el juego..." class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
                         
                         <select id="claim-event" class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none">
                             <option value="" disabled selected data-i="claim-ev-sel">Selecciona el evento con problemas...</option>
@@ -295,7 +295,7 @@
                             <option value="Both" data-i="claim-ev-both">Ambos / Otro problema</option>
                         </select>
                         
-                        <textarea id="claim-reason" rows="2" data-i-ph="ph-claim-reason" placeholder="Describe brevemente (ej: No me deja clickear, estoy anotado en el equipo equivocado...)" class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none resize-none"></textarea>
+                        <textarea id="claim-reason" rows="2" maxlength="500" data-i-ph="ph-claim-reason" placeholder="Describe brevemente (ej: No me deja clickear, estoy anotado en el equipo equivocado...)" class="w-full bg-[#070a08] border border-red-900/50 rounded-lg px-3 py-2 text-xs text-stone-200 outline-none resize-none"></textarea>
                         
                         <button onclick="submitClaim()" class="w-full py-2.5 bg-red-950 hover:bg-red-900 text-red-400 border border-red-700/50 font-cinzel text-xs font-bold rounded-lg transition-all" data-i="claim-btn">
                             ENVIAR REPORTE A LOS LÍDERES
@@ -364,7 +364,7 @@
                         <p class="text-xs text-stone-400"><span data-i="total-warriors">Total de guerreros:</span> <span id="stat-total-alliance" class="font-bold text-yellow-400">0</span></p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <input type="text" id="search-power" onkeyup="filterPowers()" data-i-ph="ph-search-ally" placeholder="Buscar aliado..." class="w-full sm:w-48 px-3 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-xs text-stone-200 outline-none">
+                        <input type="text" id="search-power" oninput="filterPowers()" data-i-ph="ph-search-ally" placeholder="Buscar aliado..." class="w-full sm:w-48 px-3 py-2 bg-[#090d0a] border border-green-900/50 rounded-lg text-xs text-stone-200 outline-none">
                         <button onclick="checkAdmin(() => openAddMemberModal())" class="touch-btn px-3 py-2 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-lg font-cinzel text-xs font-bold whitespace-nowrap">
                             <i class="fa-solid fa-user-plus mr-1"></i> <span data-i="btn-add-member">Agregar</span>
                         </button>
@@ -498,7 +498,7 @@
     <div id="add-member-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-5 rounded-xl w-full max-w-sm space-y-3 text-xs sm:text-sm border border-yellow-600/50">
             <h3 class="font-cinzel font-bold text-base text-yellow-500" data-i="modal-add-title">Agregar Nuevo Integrante</h3>
-            <input type="text" id="new-member-name" data-i-ph="ph-add-member" placeholder="Nombre del guerrero..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+            <input type="text" id="new-member-name" maxlength="40" data-i-ph="ph-add-member" placeholder="Nombre del guerrero..." class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="closeAddMemberModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
                 <button onclick="confirmAddMember()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-add-member">Agregar</button>
@@ -508,8 +508,15 @@
 
     <script>
         const BIN_URL = "https://api.jsonbin.io/v3/b/6aed9aa3ac6210605a71b12b";
-        const API_KEY = "$2a$10$29KScQrlJ1Wb/oQ.agjE4OMsWREodoHu.rhGyV9b.Yeus0PJaFZY6"; 
-        const ADMIN_PASSWORD = "knni485"; 
+        // ⚠️ Esta clave es visible para cualquiera que abra el código fuente de la página.
+        // Recomendado: en JSONBin crea una "Access Key" con permisos SOLO de leer/actualizar este bin,
+        // pégala abajo y cambia API_KEY_HEADER a "X-Access-Key". Así, si alguien la copia,
+        // no podrá tocar el resto de tu cuenta.
+        const API_KEY_HEADER = "X-Master-Key";
+        const API_KEY = "$2a$10$29KScQrlJ1Wb/oQ.agjE4OMsWREodoHu.rhGyV9b.Yeus0PJaFZY6";
+        // SHA-256 de la contraseña de admin (ya no se guarda en texto plano).
+        // Para cambiarla: en la consola del navegador ejecuta  await sha256Hex("nuevaClave")  y pega el resultado aquí.
+        const ADMIN_PASSWORD_HASH = "0e5ae3c3bb2b61b02affa2b31b3417b2ac02ba631bec3071fd4e7a972173bd87";
 
         let allianceNames = [
             "Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AspeřMaster23", "AxiE",
@@ -593,7 +600,13 @@
                 "alert_exists": "El integrante ya existe.", "alert_added": "✅ ¡Integrante agregado!", "alert_delete": "¿Estás seguro de eliminar a",
                 "alert_names": "Ingresa nombres.", "alert_sealed": "✅ ¡Participantes sellados!", "alert_admin_closed": "🔒 Sesión de Administrador cerrada.",
                 "alert_admin_open": "🔓 ¡Acceso total de Administrador concedido!", "alert_pwd_err": "Contraseña incorrecta.",
-                "alert_train_ok": "✅ ¡Tren actualizado!", "alert_dc_ok": "✅ ¡Discord actualizado!", "alert_mvp_ok": "✅ ¡Salón actualizado!"
+                "alert_train_ok": "✅ ¡Tren actualizado!", "alert_dc_ok": "✅ ¡Discord actualizado!", "alert_mvp_ok": "✅ ¡Salón actualizado!",
+                "alert_cancel_ok": "🗑️ ¡Tu inscripción en este evento fue anulada!", "alert_not_registered": "No estás inscrito en este evento actualmente.",
+                "alert_save_err": "❌ No se pudo guardar en la nube. Revisa tu conexión e inténtalo de nuevo.",
+                "alert_load_err": "⚠️ No se pudieron cargar los datos de la nube. Revisa tu conexión.",
+                "alert_hist_ok": "✅ ¡Guardado en Crónicas!", "alert_bad_url": "⚠️ El enlace debe empezar con https://",
+                "alert_copy_manual": "Copia la lista manualmente:", "t_train_scheduled": "🚂 Tren Programado", "t_no_train": "Sin Tren Activo",
+                "t_titulares": "Titulares", "t_suplentes": "Suplentes"
             },
             EN: {
                 "menu": "Menu", "menu-home": "Home", "menu-insc": "DS & CS Registration", "menu-sorteo": "Divine Draw", "menu-powers": "Battalion & Powers",
@@ -639,32 +652,76 @@
                 "alert_exists": "Member already exists.", "alert_added": "✅ Member added!", "alert_delete": "Are you sure you want to delete",
                 "alert_names": "Enter names.", "alert_sealed": "✅ Participants sealed!", "alert_admin_closed": "🔒 Administrator session closed.",
                 "alert_admin_open": "🔓 Full Administrator access granted!", "alert_pwd_err": "Incorrect password.",
-                "alert_train_ok": "✅ Train updated!", "alert_dc_ok": "✅ Discord updated!", "alert_mvp_ok": "✅ Hall updated!"
+                "alert_train_ok": "✅ Train updated!", "alert_dc_ok": "✅ Discord updated!", "alert_mvp_ok": "✅ Hall updated!",
+                "alert_cancel_ok": "🗑️ Your registration for this event was cancelled!", "alert_not_registered": "You are not currently registered for this event.",
+                "alert_save_err": "❌ Could not save to the cloud. Check your connection and try again.",
+                "alert_load_err": "⚠️ Could not load data from the cloud. Check your connection.",
+                "alert_hist_ok": "✅ Saved to Chronicles!", "alert_bad_url": "⚠️ The link must start with https://",
+                "alert_copy_manual": "Copy the list manually:", "t_train_scheduled": "🚂 Scheduled Train", "t_no_train": "No Active Train",
+                "t_titulares": "Starters", "t_suplentes": "Substitutes"
             }
         };
 
+        // ================= UTILIDADES =================
         function getT(key) { return translations[currentLang][key] || key; }
 
-        function toggleLang() {
-            currentLang = currentLang === 'ES' ? 'EN' : 'ES';
+        // Escapa texto antes de meterlo en innerHTML (evita que un nombre o reclamo ejecute código).
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        }
+        function normalizeText(s) { return String(s ?? '').normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
+        function isAdmin() { return sessionStorage.getItem('knni_admin') === 'true'; }
+        function isTitular(role) { return role === 'Titular' || role === 'Starter'; }
+        function safeUrl(url) {
+            try {
+                const u = new URL(url);
+                return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : '#';
+            } catch { return '#'; }
+        }
+        function randomIndex(n) {
+            if (window.crypto && crypto.getRandomValues) {
+                const buf = new Uint32Array(1);
+                const limit = Math.floor(0x100000000 / n) * n; // evita sesgo
+                do { crypto.getRandomValues(buf); } while (buf[0] >= limit);
+                return buf[0] % n;
+            }
+            return Math.floor(Math.random() * n);
+        }
+        async function sha256Hex(text) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+            return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        function searchValue() { const el = document.getElementById('search-power'); return el ? el.value : ''; }
+
+        // ================= IDIOMA =================
+        function applyTranslations() {
             document.getElementById('lang-lbl').textContent = currentLang;
-            
             document.querySelectorAll('[data-i]').forEach(el => {
                 const key = el.getAttribute('data-i');
                 if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
             });
-
             document.querySelectorAll('[data-i-ph]').forEach(el => {
                 const key = el.getAttribute('data-i-ph');
                 if (translations[currentLang][key]) el.setAttribute('placeholder', translations[currentLang][key]);
             });
+        }
 
+        function toggleLang() {
+            currentLang = currentLang === 'ES' ? 'EN' : 'ES';
+            applyTranslations();
+            renderAll();
+        }
+
+        function renderAll() {
+            initDashboard();
+            renderMvpUI();
             updateTurnHours();
             updateRegistrationState();
             renderPreLists();
             renderHistory();
-            renderPowersTable(document.getElementById('search-power').value);
+            renderPowersTable(searchValue());
             renderInbox();
+            updateAdminUI();
         }
 
         function toggleDropdownMenu() { document.getElementById('dropdown-menu').classList.toggle('hidden'); }
@@ -679,7 +736,7 @@
 
         function createAshParticles() {
             const container = document.getElementById('ash-container');
-            if(!container) return;
+            if (!container) return;
             for (let i = 0; i < 15; i++) {
                 const p = document.createElement('div');
                 p.className = 'ash-particle';
@@ -691,13 +748,87 @@
             }
         }
 
+        // ================= BASE DE DATOS (JSONBin) =================
+        function applyRecord(record) {
+            if (!record) return;
+            historyData = Array.isArray(record.historyData) ? record.historyData : [];
+            trainConfig = record.trainConfig || trainConfig;
+            mvpConfig = record.mvpConfig || mvpConfig;
+            if (Array.isArray(record.allianceNames) && record.allianceNames.length > 0) allianceNames = record.allianceNames;
+            powersData = record.powersData || {};
+            registrations = record.registrations || {};
+            suspendedEvents = record.suspendedEvents || { CS: false, DS: false };
+            claimsData = Array.isArray(record.claimsData) ? record.claimsData : [];
+        }
+
+        async function loadDatabase() {
+            try {
+                const response = await fetch(BIN_URL, { headers: { [API_KEY_HEADER]: API_KEY }, cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                applyRecord(json.record);
+                return true;
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+                return false;
+            }
+        }
+
+        async function saveDatabase() {
+            try {
+                const response = await fetch(BIN_URL, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json", [API_KEY_HEADER]: API_KEY },
+                    body: JSON.stringify({ historyData, trainConfig, mvpConfig, allianceNames, powersData, registrations, suspendedEvents, claimsData })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return true;
+            } catch (error) {
+                console.error('Error al guardar:', error);
+                return false;
+            }
+        }
+
+        // Todas las operaciones con la nube pasan por esta cola, una detrás de otra,
+        // para que dos guardados seguidos no se pisen entre sí.
+        let dbQueue = Promise.resolve();
+        function enqueue(task) {
+            const run = dbQueue.then(task);
+            dbQueue = run.catch(() => {});
+            return run;
+        }
+
+        // Descarga la versión MÁS RECIENTE de la nube, aplica el cambio encima y la guarda.
+        // Así no se borran inscripciones que otros hicieron mientras tenías la página abierta.
+        // El mutator puede devolver false para cancelar (ej: inscripción duplicada).
+        // Devuelve: 'saved' | 'aborted' | 'error'
+        function commitChange(mutator) {
+            return enqueue(async () => {
+                try {
+                    if (!(await loadDatabase())) { alert(getT('alert_load_err')); return 'error'; }
+                    if (mutator() === false) return 'aborted';
+                    if (await saveDatabase()) return 'saved';
+                    alert(getT('alert_save_err'));
+                    await loadDatabase(); // volver a lo que realmente hay en la nube
+                    return 'error';
+                } finally {
+                    renderAll();
+                }
+            });
+        }
+
+        function refreshFromCloud() {
+            return enqueue(async () => { if (await loadDatabase()) renderAll(); });
+        }
+
+        // ================= HORARIOS / EVENTOS =================
         function getEventTimeline(ev, timeInHours) {
-            let isOpen = false; let nextTransition = 0; 
+            let isOpen = false; let nextTransition = 0;
             if (ev === 'CS') {
-                if (timeInHours >= 120 || timeInHours < 35) { isOpen = true; nextTransition = (timeInHours >= 120) ? (168 + 35) : 35; } 
+                if (timeInHours >= 120 || timeInHours < 35) { isOpen = true; nextTransition = (timeInHours >= 120) ? (168 + 35) : 35; }
                 else { isOpen = false; nextTransition = 120; }
             } else if (ev === 'DS') {
-                if (timeInHours >= 144 || timeInHours < 83) { isOpen = true; nextTransition = (timeInHours >= 144) ? (168 + 83) : 83; } 
+                if (timeInHours >= 144 || timeInHours < 83) { isOpen = true; nextTransition = (timeInHours >= 144) ? (168 + 83) : 83; }
                 else { isOpen = false; nextTransition = 144; }
             }
             return { isOpen, nextTransition };
@@ -710,39 +841,40 @@
             return `${h}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
         }
 
-        function updateRegistrationState() {
+        function getServerDate() {
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const serverDate = new Date(utcTime - (2 * 3600000)); 
-            const timeInHours = serverDate.getDay() * 24 + serverDate.getHours() + serverDate.getMinutes()/60 + serverDate.getSeconds()/3600;
-            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
+            return new Date(utcTime - (2 * 3600000));
+        }
+
+        function updateRegistrationState() {
+            const serverDate = getServerDate();
+            const timeInHours = serverDate.getDay() * 24 + serverDate.getHours() + serverDate.getMinutes() / 60 + serverDate.getSeconds() / 3600;
+            const admin = isAdmin();
 
             ['CS', 'DS'].forEach(ev => {
                 const info = getEventTimeline(ev, timeInHours);
                 const isSuspended = suspendedEvents[ev];
                 const literallyOpen = info.isOpen && !isSuspended;
-                
+
                 const btn = document.getElementById(`btn-ev-${ev.toLowerCase()}`);
                 const timerLbl = document.getElementById(`timer-${ev.toLowerCase()}`);
                 const titleLbl = document.getElementById(`title-ev-${ev.toLowerCase()}`);
 
-                if(!btn) return;
-                let timeStr = formatTimeDiff(info.nextTransition - timeInHours);
+                if (!btn) return;
+                const timeStr = formatTimeDiff(info.nextTransition - timeInHours);
 
                 if (isSuspended) {
                     timerLbl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-1"></i> ${getT('t_suspended')}`;
                     timerLbl.className = "text-[10px] font-mono bg-red-950/80 px-2 py-1 rounded text-red-400 w-max border border-red-800";
-                    if(!isAdmin) btn.disabled = true;
                 } else if (literallyOpen) {
                     timerLbl.innerHTML = `<i class="fa-solid fa-hourglass-half text-green-400 mr-1"></i> ${getT('t_closes_in')} ${timeStr}`;
                     timerLbl.className = "text-[10px] font-mono bg-green-950/60 px-2 py-1 rounded text-green-400 w-max border border-green-800";
-                    btn.disabled = false;
                 } else {
                     timerLbl.innerHTML = `<i class="fa-solid fa-lock text-red-400 mr-1"></i> ${getT('t_opens_in')} ${timeStr}`;
                     timerLbl.className = "text-[10px] font-mono bg-red-950/60 px-2 py-1 rounded text-red-300 w-max border border-red-800/50";
-                    if(!isAdmin) btn.disabled = true;
                 }
-                if(isAdmin) btn.disabled = false; 
+                btn.disabled = !(literallyOpen || admin);
 
                 if (selectedEvent === ev) {
                     btn.classList.add('border-yellow-500', 'bg-yellow-950/40');
@@ -754,7 +886,7 @@
                     btn.classList.add('border-stone-800');
                     titleLbl.classList.remove('text-yellow-400');
                     titleLbl.classList.add('text-stone-200');
-                    if (!literallyOpen && !isAdmin) btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    if (!literallyOpen && !admin) btn.classList.add('opacity-50', 'cursor-not-allowed');
                     else btn.classList.remove('opacity-50', 'cursor-not-allowed');
                 }
             });
@@ -773,64 +905,51 @@
             }
 
             const currInfo = getEventTimeline(selectedEvent, timeInHours);
-            const currOpen = (currInfo.isOpen && !suspendedEvents[selectedEvent]) || isAdmin;
+            const currOpen = (currInfo.isOpen && !suspendedEvents[selectedEvent]) || admin;
 
             if (currOpen) {
                 subModule.classList.remove('opacity-40', 'pointer-events-none');
                 submitBtn.disabled = false;
                 submitBtn.className = "w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer border border-yellow-500/50";
-                
-                if(cancelBtn) {
-                    cancelBtn.disabled = false;
-                    cancelBtn.className = "w-full py-3 bg-red-950 hover:bg-red-900 text-red-400 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer border border-red-800/50";
-                }
-
+                cancelBtn.disabled = false;
+                cancelBtn.className = "w-full py-3 bg-red-950 hover:bg-red-900 text-red-400 font-cinzel text-xs font-bold rounded-xl shadow transition-all cursor-pointer border border-red-800/50";
                 statusBanner.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-green-400"></i> ${getT('t_inscriptions_open')} ${selectedEvent}${getT('t_complete_form')}`;
                 statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-green-950/80 text-green-400 border border-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
             } else {
                 subModule.classList.add('opacity-40', 'pointer-events-none');
                 submitBtn.disabled = true;
                 submitBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all";
-                
-                if(cancelBtn) {
-                    cancelBtn.disabled = true;
-                    cancelBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all";
-                }
-
+                cancelBtn.disabled = true;
+                cancelBtn.className = "w-full py-3 bg-stone-800 text-stone-500 font-cinzel text-xs font-bold rounded-xl cursor-not-allowed opacity-50 transition-all";
                 statusBanner.innerHTML = `<i class="fa-solid fa-lock mr-2 text-red-400"></i> ${getT('t_event_closed')} ${selectedEvent} ${getT('t_is_closed')}`;
                 statusBanner.className = "p-3.5 rounded-xl text-center font-cinzel text-xs font-bold bg-red-950/80 text-red-400 border border-red-500/60";
-                if (!isAdmin) selectedEvent = null; 
+                if (!admin) selectedEvent = null;
             }
         }
 
         function updateClocks() {
             const now = new Date();
-            document.getElementById('local-time').textContent = "L: " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const serverDate = new Date(utcTime - (2 * 3600000));
-            document.getElementById('server-time').textContent = "S: " + serverDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            if(trainConfig.arrival) document.getElementById('station-arrival-time').textContent = trainConfig.arrival;
+            document.getElementById('local-time').textContent = "L: " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('server-time').textContent = "S: " + getServerDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('station-arrival-time').textContent = trainConfig.arrival || '--:--';
             updateRegistrationState();
         }
 
         function selectEvent(ev) { selectedEvent = ev; updateTurnHours(); updateRegistrationState(); }
 
         async function toggleSuspendEvent(ev) {
-            suspendedEvents[ev] = !suspendedEvents[ev];
-            await saveDatabase();
-            updateAdminUI();
-            updateRegistrationState();
+            if (!isAdmin()) return;
+            await commitChange(() => { suspendedEvents[ev] = !suspendedEvents[ev]; });
         }
 
         function updateTurnHours() {
-            if(!selectedEvent) return;
+            if (!selectedEvent) return;
             const formatLocal = (serverHour, serverMinute) => {
-                let d = new Date();
-                d.setUTCHours(serverHour + 2); 
-                d.setUTCMinutes(serverMinute);
+                const d = new Date();
+                d.setUTCHours(serverHour + 2, serverMinute, 0, 0);
                 return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             };
-            if(selectedEvent === 'CS') {
+            if (selectedEvent === 'CS') {
                 document.getElementById('t1-hours').textContent = `${getT('t_thursday')} | ${getT('t_server')}: 12:00 | ${getT('t_local')}: ${formatLocal(12, 0)}`;
                 document.getElementById('t2-hours').textContent = `${getT('t_thursday')} | ${getT('t_server')}: 23:00 | ${getT('t_local')}: ${formatLocal(23, 0)}`;
             } else {
@@ -844,55 +963,18 @@
                 document.getElementById('tab-' + id).classList.add('hidden');
             });
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-            if(tabId === 'powers') renderPowersTable(document.getElementById('search-power').value);
-            if(tabId === 'inscripciones') updateRegistrationState();
+            if (tabId === 'powers') renderPowersTable(searchValue());
+            if (tabId === 'inscripciones') updateRegistrationState();
         }
 
-        async function loadDatabase() {
-            try {
-                const response = await fetch(BIN_URL, { headers: { "X-Master-Key": API_KEY } });
-                if (!response.ok) throw new Error("Error de conexión");
-                const json = await response.json();
-                if (json.record) {
-                    historyData = json.record.historyData || [];
-                    trainConfig = json.record.trainConfig || trainConfig;
-                    mvpConfig = json.record.mvpConfig || mvpConfig;
-                    if (json.record.allianceNames && json.record.allianceNames.length > 0) allianceNames = json.record.allianceNames;
-                    powersData = json.record.powersData || {};
-                    registrations = json.record.registrations || {};
-                    suspendedEvents = json.record.suspendedEvents || { CS: false, DS: false };
-                    claimsData = json.record.claimsData || [];
-                }
-                initDashboard();
-                renderMvpUI();
-                renderHistory();
-                renderPowersTable();
-                renderPreLists();
-                updateRegistrationState();
-                updateAdminUI(); 
-            } catch (error) { console.error(error); }
-        }
-
-        async function saveDatabase() {
-            try {
-                const response = await fetch(BIN_URL, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
-                    body: JSON.stringify({ historyData, trainConfig, mvpConfig, allianceNames, powersData, registrations, suspendedEvents, claimsData })
-                });
-                if (!response.ok) throw new Error("Error al guardar");
-            } catch (error) { console.error(error); }
-        }
-
+        // ================= HOME =================
         function initDashboard() {
             document.getElementById('display-train-driver').textContent = trainConfig.driver || '---';
             document.getElementById('display-train-vip').textContent = trainConfig.vip || '---';
-            document.getElementById('discord-link-btn').href = trainConfig.discord || '#';
-            if(trainConfig.driver !== '---') {
-                const badge = document.getElementById('train-status-badge');
-                if (currentLang === 'EN') badge.textContent = "🚂 Scheduled Train";
-                else badge.textContent = "🚂 Tren Programado";
-            }
+            document.getElementById('discord-link-btn').href = safeUrl(trainConfig.discord);
+            document.getElementById('station-arrival-time').textContent = trainConfig.arrival || '--:--';
+            const hasTrain = trainConfig.driver && trainConfig.driver !== '---';
+            document.getElementById('train-status-badge').textContent = getT(hasTrain ? 't_train_scheduled' : 't_no_train');
         }
 
         function renderMvpUI() {
@@ -904,34 +986,34 @@
             document.getElementById('display-mvp-cs-2').textContent = mvpConfig.cs2 || '---';
         }
 
+        // ================= INSCRIPCIONES =================
         function selectRole(role) {
             selectedRole = role;
-            document.getElementById('btn-role-titular').className = `touch-btn p-3 bg-[#090d0a] border ${role==='Titular'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
-            document.getElementById('btn-role-suplente').className = `touch-btn p-3 bg-[#090d0a] border ${role==='Suplente'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
+            document.getElementById('btn-role-titular').className = `touch-btn p-3 bg-[#090d0a] border ${role === 'Titular' ? 'border-yellow-500 bg-yellow-950/40' : 'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
+            document.getElementById('btn-role-suplente').className = `touch-btn p-3 bg-[#090d0a] border ${role === 'Suplente' ? 'border-yellow-500 bg-yellow-950/40' : 'border-green-800'} rounded-xl font-cinzel text-xs font-bold text-stone-300`;
         }
         function selectTurn(turn) {
             selectedTurn = turn;
-            document.getElementById('btn-turno-1').className = `touch-btn p-3 bg-[#090d0a] border ${turn==='Equipo A'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl text-xs text-stone-300`;
-            document.getElementById('btn-turno-2').className = `touch-btn p-3 bg-[#090d0a] border ${turn==='Equipo B'?'border-yellow-500 bg-yellow-950/40':'border-green-800'} rounded-xl text-xs text-stone-300`;
+            document.getElementById('btn-turno-1').className = `touch-btn p-3 bg-[#090d0a] border ${turn === 'Equipo A' ? 'border-yellow-500 bg-yellow-950/40' : 'border-green-800'} rounded-xl text-xs text-stone-300`;
+            document.getElementById('btn-turno-2').className = `touch-btn p-3 bg-[#090d0a] border ${turn === 'Equipo B' ? 'border-yellow-500 bg-yellow-950/40' : 'border-green-800'} rounded-xl text-xs text-stone-300`;
         }
 
         function filterMemberSearch() {
-            const rawQ = document.getElementById('member-search-input').value.trim();
-            const q = rawQ.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-            
+            selectedMember = ''; // si vuelve a escribir, hay que elegir de nuevo de la lista
+            const q = normalizeText(document.getElementById('member-search-input').value.trim());
             const resBox = document.getElementById('member-search-results');
-            resBox.innerHTML = '';
-            if(q.length < 3) { resBox.classList.add('hidden'); return; }
-            
-            const matches = allianceNames.filter(n => {
-                const normalizedName = n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                return normalizedName.includes(q);
-            });
-            
-            if(matches.length > 0) {
+            if (q.length < 3) { resBox.innerHTML = ''; resBox.classList.add('hidden'); return; }
+
+            const matches = allianceNames.filter(n => normalizeText(n).includes(q));
+            if (matches.length > 0) {
+                resBox.innerHTML = matches.map(m =>
+                    `<div data-name="${escapeHtml(m)}" onclick="selectMember(this.dataset.name)" class="p-2 hover:bg-green-900/40 cursor-pointer rounded text-xs text-stone-200">${escapeHtml(m)}</div>`
+                ).join('');
                 resBox.classList.remove('hidden');
-                matches.forEach(m => { resBox.innerHTML += `<div onclick="selectMember('${m}')" class="p-2 hover:bg-green-900/40 cursor-pointer rounded text-xs text-stone-200">${m}</div>`; });
-            } else resBox.classList.add('hidden');
+            } else {
+                resBox.innerHTML = '';
+                resBox.classList.add('hidden');
+            }
         }
 
         function selectMember(name) {
@@ -940,165 +1022,134 @@
             document.getElementById('member-search-results').classList.add('hidden');
         }
 
-        async function submitRegistration() {
-            if(!selectedEvent || !selectedMember) { alert(getT('alert_ev_mem')); return; }
-            for (let t of ['Equipo A', 'Equipo B']) {
-                const kCheck = `${selectedEvent} - ${t}`;
-                if (registrations[kCheck] && registrations[kCheck].some(item => item.name.toLowerCase() === selectedMember.toLowerCase())) {
-                    alert(`${getT('alert_reg_dup')} ${t}${getT('alert_reg_dup2')}`);
-                    return;
-                }
+        function findRegistrationTeam(ev, name) {
+            const target = name.toLowerCase();
+            for (const t of ['Equipo A', 'Equipo B']) {
+                const list = registrations[`${ev} - ${t}`] || [];
+                if (list.some(item => String(item.name).toLowerCase() === target)) return t;
             }
-            const key = `${selectedEvent} - ${selectedTurn}`;
-            if(!registrations[key]) registrations[key] = [];
-            registrations[key].push({ name: selectedMember, role: getT(selectedRole === 'Titular' ? 'role-titular' : 'role-suplente') });
-            await saveDatabase();
-            alert(getT('alert_reg_ok'));
+            return null;
+        }
+
+        function clearMemberSelection() {
             document.getElementById('member-search-input').value = '';
             selectedMember = '';
-            renderPreLists();
+        }
+
+        async function submitRegistration() {
+            if (!selectedEvent || !selectedMember) { alert(getT('alert_ev_mem')); return; }
+            const ev = selectedEvent, member = selectedMember, turn = selectedTurn, role = selectedRole;
+            let dupTeam = null;
+            const status = await commitChange(() => {
+                dupTeam = findRegistrationTeam(ev, member);
+                if (dupTeam) return false;
+                const key = `${ev} - ${turn}`;
+                if (!registrations[key]) registrations[key] = [];
+                // Se guarda el rol en un valor fijo ('Titular'/'Suplente'), sin importar el idioma.
+                registrations[key].push({ name: member, role });
+            });
+            if (status === 'aborted') { alert(`${getT('alert_reg_dup')} ${dupTeam}${getT('alert_reg_dup2')}`); return; }
+            if (status === 'saved') { alert(getT('alert_reg_ok')); clearMemberSelection(); }
         }
 
         async function cancelRegistration() {
-            if(!selectedEvent || !selectedMember) { 
-                alert(getT('alert_ev_mem')); 
-                return; 
-            }
-            
-            let foundAndRemoved = false;
-            // Buscar y eliminar solo en los equipos del evento seleccionado (ej. CS)
-            for (let t of ['Equipo A', 'Equipo B']) {
-                const kCheck = `${selectedEvent} - ${t}`;
-                if (registrations[kCheck]) {
-                    const initialLength = registrations[kCheck].length;
-                    registrations[kCheck] = registrations[kCheck].filter(
-                        item => item.name.toLowerCase() !== selectedMember.toLowerCase()
-                    );
-                    if (registrations[kCheck].length < initialLength) {
-                        foundAndRemoved = true;
-                    }
+            if (!selectedEvent || !selectedMember) { alert(getT('alert_ev_mem')); return; }
+            const ev = selectedEvent, target = selectedMember.toLowerCase();
+            const status = await commitChange(() => {
+                let removed = false;
+                for (const t of ['Equipo A', 'Equipo B']) {
+                    const k = `${ev} - ${t}`;
+                    if (!registrations[k]) continue;
+                    const before = registrations[k].length;
+                    registrations[k] = registrations[k].filter(item => String(item.name).toLowerCase() !== target);
+                    if (registrations[k].length < before) removed = true;
                 }
-            }
-            
-            if (foundAndRemoved) {
-                await saveDatabase();
-                alert("🗑️ ¡Tu inscripción en este evento fue anulada!");
-                document.getElementById('member-search-input').value = '';
-                selectedMember = '';
-                renderPreLists();
-            } else {
-                alert("No estás inscrito en este evento actualmente.");
-            }
+                if (!removed) return false;
+            });
+            if (status === 'saved') { alert(getT('alert_cancel_ok')); clearMemberSelection(); }
+            else if (status === 'aborted') alert(getT('alert_not_registered'));
         }
 
         function renderPreLists() {
             const container = document.getElementById('prelist-container');
-            if(!container) return;
-            container.innerHTML = '';
-            
-            const txtTitulares = getT('role-titular') + "s"; 
-            const txtSuplentes = getT('role-suplente') + "s"; 
+            if (!container) return;
+            const admin = isAdmin();
 
-            ['CS - Equipo A', 'CS - Equipo B', 'DS - Equipo A', 'DS - Equipo B'].forEach(k => {
+            const renderGroup = (k, title, groupList, colorClass) => {
+                if (groupList.length === 0) return '';
+                const items = groupList.map(item => {
+                    const removeBtn = admin
+                        ? `<span data-key="${escapeHtml(k)}" data-name="${escapeHtml(item.name)}" onclick="removeReg(this.dataset.key, this.dataset.name)" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1 text-[14px] leading-none">×</span>`
+                        : '';
+                    return `<li class="flex justify-between items-center pl-1 border-l-2 border-green-900/30"><span>${escapeHtml(item.name)}</span>${removeBtn}</li>`;
+                }).join('');
+                return `<div class="mb-2">
+                    <strong class="${colorClass} font-cinzel text-[10px] uppercase border-b border-green-900/50 pb-0.5 mb-1 block">${title} (${groupList.length})</strong>
+                    <ul class="space-y-1">${items}</ul></div>`;
+            };
+
+            container.innerHTML = ['CS - Equipo A', 'CS - Equipo B', 'DS - Equipo A', 'DS - Equipo B'].map(k => {
                 const list = registrations[k] || [];
-                
-                const titulares = [];
-                const suplentes = [];
-                list.forEach((item, idx) => {
-                    if (item.role === 'Titular' || item.role === 'Starter') {
-                        titulares.push({ ...item, originalIdx: idx });
-                    } else {
-                        suplentes.push({ ...item, originalIdx: idx });
-                    }
-                });
-
-                let html = `<div class="bg-[#090d0a] border border-green-900/50 p-3 rounded-xl space-y-2 flex flex-col">
+                const titulares = list.filter(i => isTitular(i.role));
+                const suplentes = list.filter(i => !isTitular(i.role));
+                const body = list.length === 0
+                    ? `<div class="text-stone-500 italic">${getT('t_no_inscribed')}</div>`
+                    : renderGroup(k, getT('t_titulares'), titulares, "text-yellow-400") + renderGroup(k, getT('t_suplentes'), suplentes, "text-green-400");
+                return `<div class="bg-[#090d0a] border border-green-900/50 p-3 rounded-xl space-y-2 flex flex-col">
                     <div class="flex justify-between items-center mb-1">
-                        <strong class="font-cinzel text-yellow-500 text-xs">${k}</strong> 
+                        <strong class="font-cinzel text-yellow-500 text-xs">${k}</strong>
                         <button onclick="copyPrelist('${k}')" class="text-[10px] text-stone-400 hover:text-white"><i class="fa-solid fa-copy"></i> ${getT('t_btn_copy')}</button>
                     </div>
-                    <div class="text-xs space-y-2 text-stone-300 max-h-40 overflow-y-auto pr-1">`;
-                
-                if(list.length === 0) {
-                    html += `<div class="text-stone-500 italic">${getT('t_no_inscribed')}</div>`;
-                } else {
-                    const renderGroup = (title, groupList, colorClass) => {
-                        if (groupList.length === 0) return '';
-                        let groupHtml = `<div class="mb-2">
-                            <strong class="${colorClass} font-cinzel text-[10px] uppercase border-b border-green-900/50 pb-0.5 mb-1 block">${title} (${groupList.length})</strong>
-                            <ul class="space-y-1">`;
-                        groupList.forEach(item => {
-                            groupHtml += `<li class="flex justify-between items-center pl-1 border-l-2 border-green-900/30"><span>${item.name}</span>`;
-                            if(sessionStorage.getItem('knni_admin')==='true') {
-                                groupHtml += `<span onclick="removeReg('${k}', ${item.originalIdx})" class="text-red-400 cursor-pointer hover:text-red-300 font-bold px-1 text-[14px] leading-none">×</span>`;
-                            }
-                            groupHtml += `</li>`;
-                        });
-                        groupHtml += `</ul></div>`;
-                        return groupHtml;
-                    };
-
-                    html += renderGroup(txtTitulares, titulares, "text-yellow-400");
-                    html += renderGroup(txtSuplentes, suplentes, "text-green-400");
-                }
-                
-                html += `</div></div>`;
-                container.innerHTML += html;
-            });
+                    <div class="text-xs space-y-2 text-stone-300 max-h-40 overflow-y-auto pr-1">${body}</div>
+                </div>`;
+            }).join('');
         }
 
         function copyPrelist(k) {
             const list = registrations[k] || [];
-            const titulares = list.filter(i => i.role === 'Titular' || i.role === 'Starter');
-            const suplentes = list.filter(i => i.role !== 'Titular' && i.role !== 'Starter');
-            
+            const titulares = list.filter(i => isTitular(i.role));
+            const suplentes = list.filter(i => !isTitular(i.role));
+
             let text = `--- PRE-LISTA ${k} ---\n`;
-            
-            if (titulares.length > 0) {
-                text += `\n[ TITULARES ]\n` + titulares.map(i => `- ${i.name}`).join('\n') + `\n`;
+            if (titulares.length > 0) text += `\n[ ${getT('t_titulares').toUpperCase()} ]\n` + titulares.map(i => `- ${i.name}`).join('\n') + `\n`;
+            if (suplentes.length > 0) text += `\n[ ${getT('t_suplentes').toUpperCase()} ]\n` + suplentes.map(i => `- ${i.name}`).join('\n') + `\n`;
+            if (list.length === 0) text += getT('t_no_inscribed') + "\n";
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(() => alert(getT('alert_copied')))
+                    .catch(() => prompt(getT('alert_copy_manual'), text));
+            } else {
+                prompt(getT('alert_copy_manual'), text);
             }
-            if (suplentes.length > 0) {
-                text += `\n[ SUPLENTES ]\n` + suplentes.map(i => `- ${i.name}`).join('\n') + `\n`;
-            }
-            if (list.length === 0) {
-                text += "Sin inscritos.\n";
-            }
-            
-            navigator.clipboard.writeText(text);
-            alert(getT('alert_copied'));
         }
 
-        async function removeReg(k, idx) {
-            registrations[k].splice(idx, 1);
-            await saveDatabase();
-            renderPreLists();
+        async function removeReg(k, name) {
+            if (!isAdmin()) return;
+            await commitChange(() => {
+                if (!registrations[k]) return false;
+                const idx = registrations[k].findIndex(i => i.name === name);
+                if (idx === -1) return false;
+                registrations[k].splice(idx, 1);
+            });
         }
 
+        // ================= RECLAMOS =================
         function toggleClaimForm() {
             document.getElementById('claim-form-container').classList.toggle('hidden');
         }
 
         async function submitClaim() {
-            const name = document.getElementById('claim-name').value.trim();
+            const name = document.getElementById('claim-name').value.trim().slice(0, 40);
             const event = document.getElementById('claim-event').value;
-            const reason = document.getElementById('claim-reason').value.trim();
+            const reason = document.getElementById('claim-reason').value.trim().slice(0, 500);
 
-            if(!name || !event || !reason) {
-                alert(getT('alert_fill_all'));
-                return;
-            }
+            if (!name || !event || !reason) { alert(getT('alert_fill_all')); return; }
 
-            const newClaim = {
-                id: Date.now(),
-                name: name,
-                event: event,
-                reason: reason,
-                date: new Date().toLocaleString()
-            };
+            const newClaim = { id: Date.now(), name, event, reason, date: new Date().toLocaleString() };
+            const status = await commitChange(() => { claimsData.push(newClaim); });
+            if (status !== 'saved') return;
 
-            claimsData.push(newClaim);
-            await saveDatabase();
-            
             document.getElementById('claim-name').value = '';
             document.getElementById('claim-event').value = '';
             document.getElementById('claim-reason').value = '';
@@ -1115,235 +1166,306 @@
 
         function renderInbox() {
             const container = document.getElementById('inbox-content');
-            if(!container) return;
-            
-            if(claimsData.length === 0) {
+            if (!container) return;
+
+            if (claimsData.length === 0) {
                 container.innerHTML = `<div class="text-center text-stone-500 py-10 italic">${getT('t_empty_inbox')}</div>`;
-            } else {
-                container.innerHTML = claimsData.slice().reverse().map((c) => `
-                    <div class="bg-[#090d0a] border border-red-900/40 p-3.5 rounded-lg flex flex-col space-y-2 relative">
-                        <div class="flex justify-between items-start pr-16">
-                            <div>
-                                <strong class="text-yellow-400 font-cinzel text-sm">${c.name}</strong>
-                                <span class="ml-2 text-[10px] text-stone-500 font-mono">${c.date}</span>
-                            </div>
-                        </div>
-                        <button onclick="deleteClaim(${c.id})" class="absolute top-3 right-3 text-red-500 hover:text-red-300 text-[10px] px-2 py-1 bg-red-950/50 rounded border border-red-900/50 transition font-bold"><i class="fa-solid fa-check mr-1"></i>${getT('t_btn_resolve')}</button>
-                        <div class="text-[11px] text-stone-400"><span class="text-red-300 font-bold uppercase">${getT('t_event')}</span> ${c.event}</div>
-                        <div class="text-xs text-stone-300 bg-[#070a08] p-2 rounded border border-stone-800 break-words">${c.reason}</div>
-                    </div>
-                `).join('');
+                return;
             }
+            container.innerHTML = claimsData.slice().reverse().map(c => `
+                <div class="bg-[#090d0a] border border-red-900/40 p-3.5 rounded-lg flex flex-col space-y-2 relative">
+                    <div class="flex justify-between items-start pr-16">
+                        <div>
+                            <strong class="text-yellow-400 font-cinzel text-sm">${escapeHtml(c.name)}</strong>
+                            <span class="ml-2 text-[10px] text-stone-500 font-mono">${escapeHtml(c.date)}</span>
+                        </div>
+                    </div>
+                    <button onclick="deleteClaim(${Number(c.id)})" class="absolute top-3 right-3 text-red-500 hover:text-red-300 text-[10px] px-2 py-1 bg-red-950/50 rounded border border-red-900/50 transition font-bold"><i class="fa-solid fa-check mr-1"></i>${getT('t_btn_resolve')}</button>
+                    <div class="text-[11px] text-stone-400"><span class="text-red-300 font-bold uppercase">${getT('t_event')}</span> ${escapeHtml(c.event)}</div>
+                    <div class="text-xs text-stone-300 bg-[#070a08] p-2 rounded border border-stone-800 break-words whitespace-pre-wrap">${escapeHtml(c.reason)}</div>
+                </div>
+            `).join('');
         }
 
         async function deleteClaim(id) {
-            claimsData = claimsData.filter(c => c.id !== id);
-            renderInbox();
-            updateAdminUI(); 
-            await saveDatabase();
+            if (!isAdmin()) return;
+            await commitChange(() => { claimsData = claimsData.filter(c => c.id !== id); });
         }
+
+        // ================= BATALLÓN & PODERES =================
+        const DEFAULT_POWER = { m1: '00.00', m2: '00.00', m3: '00.00', troop: 'Tank' };
 
         function sortPowersBy(field) {
             if (currentSortField === field) sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
             else { currentSortField = field; sortDirection = 'desc'; }
-            allianceNames.sort((a, b) => {
-                const valA = parseFloat(powersData[a]?.[field]) || 0;
-                const valB = parseFloat(powersData[b]?.[field]) || 0;
+            renderPowersTable(searchValue());
+        }
+
+        function getSortedNames() {
+            const names = [...allianceNames];
+            if (!currentSortField) return names;
+            return names.sort((a, b) => {
+                const valA = parseFloat(powersData[a]?.[currentSortField]) || 0;
+                const valB = parseFloat(powersData[b]?.[currentSortField]) || 0;
                 return sortDirection === 'desc' ? valB - valA : valA - valB;
             });
-            renderPowersTable(document.getElementById('search-power').value);
         }
 
         function renderPowersTable(filter = '') {
             const tbody = document.getElementById('powers-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
+            if (!tbody) return;
             document.getElementById('stat-total-alliance').textContent = allianceNames.length;
-            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
-            document.querySelectorAll('.admin-col').forEach(el => {
-                if(isAdmin) el.classList.remove('hidden'); else el.classList.add('hidden');
-            });
+            const admin = isAdmin();
+            document.querySelectorAll('.admin-col').forEach(el => el.classList.toggle('hidden', !admin));
 
-            const normalizedFilter = filter.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-            
-            const filteredNames = allianceNames.filter(n => {
-                const normalizedName = n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                return normalizedName.includes(normalizedFilter);
-            });
+            // Recordar en qué casilla estaba escribiendo el usuario, para no perder lo que tecleó al redibujar.
+            const active = document.activeElement;
+            const focused = (active && tbody.contains(active) && active.dataset.field)
+                ? { name: active.dataset.name, field: active.dataset.field, value: active.value }
+                : null;
 
-            if(filteredNames.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-stone-500 italic">${getT('t_no_members')}</td></tr>`; return; }
-            filteredNames.forEach((name, idx) => {
-                if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
-                const p = powersData[name];
-                const valM1 = (p.m1 !== undefined && p.m1 !== '') ? p.m1 : '00.00';
-                const valM2 = (p.m2 !== undefined && p.m2 !== '') ? p.m2 : '00.00';
-                const valM3 = (p.m3 !== undefined && p.m3 !== '') ? p.m3 : '00.00';
-                let row = `<tr class="border-b border-green-900/35 hover:bg-green-950/20">
+            const q = normalizeText(filter);
+            const names = getSortedNames().filter(n => normalizeText(n).includes(q));
+
+            if (names.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-stone-500 italic">${getT('t_no_members')}</td></tr>`;
+                return;
+            }
+
+            const inputCls = "w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none";
+            tbody.innerHTML = names.map((name, idx) => {
+                const p = { ...DEFAULT_POWER, ...(powersData[name] || {}) };
+                const n = escapeHtml(name);
+                const cell = f => `<td class="px-3 py-2.5"><input type="text" inputmode="decimal" value="${escapeHtml(p[f] === '' ? '00.00' : p[f])}" data-name="${n}" data-field="${f}" onfocus="this.select()" onchange="updatePower(this.dataset.name, this.dataset.field, this.value)" placeholder="00.00" class="${inputCls}"></td>`;
+                const troops = ['Tank', 'Air', 'Missile'].map(t => `<option value="${t}" ${p.troop === t ? 'selected' : ''}>${t}</option>`).join('');
+                const adminCell = admin
+                    ? `<td class="px-3 py-2.5 text-center"><button data-name="${n}" onclick="deleteMember(this.dataset.name)" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>`
+                    : '';
+                return `<tr class="border-b border-green-900/35 hover:bg-green-950/20">
                     <td class="px-3 py-2.5 font-mono text-xs text-stone-400">${idx + 1}</td>
-                    <td class="px-3 py-2.5 font-cinzel text-stone-200">${name}</td>
-                    <td class="px-3 py-2.5"><input type="text" value="${valM1}" onchange="updatePower('${name}', 'm1', this.value)" placeholder="00.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
-                    <td class="px-3 py-2.5"><input type="text" value="${valM2}" onchange="updatePower('${name}', 'm2', this.value)" placeholder="00.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
-                    <td class="px-3 py-2.5"><input type="text" value="${valM3}" onchange="updatePower('${name}', 'm3', this.value)" placeholder="00.00" class="w-20 bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none"></td>
-                    <td class="px-3 py-2.5"><select onchange="updatePower('${name}', 'troop', this.value)" class="bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none">
-                        <option value="Tank" ${p.troop==='Tank'?'selected':''}>Tank</option>
-                        <option value="Air" ${p.troop==='Air'?'selected':''}>Air</option>
-                        <option value="Missile" ${p.troop==='Missile'?'selected':''}>Missile</option>
-                    </select></td>`;
-                if(isAdmin) row += `<td class="px-3 py-2.5 text-center"><button onclick="deleteMember('${name}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>`;
-                row += `</tr>`;
-                tbody.innerHTML += row;
-            });
-        }
-        async function updatePower(name, field, val) {
-            if(!powersData[name]) powersData[name] = { m1: '', m2: '', m3: '', troop: 'Tank' };
-            powersData[name][field] = (val.trim() === '') ? '00.00' : val;
-            await saveDatabase();
-        }
-        function filterPowers() { renderPowersTable(document.getElementById('search-power').value); }
-        function openAddMemberModal() { document.getElementById('new-member-name').value = ''; document.getElementById('add-member-modal').classList.remove('hidden'); }
-        function closeAddMemberModal() { document.getElementById('add-member-modal').classList.add('hidden'); }
-        async function confirmAddMember() {
-            const name = document.getElementById('new-member-name').value.trim();
-            if(!name) { alert(getT('alert_enter_name')); return; }
-            if(allianceNames.includes(name)) { alert(getT('alert_exists')); return; }
-            allianceNames.push(name); allianceNames.sort();
-            powersData[name] = { m1: '00.00', m2: '00.00', m3: '00.00', troop: 'Tank' };
-            await saveDatabase();
-            closeAddMemberModal(); renderPowersTable(document.getElementById('search-power').value); alert(getT('alert_added'));
-        }
-        async function deleteMember(name) {
-            if(confirm(`${getT('alert_delete')} ${name}?`)) {
-                allianceNames = allianceNames.filter(n => n !== name);
-                delete powersData[name]; await saveDatabase(); renderPowersTable(document.getElementById('search-power').value);
+                    <td class="px-3 py-2.5 font-cinzel text-stone-200">${n}</td>
+                    ${cell('m1')}${cell('m2')}${cell('m3')}
+                    <td class="px-3 py-2.5"><select data-name="${n}" data-field="troop" onchange="updatePower(this.dataset.name, this.dataset.field, this.value)" class="bg-[#090d0a] border border-green-900/50 rounded px-2 py-1 text-xs text-stone-200 outline-none">${troops}</select></td>
+                    ${adminCell}
+                </tr>`;
+            }).join('');
+
+            if (focused) {
+                const el = [...tbody.querySelectorAll('[data-field]')].find(e => e.dataset.name === focused.name && e.dataset.field === focused.field);
+                if (el) { el.value = focused.value; el.focus(); }
             }
         }
 
-        let loadedPlayers = [], eligibleForDriver = [], eligibleForVIP = [], currentDraw = { Driver: null, VIP: null };
+        async function updatePower(name, field, val) {
+            if (!['m1', 'm2', 'm3', 'troop'].includes(field)) return;
+            const clean = String(val).trim();
+            await commitChange(() => {
+                if (!allianceNames.includes(name)) return false;
+                powersData[name] = { ...DEFAULT_POWER, ...(powersData[name] || {}) };
+                powersData[name][field] = clean === '' ? '00.00' : clean;
+            });
+        }
+
+        function filterPowers() { renderPowersTable(searchValue()); }
+        function openAddMemberModal() { document.getElementById('new-member-name').value = ''; document.getElementById('add-member-modal').classList.remove('hidden'); }
+        function closeAddMemberModal() { document.getElementById('add-member-modal').classList.add('hidden'); }
+
+        async function confirmAddMember() {
+            const name = document.getElementById('new-member-name').value.trim().slice(0, 40);
+            if (!name) { alert(getT('alert_enter_name')); return; }
+            const status = await commitChange(() => {
+                if (allianceNames.some(n => n.toLowerCase() === name.toLowerCase())) return false;
+                allianceNames.push(name);
+                allianceNames.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+                powersData[name] = { ...DEFAULT_POWER };
+            });
+            if (status === 'aborted') { alert(getT('alert_exists')); return; }
+            if (status === 'saved') { closeAddMemberModal(); alert(getT('alert_added')); }
+        }
+
+        async function deleteMember(name) {
+            if (!isAdmin()) return;
+            if (!confirm(`${getT('alert_delete')} ${name}?`)) return;
+            await commitChange(() => {
+                allianceNames = allianceNames.filter(n => n !== name);
+                delete powersData[name];
+            });
+        }
+
+        // ================= SORTEO =================
+        let loadedPlayers = [], currentDraw = { Driver: null, VIP: null }, isDrawing = false;
+
+        function resetDraw() {
+            currentDraw = { Driver: null, VIP: null };
+            document.getElementById('btn-save').classList.add('hidden');
+            document.getElementById('winner-display').textContent = '...';
+        }
+
         function loadParticipants() {
             const raw = document.getElementById('bulk-names').value;
             loadedPlayers = [...new Set(raw.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0))];
-            if(loadedPlayers.length === 0) { alert(getT('alert_names')); return; }
-            eligibleForDriver = [...loadedPlayers]; eligibleForVIP = [...loadedPlayers];
+            if (loadedPlayers.length === 0) { alert(getT('alert_names')); return; }
+            resetDraw();
             document.getElementById('btn-draw-driver').disabled = false;
             document.getElementById('btn-draw-vip').disabled = false;
             alert(getT('alert_sealed'));
         }
+
         function startDraw(role) {
-            let pool = role === 'Driver' ? [...eligibleForDriver] : [...eligibleForVIP];
-            if(role === 'VIP' && currentDraw.Driver) pool = pool.filter(p => p !== currentDraw.Driver);
-            if(pool.length === 0) return;
+            if (isDrawing) return;
+            // La misma persona no puede ser Conductor y VIP a la vez.
+            const other = role === 'Driver' ? currentDraw.VIP : currentDraw.Driver;
+            const pool = loadedPlayers.filter(p => p !== other);
+            if (pool.length === 0) return;
+
+            isDrawing = true;
             const winnerEl = document.getElementById('winner-display');
             let counter = 0;
             const interval = setInterval(() => {
-                winnerEl.textContent = pool[Math.floor(Math.random() * pool.length)];
+                winnerEl.textContent = pool[randomIndex(pool.length)];
                 counter++;
-                if(counter >= 15) {
+                if (counter >= 15) {
                     clearInterval(interval);
-                    const winner = pool[Math.floor(Math.random() * pool.length)];
-                    winnerEl.textContent = winner; currentDraw[role] = winner;
-                    if(currentDraw.Driver && currentDraw.VIP) document.getElementById('btn-save').classList.remove('hidden');
+                    const winner = pool[randomIndex(pool.length)];
+                    winnerEl.textContent = winner;
+                    currentDraw[role] = winner;
+                    isDrawing = false;
+                    if (currentDraw.Driver && currentDraw.VIP) document.getElementById('btn-save').classList.remove('hidden');
                 }
             }, 60);
         }
+
         async function saveToHistory() {
-            if(!currentDraw.Driver || !currentDraw.VIP) return;
-            historyData.push({ Date: new Date().toLocaleDateString(), Driver: currentDraw.Driver, VIP: currentDraw.VIP, Config: "Sorteo Divino" });
-            renderHistory(); switchTab('giveaway'); await saveDatabase();
+            if (!currentDraw.Driver || !currentDraw.VIP) return;
+            const entry = { id: Date.now(), Date: new Date().toLocaleDateString(), Driver: currentDraw.Driver, VIP: currentDraw.VIP, Config: "Sorteo Divino" };
+            resetDraw(); // evita guardar dos veces con doble clic
+            const status = await commitChange(() => { historyData.push(entry); });
+            if (status === 'saved') {
+                alert(getT('alert_hist_ok'));
+            } else {
+                currentDraw = { Driver: entry.Driver, VIP: entry.VIP };
+                document.getElementById('btn-save').classList.remove('hidden');
+            }
         }
+
         function renderHistory() {
             const tbody = document.getElementById('full-history-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(historyData.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-stone-500 italic">${getT('t_no_records')}</td></tr>`; return; }
-            historyData.slice().reverse().forEach((item, idx) => {
-                tbody.innerHTML += `<tr class="border-b border-green-900/30">
-                    <td class="px-4 py-3">${item.Date}</td>
-                    <td class="px-4 py-3">${item.Driver}</td>
-                    <td class="px-4 py-3 text-yellow-500">${item.VIP}</td>
-                    <td class="px-4 py-3 text-center"><button onclick="checkAdmin(() => deleteHistory(${historyData.length - 1 - idx}))" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>`;
+            if (!tbody) return;
+            if (historyData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-stone-500 italic">${getT('t_no_records')}</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = historyData.slice().reverse().map(item => `<tr class="border-b border-green-900/30">
+                    <td class="px-4 py-3">${escapeHtml(item.Date)}</td>
+                    <td class="px-4 py-3">${escapeHtml(item.Driver)}</td>
+                    <td class="px-4 py-3 text-yellow-500">${escapeHtml(item.VIP)}</td>
+                    <td class="px-4 py-3 text-center"><button data-id="${escapeHtml(item.id ?? '')}" data-date="${escapeHtml(item.Date)}" data-driver="${escapeHtml(item.Driver)}" data-vip="${escapeHtml(item.VIP)}" onclick="const d = {...this.dataset}; checkAdmin(() => deleteHistory(d))" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>`).join('');
+        }
+
+        // Se busca la entrada por su contenido (no por posición), porque la lista puede cambiar al recargar de la nube.
+        async function deleteHistory(d) {
+            await commitChange(() => {
+                const idx = historyData.findIndex(h => d.id
+                    ? String(h.id) === d.id
+                    : (h.Date === d.date && h.Driver === d.driver && h.VIP === d.vip));
+                if (idx === -1) return false;
+                historyData.splice(idx, 1);
             });
         }
-        async function deleteHistory(idx) { historyData.splice(idx, 1); renderHistory(); await saveDatabase(); }
 
+        // ================= ADMIN =================
+        // Nota: esto solo oculta/muestra controles. La protección real requiere un servidor.
         function updateAdminUI() {
-            const isAdmin = sessionStorage.getItem('knni_admin') === 'true';
+            const admin = isAdmin();
             const btn = document.getElementById('admin-lock-btn');
             const icon = document.getElementById('admin-icon');
             const suspendContainer = document.getElementById('admin-suspend-container');
             const inboxBtn = document.getElementById('admin-inbox-btn');
             const inboxBadge = document.getElementById('inbox-badge');
-            
+
             ['btn-edit-train', 'btn-edit-discord', 'btn-edit-mvp'].forEach(id => {
                 const el = document.getElementById(id);
-                if(el) { if(isAdmin) el.classList.remove('hidden'); else el.classList.add('hidden'); }
+                if (el) el.classList.toggle('hidden', !admin);
             });
 
-            if (isAdmin) {
+            if (admin) {
                 btn.className = "touch-btn p-2 bg-yellow-950/80 border border-yellow-500 text-yellow-400 rounded-lg text-xs shadow-[0_0_10px_rgba(202,138,4,0.4)] transition-all";
                 icon.className = "fa-solid fa-lock-open text-sm";
-                if(suspendContainer) suspendContainer.classList.remove('hidden');
-                if(inboxBtn) inboxBtn.classList.remove('hidden');
-                
-                if (claimsData.length > 0 && inboxBadge) {
-                    inboxBadge.textContent = claimsData.length;
-                    inboxBadge.classList.remove('hidden');
-                } else if(inboxBadge) {
-                    inboxBadge.classList.add('hidden');
-                }
+                suspendContainer.classList.remove('hidden');
+                inboxBtn.classList.remove('hidden');
+                inboxBadge.textContent = claimsData.length;
+                inboxBadge.classList.toggle('hidden', claimsData.length === 0);
             } else {
                 btn.className = "touch-btn p-2 bg-stone-900 border border-stone-800 text-stone-400 rounded-lg text-xs transition-all";
                 icon.className = "fa-solid fa-lock text-sm";
-                if(suspendContainer) suspendContainer.classList.add('hidden');
-                if(inboxBtn) inboxBtn.classList.add('hidden');
+                suspendContainer.classList.add('hidden');
+                inboxBtn.classList.add('hidden');
             }
         }
 
+        function openAdminPasswordModal() {
+            document.getElementById('admin-password').value = '';
+            document.getElementById('admin-password-modal').classList.remove('hidden');
+            document.getElementById('admin-password').focus();
+        }
+
         function toggleAdminSession() {
-            if (sessionStorage.getItem('knni_admin') === 'true') {
+            if (isAdmin()) {
                 sessionStorage.removeItem('knni_admin');
-                updateAdminUI(); renderPowersTable(); updateRegistrationState(); renderPreLists();
+                renderAll();
                 alert(getT('alert_admin_closed'));
             } else {
-                pendingAction = () => {
-                    updateAdminUI(); renderPowersTable(); updateRegistrationState(); renderPreLists();
-                    alert(getT('alert_admin_open'));
-                };
-                document.getElementById('admin-password').value = '';
-                document.getElementById('admin-password-modal').classList.remove('hidden');
+                pendingAction = () => alert(getT('alert_admin_open'));
+                openAdminPasswordModal();
             }
         }
 
         function checkAdmin(actionFn) {
-            if (sessionStorage.getItem('knni_admin') === 'true') { actionFn(); } 
-            else { pendingAction = actionFn; document.getElementById('admin-password').value = ''; document.getElementById('admin-password-modal').classList.remove('hidden'); }
+            if (isAdmin()) { actionFn(); }
+            else { pendingAction = actionFn; openAdminPasswordModal(); }
         }
-        function verifyAdminPassword() {
-            if (document.getElementById('admin-password').value === ADMIN_PASSWORD) {
-                sessionStorage.setItem('knni_admin', 'true');
-                closeAdminPasswordModal(); updateAdminUI(); renderPowersTable(); updateRegistrationState(); renderPreLists();
-                if (pendingAction) { pendingAction(); pendingAction = null; }
-            } else { alert(getT('alert_pwd_err')); }
+
+        async function verifyAdminPassword() {
+            let hash;
+            try { hash = await sha256Hex(document.getElementById('admin-password').value); }
+            catch (e) { console.error(e); alert(getT('alert_pwd_err')); return; }
+            if (hash !== ADMIN_PASSWORD_HASH) { alert(getT('alert_pwd_err')); return; }
+
+            sessionStorage.setItem('knni_admin', 'true');
+            const action = pendingAction; // guardarla ANTES de cerrar el modal (que la borra)
+            closeAdminPasswordModal();
+            renderAll();
+            if (action) action();
         }
         function closeAdminPasswordModal() { document.getElementById('admin-password-modal').classList.add('hidden'); pendingAction = null; }
 
         function openEditTrainModal() {
-            document.getElementById('adm-driver').value = trainConfig.driver;
-            document.getElementById('adm-vip').value = trainConfig.vip;
+            document.getElementById('adm-driver').value = trainConfig.driver === '---' ? '' : (trainConfig.driver || '');
+            document.getElementById('adm-vip').value = trainConfig.vip === '---' ? '' : (trainConfig.vip || '');
             document.getElementById('adm-arrival').value = trainConfig.arrival ? trainConfig.arrival.replace(' hs', '') : "21:30";
             document.getElementById('edit-train-modal').classList.remove('hidden');
         }
         function closeEditTrainModal() { document.getElementById('edit-train-modal').classList.add('hidden'); }
         async function saveTrainChanges() {
-            trainConfig.driver = document.getElementById('adm-driver').value.trim();
-            trainConfig.vip = document.getElementById('adm-vip').value.trim();
+            const driver = document.getElementById('adm-driver').value.trim() || '---';
+            const vip = document.getElementById('adm-vip').value.trim() || '---';
             const rawTime = document.getElementById('adm-arrival').value;
-            trainConfig.arrival = rawTime ? `${rawTime} hs` : "21:30 hs";
-            closeEditTrainModal(); initDashboard(); updateClocks(); await saveDatabase(); alert(getT('alert_train_ok'));
+            const arrival = rawTime ? `${rawTime} hs` : "21:30 hs";
+            closeEditTrainModal();
+            const status = await commitChange(() => { trainConfig = { ...trainConfig, driver, vip, arrival }; });
+            if (status === 'saved') alert(getT('alert_train_ok'));
         }
-        function openEditDiscordModal() { document.getElementById('adm-discord').value = trainConfig.discord; document.getElementById('edit-discord-modal').classList.remove('hidden'); }
+
+        function openEditDiscordModal() { document.getElementById('adm-discord').value = trainConfig.discord || ''; document.getElementById('edit-discord-modal').classList.remove('hidden'); }
         function closeEditDiscordModal() { document.getElementById('edit-discord-modal').classList.add('hidden'); }
-        async function saveDiscordChanges() { trainConfig.discord = document.getElementById('adm-discord').value.trim(); closeEditDiscordModal(); initDashboard(); await saveDatabase(); alert(getT('alert_dc_ok')); }
+        async function saveDiscordChanges() {
+            const discord = document.getElementById('adm-discord').value.trim();
+            if (safeUrl(discord) === '#') { alert(getT('alert_bad_url')); return; }
+            closeEditDiscordModal();
+            const status = await commitChange(() => { trainConfig = { ...trainConfig, discord }; });
+            if (status === 'saved') alert(getT('alert_dc_ok'));
+        }
 
         function openEditMvpModal() {
             document.getElementById('adm-mvp-week').value = mvpConfig.week; document.getElementById('adm-champion').value = mvpConfig.champion;
@@ -1353,41 +1475,39 @@
         }
         function closeEditMvpModal() { document.getElementById('edit-mvp-modal').classList.add('hidden'); }
         async function saveMvpChanges() {
-            mvpConfig.week = document.getElementById('adm-mvp-week').value.trim(); mvpConfig.champion = document.getElementById('adm-champion').value.trim();
-            mvpConfig.ds1 = document.getElementById('adm-mvp-ds-1').value.trim(); mvpConfig.ds2 = document.getElementById('adm-mvp-ds-2').value.trim();
-            mvpConfig.cs1 = document.getElementById('adm-mvp-cs-1').value.trim(); mvpConfig.cs2 = document.getElementById('adm-mvp-cs-2').value.trim();
-            closeEditMvpModal(); renderMvpUI(); await saveDatabase(); alert(getT('alert_mvp_ok'));
+            const v = id => document.getElementById(id).value.trim();
+            const newMvp = { week: v('adm-mvp-week'), champion: v('adm-champion'), ds1: v('adm-mvp-ds-1'), ds2: v('adm-mvp-ds-2'), cs1: v('adm-mvp-cs-1'), cs2: v('adm-mvp-cs-2') };
+            closeEditMvpModal();
+            const status = await commitChange(() => { mvpConfig = newMvp; });
+            if (status === 'saved') alert(getT('alert_mvp_ok'));
         }
 
-        window.onload = async () => {
-            createAshParticles();
-            setInterval(updateClocks, 1000);
-            updateAdminUI();
-            await loadDatabase();
-            updateTurnHours();
-            updateRegistrationState();
-            
-            document.querySelectorAll('[data-i-ph]').forEach(el => {
-                const key = el.getAttribute('data-i-ph');
-                if (translations[currentLang][key]) el.setAttribute('placeholder', translations[currentLang][key]);
-            });
+        // ================= ARRANQUE =================
+        function anyModalOpen() {
+            return ['inbox-modal', 'admin-password-modal', 'edit-train-modal', 'edit-discord-modal', 'edit-mvp-modal', 'add-member-modal']
+                .some(id => !document.getElementById(id).classList.contains('hidden'));
+        }
 
-            // Registro del Service Worker con actualización forzada
+        window.addEventListener('load', async () => {
+            createAshParticles();
+            applyTranslations();
+
             if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('./sw.js').then(reg => {
-                        reg.addEventListener('updatefound', () => {
-                            const newWorker = reg.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    window.location.reload(); 
-                                }
-                            });
-                        });
-                    }).catch(err => console.log('Error al registrar Service Worker:', err));
-                });
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('Error al registrar Service Worker:', err));
             }
-        };
+
+            renderAll();
+            setInterval(updateClocks, 1000);
+            updateClocks();
+
+            if (!(await loadDatabase())) alert(getT('alert_load_err'));
+            renderAll();
+
+            // Al volver a la app (cambiar de pestaña / desbloquear el celular) se traen los datos más recientes.
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible' && !anyModalOpen()) refreshFromCloud();
+            });
+        });
     </script>
 </body>
 </html>
