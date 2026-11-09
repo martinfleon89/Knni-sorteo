@@ -1,5 +1,5 @@
 // Subir este número cuando cambien los archivos base, para limpiar cachés viejas.
-const CACHE_NAME = 'knni-app-v2';
+const CACHE_NAME = 'knni-app-v3';
 const APP_SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -16,10 +16,13 @@ self.addEventListener('activate', (event) => {
 });
 
 // "Primero la red": siempre intenta traer la versión más nueva y solo usa la caché si no hay conexión.
-// Las peticiones a otros dominios (JSONBin, CDNs) no se tocan.
+// Las peticiones a otros dominios (CDNs) no se tocan.
 self.addEventListener('fetch', (event) => {
     const req = event.request;
-    if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+    const url = new URL(req.url);
+    if (req.method !== 'GET' || url.origin !== self.location.origin) return;
+    // Los datos de la API (incluidos los del admin) nunca se guardan en caché.
+    if (url.pathname.startsWith('/api') || url.pathname.startsWith('/.netlify/')) return;
 
     event.respondWith(
         fetch(req)
