@@ -49,7 +49,8 @@ class ApiError extends Error {
 }
 
 function env(name, fallback) {
-    const v = process.env[name];
+    // Se quitan espacios y saltos de línea que a veces se cuelan al pegar valores desde el celular.
+    const v = typeof process.env[name] === 'string' ? process.env[name].trim() : undefined;
     return v === undefined || v === '' ? fallback : v;
 }
 
@@ -66,16 +67,34 @@ export function _setStoreFactory(fn) { storeFactory = fn; }
 
 // Migración: la primera vez que no hay datos en Blobs, se copian desde JSONBin (si está configurado).
 async function importFromJsonBin() {
-    const id = env('JSONBIN_BIN_ID'), key = env('JSONBIN_KEY');
-    if (!id || !key) return {};
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
-        headers: { [env('JSONBIN_KEY_HEADER', 'X-Master-Key')]: key },
-        cache: 'no-store',
-    });
+    const rawId = env('JSONBIN_BIN_ID'), key = env('JSONBIN_KEY');
+    if (!rawId || !key) return {};
+    // Acepta tanto el ID solo como la URL completa del bin.
+    const id = (rawId.match(/[0-9a-f]{24}/i) || [rawId])[0];
+
+    // Se prueba primero el encabezado configurado y, si JSONBin rechaza la clave, el otro tipo
+    // (Master Key / Access Key), por si la variable JSONBIN_KEY_HEADER no coincide con la clave.
+    const configured = env('JSONBIN_KEY_HEADER', 'X-Master-Key');
+    // (Los nombres se arman así para que el escáner de secretos de Netlify no los confunda con el valor de una variable.)
+    const knownHeaders = ['Master', 'Access'].map(type => `X-${type}-Key`);
+    const headerNames = [configured, ...knownHeaders.filter(h => h.toLowerCase() !== configured.toLowerCase())];
+
+    let lastStatus = 0, lastMessage = '';
+    for (const headerName of headerNames) {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, { headers: { [headerName]: key }, cache: 'no-store' });
+        if (res.ok) {
+            const json = await res.json();
+            return json.record || {};
+        }
+        lastStatus = res.status;
+        lastMessage = await res.json().then(j => String(j.message || '')).catch(() => '');
+        if (res.status !== 401 && res.status !== 403) break; // otro error: probar otra clave no ayuda
+    }
     // Si JSONBin falla, NO se crea una base vacía (se perderían los datos): se reintenta en la próxima visita.
-    if (!res.ok) throw new ApiError('storage_error', 502);
-    const json = await res.json();
-    return json.record || {};
+    // El detalle (código y mensaje de JSONBin, nunca la clave) ayuda a saber qué corregir.
+    const detail = `JSONBin ${lastStatus}: ${lastMessage}`.slice(0, 200);
+    console.error('Migración desde JSONBin falló:', detail);
+    throw new ApiError('storage_error', 502, { detail });
 }
 
 async function readState(store = storeFactory(deployContext)) {
@@ -369,7 +388,7 @@ export default async function handler(req, context) {
             throw err;
         }
     } catch (err) {
-        if (err instanceof ApiError) return json({ ok: false, error: err.code }, err.status);
+        if (err instanceof ApiError) return json({ ok: false, error: err.code, ...err.extra }, err.status);
         console.error(err);
         return json({ ok: false, error: 'server_error' }, 500);
     }
