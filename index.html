@@ -507,36 +507,11 @@
     </div>
 
     <script>
-        const BIN_URL = "https://api.jsonbin.io/v3/b/6aed9aa3ac6210605a71b12b";
-        // ⚠️ Esta clave es visible para cualquiera que abra el código fuente de la página.
-        // Recomendado: en JSONBin crea una "Access Key" con permisos SOLO de leer/actualizar este bin,
-        // pégala abajo y cambia API_KEY_HEADER a "X-Access-Key". Así, si alguien la copia,
-        // no podrá tocar el resto de tu cuenta.
-        const API_KEY_HEADER = "X-Master-Key";
-        const API_KEY = "$2a$10$29KScQrlJ1Wb/oQ.agjE4OMsWREodoHu.rhGyV9b.Yeus0PJaFZY6";
-        // SHA-256 de la contraseña de admin (ya no se guarda en texto plano).
-        // Para cambiarla: en la consola del navegador ejecuta  await sha256Hex("nuevaClave")  y pega el resultado aquí.
-        const ADMIN_PASSWORD_HASH = "0e5ae3c3bb2b61b02affa2b31b3417b2ac02ba631bec3071fd4e7a972173bd87";
+        // Toda la comunicación con la base de datos pasa por la función de Netlify (netlify/functions/api.mjs).
+        // Los datos se guardan en Netlify Blobs y la contraseña de admin es una variable de entorno secreta.
+        const API_URL = '/api';
 
-        let allianceNames = [
-            "Acerofd", "Albee3609", "ALEXG", "Allpau", "Army Moonlight", "Arturo H1234", "AspeřMaster23", "AxiE",
-            "B1G BOSS", "BADA Lodu", "Bahrok", "Bales117", "Betty1010", "BobB53", "BobGio밥지오", "boom boy", "Borvey", "Brokeback Hooty", "B3ngel",
-            "Captain Zverman", "chhota lodu", "Cokeafgano", "Countryguy", "CP6964", "Cristophoros", "CSH SKYBLUE555",
-            "Danos SR", "Darkina", "DarkZeru", "Darth Grizzly", "DaveyCrocket44", "DaViS", "DBrad11", "Defiant One", "Deroga da Grinch", "Destinuke", "DF66", "Drsimibelico",
-            "Geovane rech", "Getting by", "Giobob2", "gossipGirl", "Góòse", "GUNNER39", "Gensis",
-            "HackChop", "Hexina", "HUEVO FIGHTER",
-            "Inflightpro44", "itsmeJJ",
-            "Jack meHoff", "Jamesson45891", "JeanPierre08", "JestFatality", "JOAT79", "JP AH", "JP1351", "Jungle20",
-            "KillB", "KillïnPïxîeDuśt", "KnNi Mert", "Kopa 빨간색",
-            "LightIna", "LuckStrayker",
-            "MADDOG 1856", "MelRose", "Mia2424", "MPK Buff", "Musky78",
-            "ottotank",
-            "Pepperspray69", "Phlyn",
-            "Ricknick", "RimMER", "RLP castle", "RTAlejandro", "RUNTZ", "RW 1Too345",
-            "San Guillermo", "SaRgeReApEr", "shoo merito", "spal4", "spirit xx",
-            "낭만용사Maquina", "TartanTerror", "tavo20", "TheEnforcer77", "TheRealBetty", "Th3 Lil Effin Go4t", "tornillo90", "Turbonovtec", "TwannaJ",
-            "WillDW", "WilliamDOTJames", "XLeo26"
-        ];
+        let allianceNames = []; // se carga desde el servidor
 
         let trainConfig = { driver: "---", vip: "---", arrival: "21:30 hs", discord: "https://discord.gg/TU_ENLACE_DE_DISCORD" };
         let mvpConfig = { week: "---", champion: "---", ds1: "---", ds2: "---", cs1: "---", cs2: "---" };
@@ -606,7 +581,13 @@
                 "alert_load_err": "⚠️ No se pudieron cargar los datos de la nube. Revisa tu conexión.",
                 "alert_hist_ok": "✅ ¡Guardado en Crónicas!", "alert_bad_url": "⚠️ El enlace debe empezar con https://",
                 "alert_copy_manual": "Copia la lista manualmente:", "t_train_scheduled": "🚂 Tren Programado", "t_no_train": "Sin Tren Activo",
-                "t_titulares": "Titulares", "t_suplentes": "Suplentes"
+                "t_titulares": "Titulares", "t_suplentes": "Suplentes",
+                "alert_session_expired": "🔒 Tu sesión de administrador venció. Vuelve a entrar.",
+                "alert_closed": "⛔ Las inscripciones para este evento están cerradas o suspendidas.",
+                "alert_invalid": "⚠️ Hay datos inválidos. Revisa lo que escribiste.",
+                "alert_unknown_member": "⚠️ Ese nombre no está en la lista de la alianza.",
+                "alert_inbox_full": "⚠️ El buzón de reclamos está lleno. Avisa a un líder por Discord.",
+                "alert_not_found": "Ese registro ya no existe (quizás otro admin lo borró)."
             },
             EN: {
                 "menu": "Menu", "menu-home": "Home", "menu-insc": "DS & CS Registration", "menu-sorteo": "Divine Draw", "menu-powers": "Battalion & Powers",
@@ -658,7 +639,13 @@
                 "alert_load_err": "⚠️ Could not load data from the cloud. Check your connection.",
                 "alert_hist_ok": "✅ Saved to Chronicles!", "alert_bad_url": "⚠️ The link must start with https://",
                 "alert_copy_manual": "Copy the list manually:", "t_train_scheduled": "🚂 Scheduled Train", "t_no_train": "No Active Train",
-                "t_titulares": "Starters", "t_suplentes": "Substitutes"
+                "t_titulares": "Starters", "t_suplentes": "Substitutes",
+                "alert_session_expired": "🔒 Your admin session expired. Please log in again.",
+                "alert_closed": "⛔ Registrations for this event are closed or suspended.",
+                "alert_invalid": "⚠️ Some data is invalid. Check what you typed.",
+                "alert_unknown_member": "⚠️ That name is not on the alliance list.",
+                "alert_inbox_full": "⚠️ The claims inbox is full. Tell a leader on Discord.",
+                "alert_not_found": "That record no longer exists (maybe another admin deleted it)."
             }
         };
 
@@ -670,7 +657,23 @@
             return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
         }
         function normalizeText(s) { return String(s ?? '').normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
-        function isAdmin() { return sessionStorage.getItem('knni_admin') === 'true'; }
+        // La sesión de admin es un token firmado por el servidor (vence a las 12 h).
+        function getAdminToken() {
+            try {
+                const token = sessionStorage.getItem('knni_admin_token') || '';
+                const exp = Number(token.split('.')[0]);
+                if (token && exp > Date.now()) return token;
+                if (token) sessionStorage.removeItem('knni_admin_token');
+            } catch { }
+            return '';
+        }
+        function isAdmin() { return !!getAdminToken(); }
+        function setAdminToken(token) {
+            try {
+                if (token) sessionStorage.setItem('knni_admin_token', token);
+                else sessionStorage.removeItem('knni_admin_token');
+            } catch { }
+        }
         function isTitular(role) { return role === 'Titular' || role === 'Starter'; }
         function safeUrl(url) {
             try {
@@ -686,10 +689,6 @@
                 return buf[0] % n;
             }
             return Math.floor(Math.random() * n);
-        }
-        async function sha256Hex(text) {
-            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-            return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
         }
         function searchValue() { const el = document.getElementById('search-power'); return el ? el.value : ''; }
 
@@ -748,25 +747,32 @@
             }
         }
 
-        // ================= BASE DE DATOS (JSONBin) =================
+        // ================= DATOS (vía /api en Netlify) =================
+        // La página nunca habla directo con la base de datos: todo pasa por el servidor.
         function applyRecord(record) {
             if (!record) return;
             historyData = Array.isArray(record.historyData) ? record.historyData : [];
             trainConfig = record.trainConfig || trainConfig;
             mvpConfig = record.mvpConfig || mvpConfig;
-            if (Array.isArray(record.allianceNames) && record.allianceNames.length > 0) allianceNames = record.allianceNames;
+            if (Array.isArray(record.allianceNames)) allianceNames = record.allianceNames;
             powersData = record.powersData || {};
             registrations = record.registrations || {};
             suspendedEvents = record.suspendedEvents || { CS: false, DS: false };
             claimsData = Array.isArray(record.claimsData) ? record.claimsData : [];
         }
 
+        function authHeaders() {
+            const token = getAdminToken();
+            return token ? { Authorization: `Bearer ${token}` } : {};
+        }
+
         async function loadDatabase() {
             try {
-                const response = await fetch(BIN_URL, { headers: { [API_KEY_HEADER]: API_KEY }, cache: 'no-store' });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const json = await response.json();
-                applyRecord(json.record);
+                const response = await fetch(API_URL, { headers: authHeaders(), cache: 'no-store' });
+                const data = await response.json();
+                if (!response.ok || !data.ok) throw new Error(data.error || `HTTP ${response.status}`);
+                if (getAdminToken() && !data.admin) setAdminToken(''); // la sesión ya no es válida
+                applyRecord(data.state);
                 return true;
             } catch (error) {
                 console.error('Error al cargar datos:', error);
@@ -774,47 +780,45 @@
             }
         }
 
-        async function saveDatabase() {
-            try {
-                const response = await fetch(BIN_URL, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json", [API_KEY_HEADER]: API_KEY },
-                    body: JSON.stringify({ historyData, trainConfig, mvpConfig, allianceNames, powersData, registrations, suspendedEvents, claimsData })
-                });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return true;
-            } catch (error) {
-                console.error('Error al guardar:', error);
-                return false;
-            }
-        }
-
-        // Todas las operaciones con la nube pasan por esta cola, una detrás de otra,
-        // para que dos guardados seguidos no se pisen entre sí.
-        let dbQueue = Promise.resolve();
+        // Las operaciones se mandan una detrás de otra, en orden.
+        let apiQueue = Promise.resolve();
         function enqueue(task) {
-            const run = dbQueue.then(task);
-            dbQueue = run.catch(() => {});
+            const run = apiQueue.then(task);
+            apiQueue = run.catch(() => {});
             return run;
         }
 
-        // Descarga la versión MÁS RECIENTE de la nube, aplica el cambio encima y la guarda.
-        // Así no se borran inscripciones que otros hicieron mientras tenías la página abierta.
-        // El mutator puede devolver false para cancelar (ej: inscripción duplicada).
-        // Devuelve: 'saved' | 'aborted' | 'error'
-        function commitChange(mutator) {
+        // Manda una acción al servidor. El servidor lee lo último, aplica el cambio y guarda.
+        // Devuelve { ok, error, ... } y deja la página con el estado actualizado.
+        function callApi(action, payload = {}) {
             return enqueue(async () => {
+                let result;
                 try {
-                    if (!(await loadDatabase())) { alert(getT('alert_load_err')); return 'error'; }
-                    if (mutator() === false) return 'aborted';
-                    if (await saveDatabase()) return 'saved';
-                    alert(getT('alert_save_err'));
-                    await loadDatabase(); // volver a lo que realmente hay en la nube
-                    return 'error';
-                } finally {
-                    renderAll();
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                        body: JSON.stringify({ action, ...payload })
+                    });
+                    result = await response.json().catch(() => ({ ok: false, error: 'server_error' }));
+                    if (result.error === 'unauthorized') setAdminToken('');
+                    if (result.state) applyRecord(result.state);
+                } catch (error) {
+                    console.error('Error de conexión:', error);
+                    result = { ok: false, error: 'network' };
                 }
+                renderAll();
+                return result;
             });
+        }
+
+        // Muestra los errores generales. Los casos especiales (duplicado, etc.) los maneja cada función.
+        function showApiError(result) {
+            const messages = {
+                unauthorized: 'alert_session_expired', closed: 'alert_closed', invalid: 'alert_invalid',
+                unknown_member: 'alert_unknown_member', inbox_full: 'alert_inbox_full', bad_url: 'alert_bad_url',
+                not_found: 'alert_not_found'
+            };
+            alert(getT(messages[result.error] || 'alert_save_err'));
         }
 
         function refreshFromCloud() {
@@ -939,7 +943,8 @@
 
         async function toggleSuspendEvent(ev) {
             if (!isAdmin()) return;
-            await commitChange(() => { suspendedEvents[ev] = !suspendedEvents[ev]; });
+            const r = await callApi('toggleSuspend', { event: ev });
+            if (!r.ok) showApiError(r);
         }
 
         function updateTurnHours() {
@@ -1022,15 +1027,6 @@
             document.getElementById('member-search-results').classList.add('hidden');
         }
 
-        function findRegistrationTeam(ev, name) {
-            const target = name.toLowerCase();
-            for (const t of ['Equipo A', 'Equipo B']) {
-                const list = registrations[`${ev} - ${t}`] || [];
-                if (list.some(item => String(item.name).toLowerCase() === target)) return t;
-            }
-            return null;
-        }
-
         function clearMemberSelection() {
             document.getElementById('member-search-input').value = '';
             selectedMember = '';
@@ -1038,36 +1034,18 @@
 
         async function submitRegistration() {
             if (!selectedEvent || !selectedMember) { alert(getT('alert_ev_mem')); return; }
-            const ev = selectedEvent, member = selectedMember, turn = selectedTurn, role = selectedRole;
-            let dupTeam = null;
-            const status = await commitChange(() => {
-                dupTeam = findRegistrationTeam(ev, member);
-                if (dupTeam) return false;
-                const key = `${ev} - ${turn}`;
-                if (!registrations[key]) registrations[key] = [];
-                // Se guarda el rol en un valor fijo ('Titular'/'Suplente'), sin importar el idioma.
-                registrations[key].push({ name: member, role });
-            });
-            if (status === 'aborted') { alert(`${getT('alert_reg_dup')} ${dupTeam}${getT('alert_reg_dup2')}`); return; }
-            if (status === 'saved') { alert(getT('alert_reg_ok')); clearMemberSelection(); }
+            const r = await callApi('register', { event: selectedEvent, team: selectedTurn, role: selectedRole, name: selectedMember });
+            if (r.ok) { alert(getT('alert_reg_ok')); clearMemberSelection(); }
+            else if (r.error === 'duplicate') alert(`${getT('alert_reg_dup')} ${r.team}${getT('alert_reg_dup2')}`);
+            else showApiError(r);
         }
 
         async function cancelRegistration() {
             if (!selectedEvent || !selectedMember) { alert(getT('alert_ev_mem')); return; }
-            const ev = selectedEvent, target = selectedMember.toLowerCase();
-            const status = await commitChange(() => {
-                let removed = false;
-                for (const t of ['Equipo A', 'Equipo B']) {
-                    const k = `${ev} - ${t}`;
-                    if (!registrations[k]) continue;
-                    const before = registrations[k].length;
-                    registrations[k] = registrations[k].filter(item => String(item.name).toLowerCase() !== target);
-                    if (registrations[k].length < before) removed = true;
-                }
-                if (!removed) return false;
-            });
-            if (status === 'saved') { alert(getT('alert_cancel_ok')); clearMemberSelection(); }
-            else if (status === 'aborted') alert(getT('alert_not_registered'));
+            const r = await callApi('cancel', { event: selectedEvent, name: selectedMember });
+            if (r.ok) { alert(getT('alert_cancel_ok')); clearMemberSelection(); }
+            else if (r.error === 'not_registered') alert(getT('alert_not_registered'));
+            else showApiError(r);
         }
 
         function renderPreLists() {
@@ -1126,12 +1104,8 @@
 
         async function removeReg(k, name) {
             if (!isAdmin()) return;
-            await commitChange(() => {
-                if (!registrations[k]) return false;
-                const idx = registrations[k].findIndex(i => i.name === name);
-                if (idx === -1) return false;
-                registrations[k].splice(idx, 1);
-            });
+            const r = await callApi('removeReg', { key: k, name });
+            if (!r.ok) showApiError(r);
         }
 
         // ================= RECLAMOS =================
@@ -1146,9 +1120,8 @@
 
             if (!name || !event || !reason) { alert(getT('alert_fill_all')); return; }
 
-            const newClaim = { id: Date.now(), name, event, reason, date: new Date().toLocaleString() };
-            const status = await commitChange(() => { claimsData.push(newClaim); });
-            if (status !== 'saved') return;
+            const r = await callApi('claim', { name, event, reason });
+            if (!r.ok) { showApiError(r); return; }
 
             document.getElementById('claim-name').value = '';
             document.getElementById('claim-event').value = '';
@@ -1177,7 +1150,7 @@
                     <div class="flex justify-between items-start pr-16">
                         <div>
                             <strong class="text-yellow-400 font-cinzel text-sm">${escapeHtml(c.name)}</strong>
-                            <span class="ml-2 text-[10px] text-stone-500 font-mono">${escapeHtml(c.date)}</span>
+                            <span class="ml-2 text-[10px] text-stone-500 font-mono">${escapeHtml(formatDate(c.date))}</span>
                         </div>
                     </div>
                     <button onclick="deleteClaim(${Number(c.id)})" class="absolute top-3 right-3 text-red-500 hover:text-red-300 text-[10px] px-2 py-1 bg-red-950/50 rounded border border-red-900/50 transition font-bold"><i class="fa-solid fa-check mr-1"></i>${getT('t_btn_resolve')}</button>
@@ -1187,9 +1160,19 @@
             `).join('');
         }
 
+        function formatDate(value) {
+            // Los reclamos nuevos guardan la fecha en formato ISO; los viejos ya vienen como texto.
+            if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+                const d = new Date(value);
+                if (!isNaN(d)) return d.toLocaleString();
+            }
+            return value;
+        }
+
         async function deleteClaim(id) {
             if (!isAdmin()) return;
-            await commitChange(() => { claimsData = claimsData.filter(c => c.id !== id); });
+            const r = await callApi('deleteClaim', { id });
+            if (!r.ok) showApiError(r);
         }
 
         // ================= BATALLÓN & PODERES =================
@@ -1236,7 +1219,7 @@
             tbody.innerHTML = names.map((name, idx) => {
                 const p = { ...DEFAULT_POWER, ...(powersData[name] || {}) };
                 const n = escapeHtml(name);
-                const cell = f => `<td class="px-3 py-2.5"><input type="text" inputmode="decimal" value="${escapeHtml(p[f] === '' ? '00.00' : p[f])}" data-name="${n}" data-field="${f}" onfocus="this.select()" onchange="updatePower(this.dataset.name, this.dataset.field, this.value)" placeholder="00.00" class="${inputCls}"></td>`;
+                const cell = f => `<td class="px-3 py-2.5"><input type="text" inputmode="decimal" value="${escapeHtml(p[f] === '' ? '00.00' : p[f])}" data-name="${n}" data-field="${f}" onchange="updatePower(this.dataset.name, this.dataset.field, this.value)" placeholder="00.00" class="${inputCls}"></td>`;
                 const troops = ['Tank', 'Air', 'Missile'].map(t => `<option value="${t}" ${p.troop === t ? 'selected' : ''}>${t}</option>`).join('');
                 const adminCell = admin
                     ? `<td class="px-3 py-2.5 text-center"><button data-name="${n}" onclick="deleteMember(this.dataset.name)" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>`
@@ -1257,13 +1240,8 @@
         }
 
         async function updatePower(name, field, val) {
-            if (!['m1', 'm2', 'm3', 'troop'].includes(field)) return;
-            const clean = String(val).trim();
-            await commitChange(() => {
-                if (!allianceNames.includes(name)) return false;
-                powersData[name] = { ...DEFAULT_POWER, ...(powersData[name] || {}) };
-                powersData[name][field] = clean === '' ? '00.00' : clean;
-            });
+            const r = await callApi('updatePower', { name, field, value: String(val).trim() });
+            if (!r.ok) showApiError(r);
         }
 
         function filterPowers() { renderPowersTable(searchValue()); }
@@ -1273,23 +1251,17 @@
         async function confirmAddMember() {
             const name = document.getElementById('new-member-name').value.trim().slice(0, 40);
             if (!name) { alert(getT('alert_enter_name')); return; }
-            const status = await commitChange(() => {
-                if (allianceNames.some(n => n.toLowerCase() === name.toLowerCase())) return false;
-                allianceNames.push(name);
-                allianceNames.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-                powersData[name] = { ...DEFAULT_POWER };
-            });
-            if (status === 'aborted') { alert(getT('alert_exists')); return; }
-            if (status === 'saved') { closeAddMemberModal(); alert(getT('alert_added')); }
+            const r = await callApi('addMember', { name });
+            if (r.ok) { closeAddMemberModal(); alert(getT('alert_added')); }
+            else if (r.error === 'exists') alert(getT('alert_exists'));
+            else showApiError(r);
         }
 
         async function deleteMember(name) {
             if (!isAdmin()) return;
             if (!confirm(`${getT('alert_delete')} ${name}?`)) return;
-            await commitChange(() => {
-                allianceNames = allianceNames.filter(n => n !== name);
-                delete powersData[name];
-            });
+            const r = await callApi('deleteMember', { name });
+            if (!r.ok) showApiError(r);
         }
 
         // ================= SORTEO =================
@@ -1337,13 +1309,14 @@
 
         async function saveToHistory() {
             if (!currentDraw.Driver || !currentDraw.VIP) return;
-            const entry = { id: Date.now(), Date: new Date().toLocaleDateString(), Driver: currentDraw.Driver, VIP: currentDraw.VIP, Config: "Sorteo Divino" };
+            const entry = { date: new Date().toLocaleDateString(), driver: currentDraw.Driver, vip: currentDraw.VIP };
             resetDraw(); // evita guardar dos veces con doble clic
-            const status = await commitChange(() => { historyData.push(entry); });
-            if (status === 'saved') {
+            const r = await callApi('addHistory', entry);
+            if (r.ok) {
                 alert(getT('alert_hist_ok'));
             } else {
-                currentDraw = { Driver: entry.Driver, VIP: entry.VIP };
+                showApiError(r);
+                currentDraw = { Driver: entry.driver, VIP: entry.vip };
                 document.getElementById('btn-save').classList.remove('hidden');
             }
         }
@@ -1363,19 +1336,14 @@
                 </tr>`).join('');
         }
 
-        // Se busca la entrada por su contenido (no por posición), porque la lista puede cambiar al recargar de la nube.
+        // Se busca la entrada por su id (o por su contenido en las entradas viejas sin id).
         async function deleteHistory(d) {
-            await commitChange(() => {
-                const idx = historyData.findIndex(h => d.id
-                    ? String(h.id) === d.id
-                    : (h.Date === d.date && h.Driver === d.driver && h.VIP === d.vip));
-                if (idx === -1) return false;
-                historyData.splice(idx, 1);
-            });
+            const r = await callApi('deleteHistory', { id: d.id || undefined, date: d.date, driver: d.driver, vip: d.vip });
+            if (!r.ok) showApiError(r);
         }
 
         // ================= ADMIN =================
-        // Nota: esto solo oculta/muestra controles. La protección real requiere un servidor.
+        // Los controles de admin se muestran con una sesión válida; el servidor vuelve a verificarla en cada acción.
         function updateAdminUI() {
             const admin = isAdmin();
             const btn = document.getElementById('admin-lock-btn');
@@ -1412,7 +1380,8 @@
 
         function toggleAdminSession() {
             if (isAdmin()) {
-                sessionStorage.removeItem('knni_admin');
+                setAdminToken('');
+                claimsData = [];
                 renderAll();
                 alert(getT('alert_admin_closed'));
             } else {
@@ -1427,15 +1396,26 @@
         }
 
         async function verifyAdminPassword() {
-            let hash;
-            try { hash = await sha256Hex(document.getElementById('admin-password').value); }
-            catch (e) { console.error(e); alert(getT('alert_pwd_err')); return; }
-            if (hash !== ADMIN_PASSWORD_HASH) { alert(getT('alert_pwd_err')); return; }
+            const password = document.getElementById('admin-password').value;
+            let data;
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'login', password })
+                });
+                data = await response.json();
+            } catch (e) {
+                console.error(e);
+                alert(getT('alert_save_err'));
+                return;
+            }
+            if (!data.ok) { alert(getT(data.error === 'bad_password' ? 'alert_pwd_err' : 'alert_save_err')); return; }
 
-            sessionStorage.setItem('knni_admin', 'true');
+            setAdminToken(data.token);
             const action = pendingAction; // guardarla ANTES de cerrar el modal (que la borra)
             closeAdminPasswordModal();
-            renderAll();
+            await refreshFromCloud(); // trae los reclamos, que solo ve el admin
             if (action) action();
         }
         function closeAdminPasswordModal() { document.getElementById('admin-password-modal').classList.add('hidden'); pendingAction = null; }
@@ -1451,10 +1431,9 @@
             const driver = document.getElementById('adm-driver').value.trim() || '---';
             const vip = document.getElementById('adm-vip').value.trim() || '---';
             const rawTime = document.getElementById('adm-arrival').value;
-            const arrival = rawTime ? `${rawTime} hs` : "21:30 hs";
             closeEditTrainModal();
-            const status = await commitChange(() => { trainConfig = { ...trainConfig, driver, vip, arrival }; });
-            if (status === 'saved') alert(getT('alert_train_ok'));
+            const r = await callApi('saveTrain', { driver, vip, arrival: rawTime });
+            if (r.ok) alert(getT('alert_train_ok')); else showApiError(r);
         }
 
         function openEditDiscordModal() { document.getElementById('adm-discord').value = trainConfig.discord || ''; document.getElementById('edit-discord-modal').classList.remove('hidden'); }
@@ -1463,8 +1442,8 @@
             const discord = document.getElementById('adm-discord').value.trim();
             if (safeUrl(discord) === '#') { alert(getT('alert_bad_url')); return; }
             closeEditDiscordModal();
-            const status = await commitChange(() => { trainConfig = { ...trainConfig, discord }; });
-            if (status === 'saved') alert(getT('alert_dc_ok'));
+            const r = await callApi('saveDiscord', { url: discord });
+            if (r.ok) alert(getT('alert_dc_ok')); else showApiError(r);
         }
 
         function openEditMvpModal() {
@@ -1478,8 +1457,8 @@
             const v = id => document.getElementById(id).value.trim();
             const newMvp = { week: v('adm-mvp-week'), champion: v('adm-champion'), ds1: v('adm-mvp-ds-1'), ds2: v('adm-mvp-ds-2'), cs1: v('adm-mvp-cs-1'), cs2: v('adm-mvp-cs-2') };
             closeEditMvpModal();
-            const status = await commitChange(() => { mvpConfig = newMvp; });
-            if (status === 'saved') alert(getT('alert_mvp_ok'));
+            const r = await callApi('saveMvp', newMvp);
+            if (r.ok) alert(getT('alert_mvp_ok')); else showApiError(r);
         }
 
         // ================= ARRANQUE =================
