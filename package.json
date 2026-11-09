@@ -1,0 +1,9 @@
+{
+  "name": "knni-app",
+  "private": true,
+  "type": "module",
+  "description": "App de la alianza KnNi",
+  "dependencies": {
+    "@netlify/blobs": "11.1.6"
+  }
+}

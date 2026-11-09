@@ -508,7 +508,7 @@
 
     <script>
         // Toda la comunicación con la base de datos pasa por la función de Netlify (netlify/functions/api.mjs).
-        // La clave de JSONBin y la contraseña de admin viven allí, como variables de entorno secretas.
+        // Los datos se guardan en Netlify Blobs y la contraseña de admin es una variable de entorno secreta.
         const API_URL = '/api';
 
         let allianceNames = []; // se carga desde el servidor
@@ -748,7 +748,7 @@
         }
 
         // ================= DATOS (vía /api en Netlify) =================
-        // La página nunca habla directo con JSONBin: la clave vive en el servidor.
+        // La página nunca habla directo con la base de datos: todo pasa por el servidor.
         function applyRecord(record) {
             if (!record) return;
             historyData = Array.isArray(record.historyData) ? record.historyData : [];

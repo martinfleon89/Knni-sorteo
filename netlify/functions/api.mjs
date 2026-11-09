@@ -1,15 +1,18 @@
 // API de la app KnNi (Netlify Function).
-// Toda la lectura/escritura de JSONBin pasa por aquí, así la clave y la contraseña de admin
-// nunca llegan al navegador.
+// Los datos se guardan en Netlify Blobs (incluido en Netlify, sin claves).
+// La contraseña de admin nunca llega al navegador.
 //
 // Variables de entorno (Netlify → Site configuration → Environment variables):
-//   JSONBIN_BIN_ID      ID del bin (ej: 6aed9aa3ac6210605a71b12b)
-//   JSONBIN_KEY         Clave de JSONBin (recomendado: Access Key con permisos Read + Update del bin)
-//   JSONBIN_KEY_HEADER  "X-Access-Key" si usas Access Key (por defecto: "X-Master-Key")
 //   ADMIN_PASSWORD      Contraseña de administrador
 //   TOKEN_SECRET        Texto largo y aleatorio para firmar las sesiones de admin
+//
+// Solo para la migración (se pueden borrar después de la primera carga):
+//   JSONBIN_BIN_ID      ID del bin viejo de JSONBin
+//   JSONBIN_KEY         Clave de JSONBin
+//   JSONBIN_KEY_HEADER  "X-Access-Key" si es una Access Key (por defecto: "X-Master-Key")
 
 import crypto from 'node:crypto';
+import { getStore } from '@netlify/blobs';
 
 export const config = { path: '/api' };
 
@@ -50,26 +53,62 @@ function env(name, fallback) {
     return v === undefined || v === '' ? fallback : v;
 }
 
-// ---------- JSONBin ----------
-function binUrl() {
-    const id = env('JSONBIN_BIN_ID');
-    if (!id || !env('JSONBIN_KEY')) throw new ApiError('server_misconfigured', 500);
-    return `https://api.jsonbin.io/v3/b/${id}`;
-}
-function binHeaders() {
-    return { [env('JSONBIN_KEY_HEADER', 'X-Master-Key')]: env('JSONBIN_KEY'), 'Content-Type': 'application/json' };
-}
+// ---------- Almacenamiento (Netlify Blobs) ----------
+const STATE_KEY = 'state';
+const MAX_WRITE_ATTEMPTS = 6;
 
-async function readState() {
-    const res = await fetch(`${binUrl()}/latest`, { headers: binHeaders(), cache: 'no-store' });
+let storeFactory = () => getStore({ name: 'knni', consistency: 'strong' });
+// Solo para pruebas locales.
+export function _setStoreFactory(fn) { storeFactory = fn; }
+
+// Migración: la primera vez que no hay datos en Blobs, se copian desde JSONBin (si está configurado).
+async function importFromJsonBin() {
+    const id = env('JSONBIN_BIN_ID'), key = env('JSONBIN_KEY');
+    if (!id || !key) return {};
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
+        headers: { [env('JSONBIN_KEY_HEADER', 'X-Master-Key')]: key },
+        cache: 'no-store',
+    });
+    // Si JSONBin falla, NO se crea una base vacía (se perderían los datos): se reintenta en la próxima visita.
     if (!res.ok) throw new ApiError('storage_error', 502);
     const json = await res.json();
-    return normalizeState(json.record || {});
+    return json.record || {};
 }
 
-async function writeState(state) {
-    const res = await fetch(binUrl(), { method: 'PUT', headers: binHeaders(), body: JSON.stringify(state) });
-    if (!res.ok) throw new ApiError('storage_error', 502);
+async function readState(store = storeFactory()) {
+    const entry = await store.getWithMetadata(STATE_KEY, { type: 'json' });
+    if (entry && entry.data) return { state: normalizeState(entry.data), etag: entry.etag };
+
+    const state = normalizeState(await importFromJsonBin());
+    const res = await store.setJSON(STATE_KEY, state, { onlyIfNew: true });
+    if (!res.modified) return readState(store); // otra petición lo creó primero
+    return { state, etag: res.etag };
+}
+
+// Leer → aplicar el cambio → guardar SOLO si nadie guardó en el medio (ETag).
+// Si alguien se adelantó, se vuelve a leer y se reintenta: nunca se pisa un cambio ajeno.
+async function updateState(mutate) {
+    const store = storeFactory();
+    for (let attempt = 1; attempt <= MAX_WRITE_ATTEMPTS; attempt++) {
+        const { state, etag } = await readState(store);
+        mutate(state);
+        const res = await store.setJSON(STATE_KEY, state, { onlyIfMatch: etag });
+        if (res.modified) {
+            await saveDailyBackup(store, state);
+            return state;
+        }
+        await new Promise(r => setTimeout(r, 40 * attempt + crypto.randomInt(60)));
+    }
+    throw new ApiError('busy', 503);
+}
+
+// Copia de seguridad: se guarda el primer estado de cada día (backup-AAAA-MM-DD).
+async function saveDailyBackup(store, state) {
+    try {
+        await store.setJSON(`backup-${new Date().toISOString().slice(0, 10)}`, state, { onlyIfNew: true });
+    } catch (err) {
+        console.error('No se pudo guardar el backup diario:', err);
+    }
 }
 
 function normalizeState(r) {
@@ -283,7 +322,8 @@ export default async function handler(req) {
         const admin = isValidToken(tokenFrom(req));
 
         if (req.method === 'GET') {
-            return json({ ok: true, admin, state: viewFor(await readState(), admin) });
+            const { state } = await readState();
+            return json({ ok: true, admin, state: viewFor(state, admin) });
         }
         if (req.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405);
 
@@ -306,15 +346,17 @@ export default async function handler(req) {
         if (adminActions[action] && !admin) return json({ ok: false, error: 'unauthorized' }, 401);
 
         // Leer lo último → aplicar el cambio → guardar. Todo en el servidor.
-        const state = await readState();
+        let current = null;
         try {
-            fn(state, body, admin);
+            const saved = await updateState(state => { current = state; fn(state, body, admin); });
+            return json({ ok: true, state: viewFor(saved, admin) });
         } catch (err) {
-            if (err instanceof ApiError) return json({ ok: false, error: err.code, ...err.extra, state: viewFor(state, admin) }, err.status);
+            // Error de validación (duplicado, cerrado...): se devuelve también el estado actual.
+            if (err instanceof ApiError && current && err.status < 500) {
+                return json({ ok: false, error: err.code, ...err.extra, state: viewFor(current, admin) }, err.status);
+            }
             throw err;
         }
-        await writeState(state);
-        return json({ ok: true, state: viewFor(state, admin) });
     } catch (err) {
         if (err instanceof ApiError) return json({ ok: false, error: err.code }, err.status);
         console.error(err);
