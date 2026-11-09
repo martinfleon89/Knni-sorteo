@@ -391,6 +391,21 @@
 
     </main>
 
+    <!-- PANTALLA DE ACCESO PARA MIEMBROS -->
+    <div id="member-gate" class="hidden fixed inset-0 z-[300] bg-[#0c120e] flex items-center justify-center p-4">
+        <div class="card-glass p-6 rounded-2xl w-full max-w-sm space-y-4 text-center border border-yellow-700/50">
+            <div class="w-14 h-14 mx-auto rounded-xl bg-gradient-to-br from-yellow-600 to-yellow-800 border border-yellow-500/50 flex items-center justify-center text-stone-100 text-2xl">
+                <i class="fa-solid fa-shield"></i>
+            </div>
+            <h2 class="font-cinzel font-extrabold text-xl text-yellow-400" data-i="gate-title">Acceso de la Alianza</h2>
+            <p class="text-xs text-stone-300" data-i="gate-desc">Escribe la contraseña de la alianza para entrar.</p>
+            <input type="password" id="member-password" autocomplete="current-password" data-i-ph="ph-gate" placeholder="Contraseña de la alianza..." onkeydown="if(event.key === 'Enter') submitMemberPassword()" class="w-full bg-[#090d0a] border border-green-900/60 rounded-lg px-3 py-3 text-sm text-stone-200 outline-none text-center">
+            <p id="member-gate-error" class="hidden text-xs text-red-400"></p>
+            <button id="member-gate-btn" onclick="submitMemberPassword()" class="w-full py-3 bg-yellow-700 hover:bg-yellow-600 text-stone-100 rounded-xl font-cinzel text-sm font-bold border border-yellow-500/50" data-i="gate-btn">ENTRAR</button>
+            <button onclick="toggleLang()" class="text-[11px] text-stone-400 underline">ES / EN</button>
+        </div>
+    </div>
+
     <!-- MODAL BUZÓN DE RECLAMOS (ADMIN) -->
     <div id="inbox-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-2xl space-y-4 text-xs sm:text-sm border border-red-700/50 flex flex-col max-h-[80vh]">
@@ -587,7 +602,10 @@
                 "alert_invalid": "⚠️ Hay datos inválidos. Revisa lo que escribiste.",
                 "alert_unknown_member": "⚠️ Ese nombre no está en la lista de la alianza.",
                 "alert_inbox_full": "⚠️ El buzón de reclamos está lleno. Avisa a un líder por Discord.",
-                "alert_not_found": "Ese registro ya no existe (quizás otro admin lo borró)."
+                "alert_not_found": "Ese registro ya no existe (quizás otro admin lo borró).",
+                "gate-title": "Acceso de la Alianza", "gate-desc": "Escribe la contraseña de la alianza para entrar.",
+                "gate-btn": "ENTRAR", "ph-gate": "Contraseña de la alianza...", "gate_wrong": "Contraseña incorrecta. Pídela a un líder.",
+                "gate_checking": "Verificando..."
             },
             EN: {
                 "menu": "Menu", "menu-home": "Home", "menu-insc": "DS & CS Registration", "menu-sorteo": "Divine Draw", "menu-powers": "Battalion & Powers",
@@ -645,7 +663,10 @@
                 "alert_invalid": "⚠️ Some data is invalid. Check what you typed.",
                 "alert_unknown_member": "⚠️ That name is not on the alliance list.",
                 "alert_inbox_full": "⚠️ The claims inbox is full. Tell a leader on Discord.",
-                "alert_not_found": "That record no longer exists (maybe another admin deleted it)."
+                "alert_not_found": "That record no longer exists (maybe another admin deleted it).",
+                "gate-title": "Alliance Access", "gate-desc": "Enter the alliance password to come in.",
+                "gate-btn": "ENTER", "ph-gate": "Alliance password...", "gate_wrong": "Wrong password. Ask a leader.",
+                "gate_checking": "Checking..."
             }
         };
 
@@ -658,14 +679,30 @@
         }
         function normalizeText(s) { return String(s ?? '').normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
         // La sesión de admin es un token firmado por el servidor (vence a las 12 h).
+        // Los tokens tienen la forma "rol.vencimiento.firma".
+        function tokenExpired(token) { return !(Number(String(token).split('.')[1]) > Date.now()); }
         function getAdminToken() {
             try {
                 const token = sessionStorage.getItem('knni_admin_token') || '';
-                const exp = Number(token.split('.')[0]);
-                if (token && exp > Date.now()) return token;
+                if (token && !tokenExpired(token)) return token;
                 if (token) sessionStorage.removeItem('knni_admin_token');
             } catch { }
             return '';
+        }
+        // Sesión de miembro: se recuerda en el celular (30 días) para no pedir la contraseña cada vez.
+        function getMemberToken() {
+            try {
+                const token = localStorage.getItem('knni_member_token') || '';
+                if (token && !tokenExpired(token)) return token;
+                if (token) localStorage.removeItem('knni_member_token');
+            } catch { }
+            return '';
+        }
+        function setMemberToken(token) {
+            try {
+                if (token) localStorage.setItem('knni_member_token', token);
+                else localStorage.removeItem('knni_member_token');
+            } catch { }
         }
         function isAdmin() { return !!getAdminToken(); }
         function setAdminToken(token) {
@@ -762,14 +799,62 @@
         }
 
         function authHeaders() {
-            const token = getAdminToken();
-            return token ? { Authorization: `Bearer ${token}` } : {};
+            const headers = {};
+            const admin = getAdminToken(), member = getMemberToken();
+            if (admin) headers.Authorization = `Bearer ${admin}`;
+            if (member) headers['X-Member-Token'] = member;
+            return headers;
+        }
+
+        // ---- Pantalla de acceso para miembros ----
+        let needsMemberLogin = false;
+        function showMemberGate() {
+            needsMemberLogin = true;
+            setMemberToken('');
+            document.getElementById('member-gate').classList.remove('hidden');
+            setTimeout(() => document.getElementById('member-password').focus(), 50);
+        }
+        async function submitMemberPassword() {
+            const input = document.getElementById('member-password');
+            const errorEl = document.getElementById('member-gate-error');
+            const btn = document.getElementById('member-gate-btn');
+            if (!input.value.trim()) return;
+            btn.disabled = true;
+            btn.textContent = getT('gate_checking');
+            errorEl.classList.add('hidden');
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'memberLogin', password: input.value })
+                });
+                const data = await response.json();
+                if (!data.ok) {
+                    errorEl.textContent = getT(data.error === 'bad_password' ? 'gate_wrong' : 'alert_load_err');
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
+                setMemberToken(data.token);
+                needsMemberLogin = false;
+                input.value = '';
+                document.getElementById('member-gate').classList.add('hidden');
+                if (!(await loadDatabase()) && !needsMemberLogin) alert(getT('alert_load_err'));
+                renderAll();
+            } catch (e) {
+                console.error(e);
+                errorEl.textContent = getT('alert_load_err');
+                errorEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = getT('gate-btn');
+            }
         }
 
         async function loadDatabase() {
             try {
                 const response = await fetch(API_URL, { headers: authHeaders(), cache: 'no-store' });
                 const data = await response.json();
+                if (data.error === 'member_required') { showMemberGate(); return false; }
                 if (!response.ok || !data.ok) throw new Error(data.error || `HTTP ${response.status}`);
                 if (getAdminToken() && !data.admin) setAdminToken(''); // la sesión ya no es válida
                 applyRecord(data.state);
@@ -801,6 +886,7 @@
                     });
                     result = await response.json().catch(() => ({ ok: false, error: 'server_error' }));
                     if (result.error === 'unauthorized') setAdminToken('');
+                    if (result.error === 'member_required') showMemberGate();
                     if (result.state) applyRecord(result.state);
                 } catch (error) {
                     console.error('Error de conexión:', error);
@@ -813,6 +899,7 @@
 
         // Muestra los errores generales. Los casos especiales (duplicado, etc.) los maneja cada función.
         function showApiError(result) {
+            if (result.error === 'member_required') return; // ya se muestra la pantalla de acceso
             const messages = {
                 unauthorized: 'alert_session_expired', closed: 'alert_closed', invalid: 'alert_invalid',
                 unknown_member: 'alert_unknown_member', inbox_full: 'alert_inbox_full', bad_url: 'alert_bad_url',
@@ -1463,7 +1550,7 @@
 
         // ================= ARRANQUE =================
         function anyModalOpen() {
-            return ['inbox-modal', 'admin-password-modal', 'edit-train-modal', 'edit-discord-modal', 'edit-mvp-modal', 'add-member-modal']
+            return ['member-gate', 'inbox-modal', 'admin-password-modal', 'edit-train-modal', 'edit-discord-modal', 'edit-mvp-modal', 'add-member-modal']
                 .some(id => !document.getElementById(id).classList.contains('hidden'));
         }
 
@@ -1479,7 +1566,7 @@
             setInterval(updateClocks, 1000);
             updateClocks();
 
-            if (!(await loadDatabase())) alert(getT('alert_load_err'));
+            if (!(await loadDatabase()) && !needsMemberLogin) alert(getT('alert_load_err'));
             renderAll();
 
             // Al volver a la app (cambiar de pestaña / desbloquear el celular) se traen los datos más recientes.
