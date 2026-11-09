@@ -31,7 +31,7 @@ Para traer los datos viejos, agrega también estas variables **antes** del prime
 
 | Variable | Valor |
 |---|---|
-| `JSONBIN_BIN_ID` | `6aed9aa3ac6210605a71b12b` |
+| `JSONBIN_BIN_ID` | El ID del bin (aparece en la URL del bin en JSONBin) |
 | `JSONBIN_KEY` | La clave de JSONBin |
 
 La primera vez que alguien abra la app, el servidor copia todo desde JSONBin a Netlify Blobs. Si JSONBin no responde, no se crea nada y se vuelve a intentar en la siguiente visita. Una vez que la app muestra los datos, puedes **borrar estas dos variables y la cuenta de JSONBin**.

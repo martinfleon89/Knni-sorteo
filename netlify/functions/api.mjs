@@ -9,7 +9,7 @@
 // Solo para la migración (se pueden borrar después de la primera carga):
 //   JSONBIN_BIN_ID      ID del bin viejo de JSONBin
 //   JSONBIN_KEY         Clave de JSONBin
-//   JSONBIN_KEY_HEADER  "X-Access-Key" si es una Access Key (por defecto: "X-Master-Key")
+//   JSONBIN_KEY_HEADER  Nombre del encabezado si la clave es una Access Key (por defecto: "X-Master-Key")
 
 import crypto from 'node:crypto';
 import { getStore } from '@netlify/blobs';
