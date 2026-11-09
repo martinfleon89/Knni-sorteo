@@ -36,4 +36,8 @@ Para traer los datos viejos, agrega también estas variables **antes** del prime
 
 La primera vez que alguien abra la app, el servidor copia todo desde JSONBin a Netlify Blobs. Si JSONBin no responde, no se crea nada y se vuelve a intentar en la siguiente visita. Una vez que la app muestra los datos, puedes **borrar estas dos variables y la cuenta de JSONBin**.
 
+Mientras no existan datos en Netlify Blobs, la app en producción **no arranca vacía** si faltan estas variables (muestra un error de carga). Así se evita crear por error una base vacía. Para empezar desde cero a propósito, crea la variable `ALLOW_EMPTY_START` = `true`.
+
+Las vistas previas de los Pull Requests usan un almacenamiento aparte (`knni-preview`), así que probarlas nunca toca los datos reales.
+
 > Nota: cada sitio de Netlify tiene su propio almacenamiento. Si la alianza usa más de un sitio (por ejemplo `knni` y `trainknni`), cada uno tendrá datos separados.

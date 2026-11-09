@@ -57,7 +57,10 @@ function env(name, fallback) {
 const STATE_KEY = 'state';
 const MAX_WRITE_ATTEMPTS = 6;
 
-let storeFactory = () => getStore({ name: 'knni', consistency: 'strong' });
+// Las vistas previas de Netlify (Pull Requests) usan un almacenamiento aparte,
+// para que probar un cambio nunca toque los datos reales de la alianza.
+let deployContext = 'production';
+let storeFactory = (ctx) => getStore({ name: ctx === 'production' ? 'knni' : 'knni-preview', consistency: 'strong' });
 // Solo para pruebas locales.
 export function _setStoreFactory(fn) { storeFactory = fn; }
 
@@ -75,9 +78,16 @@ async function importFromJsonBin() {
     return json.record || {};
 }
 
-async function readState(store = storeFactory()) {
+async function readState(store = storeFactory(deployContext)) {
     const entry = await store.getWithMetadata(STATE_KEY, { type: 'json' });
     if (entry && entry.data) return { state: normalizeState(entry.data), etag: entry.etag };
+
+    // En producción no se arranca con una base vacía si falta configurar la migración:
+    // así nunca se crea por error una base vacía que impida importar los datos de JSONBin.
+    const jsonbinConfigured = env('JSONBIN_BIN_ID') && env('JSONBIN_KEY');
+    if (deployContext === 'production' && !jsonbinConfigured && env('ALLOW_EMPTY_START') !== 'true') {
+        throw new ApiError('not_initialized', 503);
+    }
 
     const state = normalizeState(await importFromJsonBin());
     const res = await store.setJSON(STATE_KEY, state, { onlyIfNew: true });
@@ -88,7 +98,7 @@ async function readState(store = storeFactory()) {
 // Leer → aplicar el cambio → guardar SOLO si nadie guardó en el medio (ETag).
 // Si alguien se adelantó, se vuelve a leer y se reintenta: nunca se pisa un cambio ajeno.
 async function updateState(mutate) {
-    const store = storeFactory();
+    const store = storeFactory(deployContext);
     for (let attempt = 1; attempt <= MAX_WRITE_ATTEMPTS; attempt++) {
         const { state, etag } = await readState(store);
         mutate(state);
@@ -317,7 +327,8 @@ function json(body, status = 200) {
     return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 }
 
-export default async function handler(req) {
+export default async function handler(req, context) {
+    deployContext = context?.deploy?.context || env('CONTEXT', 'production');
     try {
         const admin = isValidToken(tokenFrom(req));
 
