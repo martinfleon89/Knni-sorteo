@@ -234,6 +234,24 @@ function findTeam(state, ev, name) {
     return TEAMS.find(t => (state.registrations[`${ev} - ${t}`] || []).some(i => String(i.name).toLowerCase() === target)) || null;
 }
 
+// Día y hora del tren (hora del servidor). Ambos son opcionales.
+function trainSchedule(p) {
+    const trainDate = text(p.trainDate, 10, { required: false });
+    const trainTime = text(p.trainTime, 5, { required: false });
+    if (trainDate && !/^\d{4}-\d{2}-\d{2}$/.test(trainDate)) throw new ApiError('invalid');
+    if (trainTime && !/^\d{2}:\d{2}$/.test(trainTime)) throw new ApiError('invalid');
+    return { trainDate, trainTime };
+}
+
+// Busca un tren por id; los trenes viejos (sin id) se buscan por fecha, conductor y VIP.
+function findHistoryIndex(state, m) {
+    const idx = state.historyData.findIndex(h => m.id
+        ? String(h.id) === String(m.id)
+        : (h.Date === m.date && h.Driver === m.driver && h.VIP === m.vip));
+    if (idx === -1) throw new ApiError('not_found', 404);
+    return idx;
+}
+
 // ---------- Acciones ----------
 const publicActions = {
     register(state, p, admin) {
@@ -315,22 +333,32 @@ const adminActions = {
         delete state.powersData[name];
     },
 
+    // Tren nuevo: desde un sorteo o cargado a mano. trainDate (AAAA-MM-DD) y trainTime (HH:MM) son hora del servidor.
     addHistory(state, p) {
         state.historyData.push({
-            id: Date.now(),
+            id: Date.now() * 1000 + crypto.randomInt(1000),
             Date: text(p.date, 30),
             Driver: text(p.driver, 60),
             VIP: text(p.vip, 60),
-            Config: 'Sorteo Divino',
+            Config: p.source === 'manual' ? 'Manual' : 'Sorteo Divino',
+            ...trainSchedule(p),
         });
     },
 
+    updateHistory(state, p) {
+        const idx = findHistoryIndex(state, p.match || {});
+        const old = state.historyData[idx];
+        state.historyData[idx] = {
+            ...old,
+            id: old.id || Date.now() * 1000 + crypto.randomInt(1000),
+            Driver: text(p.driver, 60),
+            VIP: text(p.vip, 60),
+            ...trainSchedule(p),
+        };
+    },
+
     deleteHistory(state, p) {
-        const idx = state.historyData.findIndex(h => p.id
-            ? String(h.id) === String(p.id)
-            : (h.Date === p.date && h.Driver === p.driver && h.VIP === p.vip));
-        if (idx === -1) throw new ApiError('not_found', 404);
-        state.historyData.splice(idx, 1);
+        state.historyData.splice(findHistoryIndex(state, p), 1);
     },
 
     saveTrain(state, p) {
