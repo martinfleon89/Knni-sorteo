@@ -124,36 +124,20 @@
                 </button>
             </div>
 
-            <!-- Bloque Tren -->
-            <div class="card-glass p-5 sm:p-6 rounded-2xl border-2 border-yellow-600/50 bg-gradient-to-br from-yellow-950/30 via-[#0c120e]/80 to-stone-900 relative">
-                <button id="btn-edit-train" onclick="checkAdmin(() => openEditTrainModal())" class="hidden absolute top-4 right-4 text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all flex items-center space-x-1">
-                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline" data-i="btn-edit-train">Editar Tren</span>
-                </button>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
+            <!-- Bloque Trenes: los últimos 2 trenes -->
+            <div class="card-glass p-5 sm:p-6 rounded-2xl border-2 border-yellow-600/50 bg-gradient-to-br from-yellow-950/30 via-[#0c120e]/80 to-stone-900 relative space-y-3">
+                <div class="flex justify-between items-center gap-2">
+                    <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 rounded-xl bg-yellow-700/40 border border-yellow-500/50 text-yellow-400 flex items-center justify-center text-lg">
                             <i class="fa-solid fa-train"></i>
                         </div>
-                        <span id="train-status-badge" class="text-[11px] font-mono bg-yellow-900/60 text-yellow-300 px-2.5 py-0.5 rounded-full border border-yellow-700/50 font-bold">Sin Tren Activo</span>
+                        <h2 class="font-cinzel font-bold text-lg sm:text-xl text-yellow-400" data-i="trains-home-title">Últimos Trenes</h2>
                     </div>
-                    <h2 class="font-cinzel font-bold text-lg sm:text-xl text-yellow-400" data-i="train-status-title">Estado del Tren y Estación</h2>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                        <div class="bg-[#090d0a] p-3 rounded-xl border border-green-900/50">
-                            <span class="text-[10px] text-stone-400 font-cinzel uppercase block" data-i="driver-lbl">Conductor (Driver)</span>
-                            <strong id="display-train-driver" class="text-stone-100 font-cinzel text-sm block truncate">---</strong>
-                        </div>
-                        <div class="bg-[#090d0a] p-3 rounded-xl border border-yellow-900/50">
-                            <span class="text-[10px] text-stone-400 font-cinzel uppercase block" data-i="vip-lbl">Lord VIP</span>
-                            <strong id="display-train-vip" class="text-yellow-500 font-cinzel text-sm block truncate">---</strong>
-                        </div>
-                    </div>
-
-                    <div class="bg-[#090d0a] p-3.5 rounded-xl border border-amber-600/40 flex justify-between items-center text-xs text-amber-400 font-cinzel font-bold">
-                        <span><i class="fa-solid fa-clock mr-1"></i> <span data-i="arrival-lbl">Hora de llegada a la estación:</span></span>
-                        <span id="station-arrival-time" class="font-mono text-white text-xs sm:text-sm">--:--</span>
-                    </div>
+                    <button id="btn-add-train-home" onclick="checkAdmin(() => openTrainModal('add'))" class="hidden text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-plus"></i> <span class="hidden sm:inline" data-i="btn-add-train">Agregar tren</span>
+                    </button>
                 </div>
+                <div id="home-trains" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             </div>
 
             <!-- Discord -->
@@ -336,12 +320,18 @@
             </div>
 
             <div class="card-glass p-5 rounded-xl space-y-4">
-                <h3 class="font-cinzel font-bold text-base text-yellow-500" data-i="cronograma-title">Cronograma y Crónicas de Trenes</h3>
+                <div class="flex justify-between items-center gap-2">
+                    <h3 class="font-cinzel font-bold text-base text-yellow-500" data-i="cronograma-title">Cronograma y Crónicas de Trenes</h3>
+                    <button id="btn-add-train-hist" onclick="checkAdmin(() => openTrainModal('add'))" class="hidden text-xs bg-yellow-900/40 border border-yellow-600/50 text-yellow-400 px-2 py-1 rounded hover:bg-yellow-800/50 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-plus"></i> <span data-i="btn-add-train">Agregar tren</span>
+                    </button>
+                </div>
                 <div class="overflow-x-auto rounded-lg border border-green-900/40">
                     <table class="w-full text-left text-xs sm:text-sm text-stone-300">
                         <thead class="text-[10px] uppercase bg-[#090d0a] text-stone-400 border-b border-green-900/50 font-cinzel">
                             <tr>
-                                <th class="px-4 py-3" data-i="th-date">Fecha</th>
+                                <th class="px-4 py-3" data-i="th-train-date">Día del tren</th>
+                                <th class="px-4 py-3" data-i="th-time">Hora (S)</th>
                                 <th class="px-4 py-3" data-i="th-driver">Conductor</th>
                                 <th class="px-4 py-3" data-i="th-vip">Lord VIP</th>
                                 <th class="px-4 py-3 text-center" data-i="th-actions">Acciones Admin</th>
@@ -432,27 +422,34 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR TREN -->
+    <!-- MODAL TREN (agregar a mano / guardar sorteo / editar) -->
     <div id="edit-train-modal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
         <div class="card-glass p-6 rounded-xl w-full max-w-md space-y-4 text-xs sm:text-sm border border-yellow-700/50">
-            <h3 class="font-cinzel font-bold text-lg text-yellow-500" data-i="modal-train-title">Configurar Estado del Tren</h3>
+            <h3 id="train-modal-title" class="font-cinzel font-bold text-lg text-yellow-500">Agregar Tren</h3>
             <div class="space-y-3">
                 <div>
                     <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="driver-lbl">Conductor (Driver)</label>
-                    <input type="text" id="adm-driver" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                    <input type="text" id="adm-driver" maxlength="60" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
                 <div>
                     <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="vip-lbl">Lord VIP</label>
-                    <input type="text" id="adm-vip" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
+                    <input type="text" id="adm-vip" maxlength="60" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none">
                 </div>
-                <div>
-                    <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="modal-arrival-lbl">Hora de llegada a la estación (Hora Local)</label>
-                    <input type="time" id="adm-arrival" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-3 py-2 text-stone-200 outline-none text-center font-mono text-sm">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="lbl-train-date">Día del tren</label>
+                        <input type="date" id="adm-train-date" oninput="updateTrainTimeHint()" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-2 py-2 text-stone-200 outline-none font-mono text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-yellow-400 uppercase block mb-1" data-i="lbl-train-time">Hora (servidor)</label>
+                        <input type="time" id="adm-train-time" oninput="updateTrainTimeHint()" class="w-full bg-[#090d0a] border border-green-900 rounded-lg px-2 py-2 text-stone-200 outline-none text-center font-mono text-sm">
+                    </div>
                 </div>
+                <p id="train-time-hint" class="text-[11px] text-stone-400"></p>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeEditTrainModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
-                <button onclick="saveTrainChanges()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-save">Guardar</button>
+                <button onclick="closeTrainModal()" class="px-3 py-1.5 bg-stone-800 text-stone-300 rounded-lg" data-i="btn-cancel">Cancelar</button>
+                <button onclick="saveTrainModal()" class="px-3 py-1.5 bg-yellow-700 text-stone-100 rounded-lg font-bold" data-i="btn-save">Guardar</button>
             </div>
         </div>
     </div>
@@ -605,7 +602,12 @@
                 "alert_not_found": "Ese registro ya no existe (quizás otro admin lo borró).",
                 "gate-title": "Acceso de la Alianza", "gate-desc": "Escribe la contraseña de la alianza para entrar.",
                 "gate-btn": "ENTRAR", "ph-gate": "Contraseña de la alianza...", "gate_wrong": "Contraseña incorrecta. Pídela a un líder.",
-                "gate_checking": "Verificando..."
+                "gate_checking": "Verificando...",
+                "trains-home-title": "Últimos Trenes", "btn-add-train": "Agregar tren", "th-train-date": "Día del tren", "th-time": "Hora (S)",
+                "lbl-train-date": "Día del tren", "lbl-train-time": "Hora (servidor)", "modal-train-add": "Agregar Tren",
+                "modal-train-edit": "Editar Tren", "modal-train-draw": "Guardar Sorteo en Crónicas", "t_today": "HOY", "t_tomorrow": "MAÑANA",
+                "t_done": "Finalizado", "t_no_trains": "Todavía no hay trenes cargados.", "alert_train_saved": "✅ ¡Tren guardado!",
+                "alert_train_names": "Completa Conductor y Lord VIP.", "t_manual": "Manual", "t_no_time": "Sin hora"
             },
             EN: {
                 "menu": "Menu", "menu-home": "Home", "menu-insc": "DS & CS Registration", "menu-sorteo": "Divine Draw", "menu-powers": "Battalion & Powers",
@@ -666,7 +668,12 @@
                 "alert_not_found": "That record no longer exists (maybe another admin deleted it).",
                 "gate-title": "Alliance Access", "gate-desc": "Enter the alliance password to come in.",
                 "gate-btn": "ENTER", "ph-gate": "Alliance password...", "gate_wrong": "Wrong password. Ask a leader.",
-                "gate_checking": "Checking..."
+                "gate_checking": "Checking...",
+                "trains-home-title": "Latest Trains", "btn-add-train": "Add train", "th-train-date": "Train day", "th-time": "Time (S)",
+                "lbl-train-date": "Train day", "lbl-train-time": "Time (server)", "modal-train-add": "Add Train",
+                "modal-train-edit": "Edit Train", "modal-train-draw": "Save Draw to Chronicles", "t_today": "TODAY", "t_tomorrow": "TOMORROW",
+                "t_done": "Done", "t_no_trains": "No trains yet.", "alert_train_saved": "✅ Train saved!",
+                "alert_train_names": "Fill in Driver and Lord VIP.", "t_manual": "Manual", "t_no_time": "No time"
             }
         };
 
@@ -1022,7 +1029,6 @@
             const now = new Date();
             document.getElementById('local-time').textContent = "L: " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             document.getElementById('server-time').textContent = "S: " + getServerDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('station-arrival-time').textContent = trainConfig.arrival || '--:--';
             updateRegistrationState();
         }
 
@@ -1061,12 +1067,8 @@
 
         // ================= HOME =================
         function initDashboard() {
-            document.getElementById('display-train-driver').textContent = trainConfig.driver || '---';
-            document.getElementById('display-train-vip').textContent = trainConfig.vip || '---';
             document.getElementById('discord-link-btn').href = safeUrl(trainConfig.discord);
-            document.getElementById('station-arrival-time').textContent = trainConfig.arrival || '--:--';
-            const hasTrain = trainConfig.driver && trainConfig.driver !== '---';
-            document.getElementById('train-status-badge').textContent = getT(hasTrain ? 't_train_scheduled' : 't_no_train');
+            renderHomeTrains();
         }
 
         function renderMvpUI() {
@@ -1394,16 +1396,142 @@
             }, 60);
         }
 
-        async function saveToHistory() {
+        // Al guardar un sorteo se abre el formulario con la fecha propuesta (sorteo + 2 días) para revisarla.
+        function saveToHistory() {
             if (!currentDraw.Driver || !currentDraw.VIP) return;
-            const entry = { date: new Date().toLocaleDateString(), driver: currentDraw.Driver, vip: currentDraw.VIP };
-            resetDraw(); // evita guardar dos veces con doble clic
-            const r = await callApi('addHistory', entry);
-            if (r.ok) {
-                alert(getT('alert_hist_ok'));
-            } else {
-                showApiError(r);
-                currentDraw = { Driver: entry.driver, VIP: entry.vip };
+            openTrainModal('draw', { Driver: currentDraw.Driver, VIP: currentDraw.VIP });
+        }
+
+        // ---- Trenes: fechas en hora del servidor (UTC-2) ----
+        function pad2(n) { return String(n).padStart(2, '0'); }
+        function serverDateStr(addDays = 0) {
+            const d = getServerDate();
+            d.setDate(d.getDate() + addDays);
+            return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+        }
+        // Los trenes viejos solo tienen la fecha del sorteo como texto (ej "7/11/2026", día/mes/año).
+        function legacyDateStr(s) {
+            const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(s || '').trim());
+            return m ? `${m[3]}-${pad2(m[2])}-${pad2(m[1])}` : '';
+        }
+        function trainSortKey(item) { return item.trainDate || legacyDateStr(item.Date) || ''; }
+        // Ordenados del más viejo al más nuevo; a igual fecha, por orden de carga.
+        function sortedTrains() {
+            return historyData.map((item, i) => ({ item, i }))
+                .sort((a, b) => (trainSortKey(a.item).localeCompare(trainSortKey(b.item))) || (a.i - b.i))
+                .map(x => x.item);
+        }
+        function formatTrainDay(dateStr, opts = { weekday: 'long', day: 'numeric', month: 'numeric' }) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const txt = new Date(y, m - 1, d).toLocaleDateString(currentLang === 'ES' ? 'es' : 'en', opts);
+            return txt.charAt(0).toUpperCase() + txt.slice(1);
+        }
+        // Hora del servidor → hora local de quien mira.
+        function serverToLocalTime(dateStr, timeStr) {
+            if (!dateStr || !timeStr) return '';
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const [hh, mm] = timeStr.split(':').map(Number);
+            const local = new Date(Date.UTC(y, m - 1, d, hh + 2, mm));
+            let txt = local.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const localDay = `${local.getFullYear()}-${pad2(local.getMonth() + 1)}-${pad2(local.getDate())}`;
+            if (localDay !== dateStr) txt += ` (${local.toLocaleDateString(currentLang === 'ES' ? 'es' : 'en', { weekday: 'short' })})`;
+            return txt;
+        }
+        function dayBadge(dateStr) {
+            if (!dateStr) return '';
+            const today = serverDateStr(0), tomorrow = serverDateStr(1);
+            if (dateStr === today) return `<span class="text-[10px] bg-green-900/70 text-green-300 px-2 py-0.5 rounded-full font-bold">${getT('t_today')}</span>`;
+            if (dateStr === tomorrow) return `<span class="text-[10px] bg-yellow-900/70 text-yellow-300 px-2 py-0.5 rounded-full font-bold">${getT('t_tomorrow')}</span>`;
+            if (dateStr < today) return `<span class="text-[10px] bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full">${getT('t_done')}</span>`;
+            return '';
+        }
+        function trainDataAttrs(item) {
+            return `data-id="${escapeHtml(item.id ?? '')}" data-date="${escapeHtml(item.Date)}" data-driver="${escapeHtml(item.Driver)}" data-vip="${escapeHtml(item.VIP)}"`;
+        }
+        function findTrain(d) {
+            return historyData.find(h => d.id ? String(h.id) === d.id : (h.Date === d.date && h.Driver === d.driver && h.VIP === d.vip));
+        }
+
+        function renderHomeTrains() {
+            const box = document.getElementById('home-trains');
+            if (!box) return;
+            const last2 = sortedTrains().slice(-2);
+            if (last2.length === 0) {
+                box.innerHTML = `<div class="text-stone-500 italic text-sm sm:col-span-2">${getT('t_no_trains')}</div>`;
+                return;
+            }
+            const admin = isAdmin();
+            box.innerHTML = last2.map(item => {
+                const dateStr = item.trainDate || legacyDateStr(item.Date);
+                const dayTxt = dateStr ? formatTrainDay(dateStr) : escapeHtml(item.Date);
+                const timeTxt = item.trainTime
+                    ? `<span class="font-mono text-white">S: ${escapeHtml(item.trainTime)}</span> <span class="text-stone-400">· ${getT('t_local')}: ${escapeHtml(serverToLocalTime(item.trainDate, item.trainTime))}</span>`
+                    : `<span class="text-stone-500">${getT('t_no_time')}</span>`;
+                const editBtn = admin
+                    ? `<button ${trainDataAttrs(item)} onclick="const d = {...this.dataset}; checkAdmin(() => openTrainModal('edit', d))" class="text-yellow-400 hover:text-yellow-300 text-xs"><i class="fa-solid fa-pen-to-square"></i></button>`
+                    : '';
+                return `<div class="bg-[#090d0a] p-3.5 rounded-xl border border-yellow-900/50 space-y-2">
+                    <div class="flex justify-between items-center gap-2">
+                        <span class="font-cinzel font-bold text-sm text-yellow-400">${dayTxt}</span>
+                        <span class="flex items-center gap-2">${dayBadge(dateStr)}${editBtn}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="text-[10px] text-stone-400 font-cinzel uppercase block">${getT('driver-lbl')}</span><strong class="text-stone-100 font-cinzel text-sm block truncate">${escapeHtml(item.Driver)}</strong></div>
+                        <div><span class="text-[10px] text-stone-400 font-cinzel uppercase block">${getT('vip-lbl')}</span><strong class="text-yellow-500 font-cinzel text-sm block truncate">${escapeHtml(item.VIP)}</strong></div>
+                    </div>
+                    <div class="text-xs text-amber-400 border-t border-green-900/40 pt-2"><i class="fa-solid fa-clock mr-1"></i>${timeTxt}</div>
+                </div>`;
+            }).join('');
+        }
+
+        // ---- Formulario del tren: 'add' (a mano), 'draw' (guardar sorteo), 'edit' ----
+        let trainModal = { mode: 'add', match: null };
+        function defaultTrainTime() {
+            const withTime = sortedTrains().filter(h => h.trainTime);
+            if (withTime.length) return withTime[withTime.length - 1].trainTime;
+            const legacy = /^(\d{2}:\d{2})/.exec(String(trainConfig.arrival || ''));
+            return legacy ? legacy[1] : '21:30';
+        }
+        function openTrainModal(mode, data = {}) {
+            trainModal = { mode, match: null };
+            let item = { Driver: '', VIP: '', trainDate: serverDateStr(2), trainTime: defaultTrainTime() };
+            if (mode === 'draw') item = { ...item, Driver: data.Driver, VIP: data.VIP };
+            if (mode === 'edit') {
+                const found = findTrain(data);
+                if (!found) { alert(getT('alert_not_found')); return; }
+                trainModal.match = { id: data.id || undefined, date: data.date, driver: data.driver, vip: data.vip };
+                item = { Driver: found.Driver, VIP: found.VIP, trainDate: found.trainDate || legacyDateStr(found.Date), trainTime: found.trainTime || '' };
+            }
+            document.getElementById('train-modal-title').textContent = getT(mode === 'edit' ? 'modal-train-edit' : mode === 'draw' ? 'modal-train-draw' : 'modal-train-add');
+            document.getElementById('adm-driver').value = item.Driver;
+            document.getElementById('adm-vip').value = item.VIP;
+            document.getElementById('adm-train-date').value = item.trainDate;
+            document.getElementById('adm-train-time').value = item.trainTime;
+            updateTrainTimeHint();
+            document.getElementById('edit-train-modal').classList.remove('hidden');
+        }
+        function updateTrainTimeHint() {
+            const date = document.getElementById('adm-train-date').value;
+            const time = document.getElementById('adm-train-time').value;
+            const hint = document.getElementById('train-time-hint');
+            hint.textContent = date ? `${formatTrainDay(date)}${time ? ` · S: ${time} · ${getT('t_local')}: ${serverToLocalTime(date, time)}` : ''}` : '';
+        }
+        function closeTrainModal() { document.getElementById('edit-train-modal').classList.add('hidden'); }
+        async function saveTrainModal() {
+            const driver = document.getElementById('adm-driver').value.trim();
+            const vip = document.getElementById('adm-vip').value.trim();
+            if (!driver || !vip) { alert(getT('alert_train_names')); return; }
+            const schedule = { trainDate: document.getElementById('adm-train-date').value, trainTime: document.getElementById('adm-train-time').value };
+            const { mode, match } = trainModal;
+            closeTrainModal();
+            if (mode === 'draw') resetDraw(); // evita guardar el mismo sorteo dos veces
+            const r = mode === 'edit'
+                ? await callApi('updateHistory', { match, driver, vip, ...schedule })
+                : await callApi('addHistory', { date: new Date().toLocaleDateString(), driver, vip, source: mode === 'add' ? 'manual' : 'draw', ...schedule });
+            if (r.ok) { alert(getT('alert_train_saved')); return; }
+            showApiError(r);
+            if (mode === 'draw') { // si falló, se puede volver a intentar
+                currentDraw = { Driver: driver, VIP: vip };
                 document.getElementById('btn-save').classList.remove('hidden');
             }
         }
@@ -1412,15 +1540,24 @@
             const tbody = document.getElementById('full-history-tbody');
             if (!tbody) return;
             if (historyData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-stone-500 italic">${getT('t_no_records')}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-stone-500 italic">${getT('t_no_records')}</td></tr>`;
                 return;
             }
-            tbody.innerHTML = historyData.slice().reverse().map(item => `<tr class="border-b border-green-900/30">
-                    <td class="px-4 py-3">${escapeHtml(item.Date)}</td>
+            tbody.innerHTML = sortedTrains().reverse().map(item => {
+                const dateStr = item.trainDate || legacyDateStr(item.Date);
+                const dayTxt = item.trainDate ? formatTrainDay(item.trainDate, { weekday: 'short', day: 'numeric', month: 'numeric', year: 'numeric' }) : escapeHtml(item.Date);
+                const manual = item.Config === 'Manual' ? ` <span class="text-[9px] text-stone-500 uppercase">(${getT('t_manual')})</span>` : '';
+                return `<tr class="border-b border-green-900/30">
+                    <td class="px-4 py-3 whitespace-nowrap">${dayTxt}${manual} ${dayBadge(dateStr)}</td>
+                    <td class="px-4 py-3 font-mono whitespace-nowrap">${item.trainTime ? escapeHtml(item.trainTime) : '—'}</td>
                     <td class="px-4 py-3">${escapeHtml(item.Driver)}</td>
                     <td class="px-4 py-3 text-yellow-500">${escapeHtml(item.VIP)}</td>
-                    <td class="px-4 py-3 text-center"><button data-id="${escapeHtml(item.id ?? '')}" data-date="${escapeHtml(item.Date)}" data-driver="${escapeHtml(item.Driver)}" data-vip="${escapeHtml(item.VIP)}" onclick="const d = {...this.dataset}; checkAdmin(() => deleteHistory(d))" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>`).join('');
+                    <td class="px-4 py-3 text-center whitespace-nowrap">
+                        <button ${trainDataAttrs(item)} onclick="const d = {...this.dataset}; checkAdmin(() => openTrainModal('edit', d))" class="text-yellow-400 mr-3"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button ${trainDataAttrs(item)} onclick="const d = {...this.dataset}; checkAdmin(() => deleteHistory(d))" class="text-red-400"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            }).join('');
         }
 
         // Se busca la entrada por su id (o por su contenido en las entradas viejas sin id).
@@ -1439,7 +1576,7 @@
             const inboxBtn = document.getElementById('admin-inbox-btn');
             const inboxBadge = document.getElementById('inbox-badge');
 
-            ['btn-edit-train', 'btn-edit-discord', 'btn-edit-mvp'].forEach(id => {
+            ['btn-add-train-home', 'btn-add-train-hist', 'btn-edit-discord', 'btn-edit-mvp'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.toggle('hidden', !admin);
             });
@@ -1506,22 +1643,6 @@
             if (action) action();
         }
         function closeAdminPasswordModal() { document.getElementById('admin-password-modal').classList.add('hidden'); pendingAction = null; }
-
-        function openEditTrainModal() {
-            document.getElementById('adm-driver').value = trainConfig.driver === '---' ? '' : (trainConfig.driver || '');
-            document.getElementById('adm-vip').value = trainConfig.vip === '---' ? '' : (trainConfig.vip || '');
-            document.getElementById('adm-arrival').value = trainConfig.arrival ? trainConfig.arrival.replace(' hs', '') : "21:30";
-            document.getElementById('edit-train-modal').classList.remove('hidden');
-        }
-        function closeEditTrainModal() { document.getElementById('edit-train-modal').classList.add('hidden'); }
-        async function saveTrainChanges() {
-            const driver = document.getElementById('adm-driver').value.trim() || '---';
-            const vip = document.getElementById('adm-vip').value.trim() || '---';
-            const rawTime = document.getElementById('adm-arrival').value;
-            closeEditTrainModal();
-            const r = await callApi('saveTrain', { driver, vip, arrival: rawTime });
-            if (r.ok) alert(getT('alert_train_ok')); else showApiError(r);
-        }
 
         function openEditDiscordModal() { document.getElementById('adm-discord').value = trainConfig.discord || ''; document.getElementById('edit-discord-modal').classList.remove('hidden'); }
         function closeEditDiscordModal() { document.getElementById('edit-discord-modal').classList.add('hidden'); }
